@@ -10,6 +10,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "Component/AbilityComponent.h"
+#include "Component/CharacterStatComponent.h"
+#include "UI/HUDWidget.h"
 
 AThroneCharacter::AThroneCharacter()
 {
@@ -93,7 +95,7 @@ AThroneCharacter::AThroneCharacter()
 	
 	/* Components */
 	Ability = CreateDefaultSubobject<UAbilityComponent>(TEXT("Ability Component"));
-	Stat = CreateDefaultSubobject<UCharatcerStatComponent>(TEXT("Stat Component"));
+	Stat = CreateDefaultSubobject<UCharacterStatComponent>(TEXT("Stat Component"));
 }
 
 void AThroneCharacter::BeginPlay()
@@ -127,6 +129,21 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 }
 
+/************* Interface *************/
+void AThroneCharacter::SetHUD(UHUDWidget* InHUDWidget)
+{
+	HUDWidget = InHUDWidget;
+	if (HUDWidget)
+	{
+		HUDWidget->SetMaxHp(Stat->GetMaxHp());
+		HUDWidget->SetMaxEnergy(Stat->GetMaxEnergy());
+		HUDWidget->UpdateHpBar(Stat->GetMaxHp());
+		HUDWidget->UpdateEnergyBar(Stat->GetMaxEnergy());
+		Stat->OnHpChanged.AddUObject(HUDWidget, &UHUDWidget::UpdateHpBar);
+		Stat->OnEnergyChanged.AddUObject(HUDWidget, &UHUDWidget::UpdateEnergyBar);
+	}
+}
+
 void AThroneCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D InputValue = Value.Get<FVector2D>();
@@ -141,6 +158,7 @@ void AThroneCharacter::Move(const FInputActionValue& Value)
 	AddMovementInput(RightDirection, InputValue.Y);
 }
 
+/************* Input *************/
 void AThroneCharacter::LookUp(const FInputActionValue& Value)
 {
 	FVector2D InputValue = Value.Get<FVector2D>();
@@ -151,7 +169,6 @@ void AThroneCharacter::LookUp(const FInputActionValue& Value)
 
 void AThroneCharacter::DefaultAttack()
 {
-	UE_LOG(LogTemp, Display, TEXT("Default Attack"));
 	Ability->BeginDefaultAttack();
 }
 

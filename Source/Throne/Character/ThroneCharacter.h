@@ -5,27 +5,27 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "Interface/HUDWidgetInterface.h"
 #include "ThroneCharacter.generated.h"
 
 UCLASS()
-class THRONE_API AThroneCharacter : public ACharacter
+class THRONE_API AThroneCharacter : public ACharacter, public IHUDWidgetInterface
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AThroneCharacter();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+/* Interface */
+	virtual void SetHUD(class UHUDWidget* InHUDWidget) override;
 
 /* Camera */
 private:
@@ -66,6 +66,11 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	TObjectPtr<class USkeletalMeshComponent> Shield;
 
+/* UI */
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UHUDWidget> HUDWidget;
+
 /* Components */
 
 //Attack
@@ -75,5 +80,6 @@ private:
 
 //Stat
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UCharatcerStatComponent> Stat;
+	TObjectPtr<class UCharacterStatComponent> Stat;
+
 };
