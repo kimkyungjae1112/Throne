@@ -61,7 +61,7 @@ private:
 /* Item */
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Item")
-	TObjectPtr<class USkeletalMeshComponent> Swoard;
+	TObjectPtr<class USkeletalMeshComponent> Sword;
 
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	TObjectPtr<class USkeletalMeshComponent> Shield;

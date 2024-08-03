@@ -77,13 +77,13 @@ AThroneCharacter::AThroneCharacter()
 	}
 
 	/* Item */
-	Swoard = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Swoard"));
+	Sword = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Swoard"));
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SwoardMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/DARK_C_KNIGHT/MESHES/WEAPONS/SWORD/SK_DC_Knight_Sword.SK_DC_Knight_Sword'"));
 	if (SwoardMeshRef.Object)
 	{
-		Swoard->SetSkeletalMesh(SwoardMeshRef.Object);
+		Sword->SetSkeletalMesh(SwoardMeshRef.Object);
 	}
-	Swoard->SetupAttachment(GetMesh(), TEXT("weapon_r"));
+	Sword->SetupAttachment(GetMesh(), TEXT("weapon_r"));
 
 	Shield = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Shiled"));
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> ShieldMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/DARK_C_KNIGHT/MESHES/WEAPONS/SHIELD/SK_DC_KnightShield_left_hand.SK_DC_KnightShield_left_hand'"));

@@ -2,6 +2,9 @@
 
 
 #include "Enemy/Enemy.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Animation/AnimInstance.h"
+#include "Animation/AnimMontage.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -25,10 +28,55 @@ void AEnemy::Tick(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
-void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+float AEnemy::GetPatrolRadius()
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	return 800.0f;
+}
 
+float AEnemy::GetDetectRadius()
+{
+	return 800.0f;
+}
+
+float AEnemy::GetAttackInRange()
+{
+	return 200.0f;
+}
+
+float AEnemy::GetTurnSpeed()
+{
+	return 1.0f;
+}
+
+void AEnemy::SetAIAttackDelegate(FAIMonsterAttackFinished AIMonsterAttackFinished)
+{
+	AttackFinishedDeletage = AIMonsterAttackFinished;
+}
+
+void AEnemy::AttackByAI(class UAnimMontage* InAnimMontage)
+{
+	BeginDefaultAttack(InAnimMontage);
+}
+
+void AEnemy::BeginDefaultAttack(UAnimMontage* AnimMontage)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && AnimMontage)
+	{
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+		AnimInstance->Montage_Play(AnimMontage);
+
+		FOnMontageEnded MontageEnded;
+		MontageEnded.BindUObject(this, &AEnemy::EndDefaultAttack);
+		AnimInstance->Montage_SetEndDelegate(MontageEnded, AnimMontage);
+	}
+}
+
+void AEnemy::EndDefaultAttack(UAnimMontage* Target, bool IsProperlyEnded)
+{
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+
+	AttackFinishedDeletage.ExecuteIfBound();
 }
 

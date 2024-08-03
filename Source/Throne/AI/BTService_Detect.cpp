@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Engine/OverlapResult.h"
+#include "Interface/AIInterface.h"
 
 UBTService_Detect::UBTService_Detect()
 {
@@ -28,11 +29,19 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 		return;
 	}
 
+	IAIInterface* AIPawn = Cast<IAIInterface>(PossessPawn);
+	if (AIPawn == nullptr)
+	{
+		return;
+	}
+
 	FVector Origin = PossessPawn->GetActorLocation();
-	
-	TArray<FOverlapResult> OverlapResults;
+	const float Detect = AIPawn->GetDetectRadius();
 	FCollisionQueryParams Params(NAME_None, true, PossessPawn);
-	bool bHit = World->OverlapMultiByChannel(OverlapResults, Origin, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(800.0f), Params);
+
+
+	TArray<FOverlapResult> OverlapResults;
+	bool bHit = World->OverlapMultiByChannel(OverlapResults, Origin, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(Detect), Params);
 	if (bHit)
 	{
 		for (auto const& OverlapResult : OverlapResults)

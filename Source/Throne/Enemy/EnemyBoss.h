@@ -20,5 +20,18 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+/* AI Interface */
+public:
+	virtual void AttackByAI(class UAnimMontage* InAnimMontage) override;
 	
+
+/* Item */
+private:
+	UPROPERTY(VisibleAnywhere, Category = "Item")
+	TObjectPtr<class USkeletalMeshComponent> Sword;
+	
+/* Animation */
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> DefaultAttackMontage;
 };

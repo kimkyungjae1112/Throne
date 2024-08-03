@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "NavigationSystem.h"
+#include "Interface/AIInterface.h"
 
 UBTTask_PatrolToFind::UBTTask_PatrolToFind()
 {
@@ -27,10 +28,17 @@ EBTNodeResult::Type UBTTask_PatrolToFind::ExecuteTask(UBehaviorTreeComponent& Ow
 		return EBTNodeResult::Failed;
 	}
 
+	IAIInterface* AIPawn = Cast<IAIInterface>(PossessPawn);
+	if (AIPawn == nullptr)
+	{
+		return EBTNodeResult::Failed;
+	}
+
 	FVector Origin = OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("HomePos"));
+	const float PatrolRadius = AIPawn->GetPatrolRadius();
 	FNavLocation NextPatrolPos;
 
-	if (NavSystem->GetRandomPointInNavigableRadius(Origin, 800.0f, NextPatrolPos))
+	if (NavSystem->GetRandomPointInNavigableRadius(Origin, PatrolRadius, NextPatrolPos))
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("PatrolPos"), NextPatrolPos);
 

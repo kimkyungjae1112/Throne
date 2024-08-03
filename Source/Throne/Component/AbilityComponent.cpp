@@ -28,7 +28,6 @@ void UAbilityComponent::BeginDefaultAttack()
 	{
 		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 
-		UE_LOG(LogTemp, Display, TEXT("몽타주 실행"));
 		AnimInstance->Montage_Play(DefaultAttackMontage);
 
 		FOnMontageEnded MontageEnded;
