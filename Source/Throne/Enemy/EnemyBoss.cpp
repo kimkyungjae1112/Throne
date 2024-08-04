@@ -4,6 +4,10 @@
 #include "Enemy/EnemyBoss.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Component/EnemyStatComponent.h"
+#include "Animation/AnimInstance.h"
+#include "Animation/AnimMontage.h"
+#include "AI/AAIController.h"
 
 AEnemyBoss::AEnemyBoss()
 {
@@ -28,15 +32,40 @@ AEnemyBoss::AEnemyBoss()
 		Sword->SetSkeletalMesh(SwordMeshRef.Object);
 	}
 
+	/* Components */
+	Stat = CreateDefaultSubobject<UEnemyStatComponent>(TEXT("Stat Component"));
 
 }
 
 void AEnemyBoss::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Stat->OnHpZero.AddUObject(this, &AEnemyBoss::SetDead);
 }
 
 void AEnemyBoss::AttackByAI(UAnimMontage* InAnimMontage)
 {
 	Super::AttackByAI(DefaultAttackMontage);
+}
+
+float AEnemyBoss::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Stat->ApplyDamage(Damage);
+
+	return Damage;
+}
+
+void AEnemyBoss::SetDead()
+{
+	UAnimInstance* AnimInstacne = GetMesh()->GetAnimInstance();
+	AAAIController* AIController = Cast<AAAIController>(GetController());
+
+	if (AnimInstacne && AIController)
+	{
+		AIController->StopAI();
+
+		AnimInstacne->Montage_Play(DeadMontage);
+		SetActorEnableCollision(false);
+	}
 }
