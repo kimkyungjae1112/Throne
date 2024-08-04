@@ -22,6 +22,7 @@ public:
 	FORCEINLINE const float GetAttackDamage() const { return AttackDamage; }
 	FORCEINLINE const float GetAttackRange() const { return AttackRange; }
 	FORCEINLINE const float GetAttackSpeed() const { return AttackSpeed; }
+	FORCEINLINE const float GetAttackRadian() const { return AttackRadian; }
 	FORCEINLINE const float GetMoveSpeed() const { return MoveSpeed; }
 	FORCEINLINE const float GetMaxHp() const { return MaxHp; }
 	FORCEINLINE const float GetCurrentHp() const { return CurrentHp; }
@@ -41,7 +42,7 @@ public:
 public:
 	float ApplyDamage(float InDamage);
 	void SetHp(float NewHp);
-	void SetEnergy(float NewEnergy);
+	void SetEnergy(float UsedEnergy);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Stat Data")
@@ -55,6 +56,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Stat")
 	float AttackSpeed;
+
+	UPROPERTY(VisibleAnywhere, Category = "Stat")
+	float AttackRadian;
 
 	UPROPERTY(VisibleAnywhere, Category = "Stat")
 	float MoveSpeed;

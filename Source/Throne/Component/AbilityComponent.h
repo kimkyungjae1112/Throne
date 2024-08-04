@@ -4,11 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Interface/AttackHitCheckInterface.h"
 #include "AbilityComponent.generated.h"
 
+DECLARE_DELEGATE_OneParam(FOnDefaultAttackUseEnergy, float /* Use Energy */)
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class THRONE_API UAbilityComponent : public UActorComponent
+class THRONE_API UAbilityComponent : public UActorComponent, public IAttackHitCheckInterface
 {
 	GENERATED_BODY()
 
@@ -18,12 +20,49 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-/* Default Attack */
 public:
+	FOnDefaultAttackUseEnergy OnDefaultAttackUseEnergy;
+
+public:
+	/* Default Attack */
+	void BeginComboAttack();
 	void BeginDefaultAttack();
 	void EndDefaultAttack(class UAnimMontage* Target, bool IsProperlyEnded);
+	void SetComboCheckTimer();
+	void ComboCheck();
+
+	/* Default Attack Hit Check */
+	virtual void DefaultAttackHitCheck() override;
+	bool CheckInRadialRange(AActor* Player, AActor* Target, float Radius, float RadialAngle);
+	void AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange);
+
+	/* Defend */
+	void BeginDefend();
+	void EndDefend(class UAnimMontage* Target, bool IsProperlyEnded);
 
 private:
+	/* Default Attack */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> DefaultAttackMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UCharacterComboActionData> ComboActionData;
+
+	int32 CurrentCombo = 0;
+	FTimerHandle ComboTimerHandle;
+	bool HasNextComboCommand = false;
+
+	/* Defend */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> DefendMontage;
+
+
+	/* Stat */
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UCharacterStatData> StatData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
+	float DefaultAttackUseEnergy;
+
 };

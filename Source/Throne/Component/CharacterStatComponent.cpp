@@ -17,6 +17,7 @@ UCharacterStatComponent::UCharacterStatComponent()
 	AttackDamage = StatData->AttackDamage;
 	AttackRange = StatData->AttackRange;
 	AttackSpeed = StatData->AttackSpeed;
+	AttackRadian = StatData->AttackRadian;
 	MoveSpeed = StatData->MoveSpeed;
 	MaxHp = StatData->Hp;
 	MaxEnergy = StatData->Enegy;
@@ -64,8 +65,8 @@ void UCharacterStatComponent::SetHp(float NewHp)
 	}
 }
 
-void UCharacterStatComponent::SetEnergy(float NewEnergy)
+void UCharacterStatComponent::SetEnergy(float UsedEnergy)
 {
-	const float Energy = FMath::Clamp(CurrentEnergy - NewEnergy, 0, MaxEnergy);
-	OnEnergyChanged.Broadcast(Energy);
+	CurrentEnergy -= UsedEnergy;
+	OnEnergyChanged.Broadcast(CurrentEnergy);
 }

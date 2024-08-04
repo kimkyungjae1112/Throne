@@ -27,6 +27,9 @@ public:
 	float AttackSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	float AttackRadian;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
 	float MoveSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")

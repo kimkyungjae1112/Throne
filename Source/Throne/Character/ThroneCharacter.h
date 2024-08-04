@@ -24,8 +24,14 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+/* overriding */
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+
 /* Interface */
 	virtual void SetHUD(class UHUDWidget* InHUDWidget) override;
+
 
 /* Camera */
 private:
@@ -52,11 +58,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> DefaultAttackAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> DefendAction;
 
 	void Move(const FInputActionValue& Value);	//Triggered WASD
 	void LookUp(const FInputActionValue& Value);	//Tirggered Mouse 2D Axis
 	void DefaultAttack();	//Started Mouse Left Click
+	void Defend();	//Triggerd Mouse Right Click
 
+	//Animation
+	void Death();
 
 /* Item */
 private:
@@ -75,11 +86,13 @@ private:
 
 //Attack
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ability", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAbilityComponent> Ability;
 
 //Stat
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCharacterStatComponent> Stat;
+
+	void DefaultAttackUseEnergy(float UseEnergy);
 
 };

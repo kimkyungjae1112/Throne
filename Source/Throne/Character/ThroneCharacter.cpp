@@ -12,6 +12,8 @@
 #include "Component/AbilityComponent.h"
 #include "Component/CharacterStatComponent.h"
 #include "UI/HUDWidget.h"
+#include "Engine/OverlapResult.h"
+#include "Engine/DamageEvents.h"
 
 AThroneCharacter::AThroneCharacter()
 {
@@ -75,6 +77,11 @@ AThroneCharacter::AThroneCharacter()
 	{
 		DefaultAttackAction = DefaultAttackActionRef.Object;
 	}
+	static ConstructorHelpers::FObjectFinder<UInputAction> DefendActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_Defend.IA_Defend'"));
+	if (DefendActionRef.Object)
+	{
+		DefendAction = DefendActionRef.Object;
+	}
 
 	/* Item */
 	Sword = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Swoard"));
@@ -96,6 +103,7 @@ AThroneCharacter::AThroneCharacter()
 	/* Components */
 	Ability = CreateDefaultSubobject<UAbilityComponent>(TEXT("Ability Component"));
 	Stat = CreateDefaultSubobject<UCharacterStatComponent>(TEXT("Stat Component"));
+
 }
 
 void AThroneCharacter::BeginPlay()
@@ -107,6 +115,10 @@ void AThroneCharacter::BeginPlay()
 	{
 		Subsystem->AddMappingContext(IMC, 0);
 	}
+	
+	/* Delegate */
+	Stat->OnHpZero.AddUObject(this, &AThroneCharacter::Death);
+	Ability->OnDefaultAttackUseEnergy.BindUObject(this, &AThroneCharacter::DefaultAttackUseEnergy);
 }
 
 void AThroneCharacter::Tick(float DeltaTime)
@@ -126,7 +138,15 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(DefaultAttackAction, ETriggerEvent::Started, this, &AThroneCharacter::DefaultAttack);
+	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Started, this, &AThroneCharacter::Defend);
 
+}
+
+float AThroneCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Stat->ApplyDamage(Damage);
+
+	return Damage;
 }
 
 /************* Interface *************/
@@ -169,6 +189,21 @@ void AThroneCharacter::LookUp(const FInputActionValue& Value)
 
 void AThroneCharacter::DefaultAttack()
 {
-	Ability->BeginDefaultAttack();
+	Ability->BeginComboAttack();
+}
+
+void AThroneCharacter::Defend()
+{
+	UE_LOG(LogTemp, Display, TEXT("Defend"));
+	Ability->BeginDefend();
+}
+
+void AThroneCharacter::Death()
+{
+}
+
+void AThroneCharacter::DefaultAttackUseEnergy(float UseEnergy)
+{
+	Stat->SetEnergy(UseEnergy);
 }
 
