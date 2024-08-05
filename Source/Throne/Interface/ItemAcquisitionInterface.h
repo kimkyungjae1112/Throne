@@ -21,5 +21,6 @@ class THRONE_API IItemAcquisitionInterface
 	GENERATED_BODY()
 
 public:
-	virtual void TakeItem(class UItemData* ItemData) = 0;
+	virtual void BeginOverlapTakeItem(class UItemData* ItemData) = 0;
+	virtual void EndOverlapTakeItem() = 0;
 };

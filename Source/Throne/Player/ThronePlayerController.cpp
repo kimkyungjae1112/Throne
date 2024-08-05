@@ -11,6 +11,11 @@ AThronePlayerController::AThronePlayerController()
 	{
 		HUDWidgetClass = HUDWidgetClassRef.Class;
 	}
+	static ConstructorHelpers::FClassFinder<UUserWidget> ItemInteractClassRef(TEXT("/Game/Throne/UI/WBP_Interact.WBP_Interact_C"));
+	if (ItemInteractClassRef.Class)
+	{
+		ItemInteractClass = ItemInteractClassRef.Class;
+	}
 }
 
 void AThronePlayerController::BeginPlay()
@@ -25,4 +30,31 @@ void AThronePlayerController::BeginPlay()
 	{
 		HUDWidgetPtr->AddToViewport();
 	}
+}
+
+void AThronePlayerController::DisplayItemInteract()
+{
+	ItemInteractPtr = CreateWidget<UUserWidget>(this, ItemInteractClass);
+	if (ItemInteractPtr)
+	{
+		ItemInteractPtr->AddToViewport();
+	}
+}
+
+void AThronePlayerController::HideItemInteract()
+{
+	if (ItemInteractPtr && ItemInteractPtr->IsInViewport())
+	{
+		UE_LOG(LogTemp, Display, TEXT("PlayerController Remove"));
+		ItemInteractPtr->RemoveFromViewport();
+	}
+}
+
+bool AThronePlayerController::IsDisplay()
+{
+	if (ItemInteractPtr && ItemInteractPtr->IsInViewport())
+	{
+		return true;
+	}
+	return false;
 }

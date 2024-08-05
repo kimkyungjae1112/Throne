@@ -19,6 +19,8 @@ AWeaponBox::AWeaponBox()
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 	CollisionBox->SetupAttachment(Sword);
 	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBox::OnItemGetAreaBeginOverlap);
+	CollisionBox->OnComponentEndOverlap.AddDynamic(this, &AWeaponBox::OnItemGetAreaEndOverlap);
+	CollisionBox->SetCollisionProfileName(TEXT("ThroneTrigger"));
 
 	static ConstructorHelpers::FObjectFinder<UItemData> ItemDataRef(TEXT("/Script/Throne.ItemData'/Game/Throne/Item/DA_Item.DA_Item'"));
 	if (ItemDataRef.Object)
@@ -50,7 +52,17 @@ void AWeaponBox::OnItemGetAreaBeginOverlap(UPrimitiveComponent* OverlappedCompon
 	IItemAcquisitionInterface* ItemInterface = Cast<IItemAcquisitionInterface>(OtherActor);
 	if (ItemInterface)
 	{
-		ItemInterface->TakeItem(ItemData);
+		ItemInterface->BeginOverlapTakeItem(ItemData);
+	}
+}
+
+void AWeaponBox::OnItemGetAreaEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	IItemAcquisitionInterface* ItemInterface = Cast<IItemAcquisitionInterface>(OtherActor);
+	if (ItemInterface)
+	{
+		UE_LOG(LogTemp, Display, TEXT("WeaponBox EndOverlap"));
+		ItemInterface->EndOverlapTakeItem();
 	}
 }
 

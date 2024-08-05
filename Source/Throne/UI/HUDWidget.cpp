@@ -13,12 +13,13 @@ UHUDWidget::UHUDWidget(const FObjectInitializer& ObjectInitializer) : Super(Obje
 void UHUDWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	
 	HpBarWidget = Cast<UHpBarWidget>(GetWidgetFromName(TEXT("WBP_HpBar")));
 	ensure(HpBarWidget);
 
 	EnergyBarWidget = Cast<UEnergyBarWidget>(GetWidgetFromName(TEXT("WBP_EnergyBar")));
 	ensure(EnergyBarWidget);
-	
+
 	IHUDWidgetInterface* HUDInterface = Cast<IHUDWidgetInterface>(GetOwningPlayerPawn());
 	if (HUDInterface)
 	{
@@ -45,3 +46,4 @@ void UHUDWidget::SetMaxEnergy(float InMaxEnergy)
 {
 	EnergyBarWidget->SetMaxEnergy(InMaxEnergy);
 }
+

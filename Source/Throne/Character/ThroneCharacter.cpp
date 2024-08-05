@@ -103,10 +103,15 @@ AThroneCharacter::AThroneCharacter()
 	{
 		DefendAction = DefendActionRef.Object;
 	}
-	static  ConstructorHelpers::FObjectFinder<UInputAction> RollActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_Roll.IA_Roll'"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> RollActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_Roll.IA_Roll'"));
 	if (RollActionRef.Object)
 	{
 		RollAction = RollActionRef.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<UInputAction> InteractActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_Interact.IA_Interact'"));
+	if (InteractActionRef.Object)
+	{
+		InteractAction = InteractActionRef.Object;
 	}
 
 	/* Item */
@@ -156,6 +161,7 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(DefaultAttackAction, ETriggerEvent::Started, this, &AThroneCharacter::DefaultAttack);
 	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Started, this, &AThroneCharacter::Defend);
 	EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Started, this, &AThroneCharacter::Roll);
+	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::AcquisitionItem);
 
 }
 
@@ -181,13 +187,16 @@ void AThroneCharacter::SetHUD(UHUDWidget* InHUDWidget)
 	}
 }
 
-void AThroneCharacter::TakeItem(UItemData* InItemData)
+void AThroneCharacter::BeginOverlapTakeItem(UItemData* InItemData)
 {
-	Sword->SetSkeletalMesh(InItemData->SwordMesh);
-	Shield->SetSkeletalMesh(InItemData->ShieldMesh);
-	
-	CurrentCharacterMode = ECharacterMode::HoldWeapon;
-	GetMesh()->SetAnimInstanceClass(HoldWeaponAnim);
+	ItemData = InItemData;
+	GetPlayerController()->DisplayItemInteract();
+}
+
+void AThroneCharacter::EndOverlapTakeItem()
+{
+	UE_LOG(LogTemp, Display, TEXT("Character EndOverlap"));
+	GetPlayerController()->HideItemInteract();
 }
 
 
@@ -235,6 +244,18 @@ void AThroneCharacter::Roll()
 	Ability->BeginRoll();
 }
 
+void AThroneCharacter::AcquisitionItem()
+{
+	if (GetPlayerController()->IsDisplay())
+	{
+		Sword->SetSkeletalMesh(ItemData->SwordMesh);
+		Shield->SetSkeletalMesh(ItemData->ShieldMesh);
+
+		CurrentCharacterMode = ECharacterMode::HoldWeapon;
+		GetMesh()->SetAnimInstanceClass(HoldWeaponAnim);
+	}
+}
+
 void AThroneCharacter::Death()
 {
 	Ability->BeginDead();
@@ -243,6 +264,12 @@ void AThroneCharacter::Death()
 	{
 		PlayerController->DisableInput(PlayerController);
 	}
+}
+
+AThronePlayerController* AThroneCharacter::GetPlayerController()
+{
+	AThronePlayerController* PlayerController = CastChecked<AThronePlayerController>(GetController());
+	return PlayerController;
 }
 
 void AThroneCharacter::DefaultAttackUseEnergy(float UseEnergy)

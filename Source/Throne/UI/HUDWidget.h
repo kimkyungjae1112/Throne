@@ -26,10 +26,12 @@ public:
 	void SetMaxHp(float InMaxHp);
 	void SetMaxEnergy(float InMaxEnergy);
 
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widget", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UHpBarWidget> HpBarWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widget", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UEnergyBarWidget> EnergyBarWidget;
+
 };

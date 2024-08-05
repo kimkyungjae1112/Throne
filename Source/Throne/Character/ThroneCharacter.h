@@ -39,7 +39,8 @@ public:
 
 /* Interface */
 	virtual void SetHUD(class UHUDWidget* InHUDWidget) override;
-	virtual void TakeItem(class UItemData* InItemData) override;
+	virtual void BeginOverlapTakeItem(class UItemData* InItemData) override;
+	virtual void EndOverlapTakeItem() override;
 
 /* Camera */
 private:
@@ -72,14 +73,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> RollAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> InteractAction;
+
 	void Move(const FInputActionValue& Value);	//Triggered WASD
 	void LookUp(const FInputActionValue& Value);	//Tirggered Mouse 2D Axis
 	void DefaultAttack();	//Started Mouse Left Click
 	void Defend();	//Triggerd Mouse Right Click
 	void Roll(); //Started Shift
+	void AcquisitionItem();	//Started E
 
-	//Animation
-	void Death();
 
 /* Item */
 private:
@@ -88,6 +91,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	TObjectPtr<class USkeletalMeshComponent> Shield;
+
+	UPROPERTY(VisibleAnywhere, Category = "Item")
+	TObjectPtr<class UItemData> ItemData;
 
 	ECharacterMode CurrentCharacterMode;
 
@@ -118,5 +124,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "AnimClass", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class UAnimInstance> HoldWeaponAnim;
 
+	void Death();
+
+	class AThronePlayerController* GetPlayerController();
 
 };

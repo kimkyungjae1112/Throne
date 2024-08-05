@@ -20,6 +20,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	
+public:
+	void DisplayItemInteract();
+	void HideItemInteract();
+	bool IsDisplay();
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class UHUDWidget> HUDWidgetClass;
@@ -27,4 +33,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UHUDWidget> HUDWidgetPtr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UUserWidget> ItemInteractClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UUserWidget> ItemInteractPtr;
 };
