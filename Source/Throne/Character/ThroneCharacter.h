@@ -6,10 +6,18 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "Interface/HUDWidgetInterface.h"
+#include "Interface/ItemAcquisitionInterface.h"
 #include "ThroneCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class ECharacterMode : uint8
+{
+	Default = 0,
+	HoldWeapon
+};
+
 UCLASS()
-class THRONE_API AThroneCharacter : public ACharacter, public IHUDWidgetInterface
+class THRONE_API AThroneCharacter : public ACharacter, public IHUDWidgetInterface, public IItemAcquisitionInterface
 {
 	GENERATED_BODY()
 
@@ -31,7 +39,7 @@ public:
 
 /* Interface */
 	virtual void SetHUD(class UHUDWidget* InHUDWidget) override;
-
+	virtual void TakeItem(class UItemData* InItemData) override;
 
 /* Camera */
 private:
@@ -81,6 +89,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Item")
 	TObjectPtr<class USkeletalMeshComponent> Shield;
 
+	ECharacterMode CurrentCharacterMode;
+
 /* UI */
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
@@ -98,5 +108,15 @@ private:
 	TObjectPtr<class UCharacterStatComponent> Stat;
 
 	void DefaultAttackUseEnergy(float UseEnergy);
+
+
+/* Animation */
+private:
+	UPROPERTY(EditAnywhere, Category = "AnimClass", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UAnimInstance> DefaultAnim;
+
+	UPROPERTY(EditAnywhere, Category = "AnimClass", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UAnimInstance> HoldWeaponAnim;
+
 
 };

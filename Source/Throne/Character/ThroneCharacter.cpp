@@ -15,6 +15,7 @@
 #include "Engine/OverlapResult.h"
 #include "Engine/DamageEvents.h"
 #include "Player/ThronePlayerController.h"
+#include "Item/ItemData.h"
 
 AThroneCharacter::AThroneCharacter()
 {
@@ -36,16 +37,30 @@ AThroneCharacter::AThroneCharacter()
 	}
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 	GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
-	
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+
+	/* Animation */
+	static ConstructorHelpers::FClassFinder<UAnimInstance> DefaultAnimRef(TEXT("/Game/Throne/Animation/Player/ABP_Default.ABP_Default_C"));
+	if (DefaultAnimRef.Class)
+	{
+		DefaultAnim = DefaultAnimRef.Class;
+	}
+	static ConstructorHelpers::FClassFinder<UAnimInstance> HoldWeaponAnimRef(TEXT("/Game/Throne/Animation/Player/ABP_HoldWeapon.ABP_HoldWeapon_C"));
+	if (HoldWeaponAnimRef.Class)
+	{
+		HoldWeaponAnim = HoldWeaponAnimRef.Class;
+	}
+
+
 	/* Character Movement */
-	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	GetCharacterMovement()->MaxWalkSpeed = Stat->GetRunMoveSpeed();
 
 	/* Pawn */
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
-	bUseControllerRotationYaw = true;
+	bUseControllerRotationYaw = false;
 
 	/* Camera */
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -96,21 +111,12 @@ AThroneCharacter::AThroneCharacter()
 
 	/* Item */
 	Sword = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Swoard"));
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SwoardMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/DARK_C_KNIGHT/MESHES/WEAPONS/SWORD/SK_DC_Knight_Sword.SK_DC_Knight_Sword'"));
-	if (SwoardMeshRef.Object)
-	{
-		Sword->SetSkeletalMesh(SwoardMeshRef.Object);
-	}
 	Sword->SetupAttachment(GetMesh(), TEXT("weapon_r"));
 
 	Shield = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Shiled"));
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> ShieldMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/DARK_C_KNIGHT/MESHES/WEAPONS/SHIELD/SK_DC_KnightShield_left_hand.SK_DC_KnightShield_left_hand'"));
-	if (ShieldMeshRef.Object)
-	{
-		Shield->SetSkeletalMesh(ShieldMeshRef.Object);
-	}
 	Shield->SetupAttachment(GetMesh(), TEXT("shield_l"));
-
+	
+	//IsAcquisition();
 }
 
 void AThroneCharacter::BeginPlay()
@@ -122,7 +128,10 @@ void AThroneCharacter::BeginPlay()
 	{
 		Subsystem->AddMappingContext(IMC, 0);
 	}
-	
+
+	GetMesh()->SetAnimInstanceClass(DefaultAnim);
+	CurrentCharacterMode = ECharacterMode::Default;
+
 	/* Delegate */
 	Stat->OnHpZero.AddUObject(this, &AThroneCharacter::Death);
 	Ability->OnDefaultAttackUseEnergy.BindUObject(this, &AThroneCharacter::DefaultAttackUseEnergy);
@@ -172,6 +181,15 @@ void AThroneCharacter::SetHUD(UHUDWidget* InHUDWidget)
 	}
 }
 
+void AThroneCharacter::TakeItem(UItemData* InItemData)
+{
+	Sword->SetSkeletalMesh(InItemData->SwordMesh);
+	Shield->SetSkeletalMesh(InItemData->ShieldMesh);
+	
+	CurrentCharacterMode = ECharacterMode::HoldWeapon;
+	GetMesh()->SetAnimInstanceClass(HoldWeaponAnim);
+}
+
 
 /************* Input *************/
 void AThroneCharacter::Move(const FInputActionValue& Value)
@@ -198,12 +216,18 @@ void AThroneCharacter::LookUp(const FInputActionValue& Value)
 
 void AThroneCharacter::DefaultAttack()
 {
-	Ability->BeginComboAttack();
+	if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
+	{
+		Ability->BeginComboAttack();
+	}
 }
 
 void AThroneCharacter::Defend()
 {
-	Ability->BeginDefend();
+	if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
+	{
+		Ability->BeginDefend();
+	}
 }
 
 void AThroneCharacter::Roll()
@@ -225,4 +249,6 @@ void AThroneCharacter::DefaultAttackUseEnergy(float UseEnergy)
 {
 	Stat->SetEnergy(UseEnergy);
 }
+
+
 
