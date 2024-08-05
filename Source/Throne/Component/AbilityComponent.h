@@ -44,6 +44,8 @@ public:
 	void BeginRoll();
 	void EndRoll(class UAnimMontage* Target, bool IsProperlyEnded);
 
+	/* Dead */
+	void BeginDead();
 
 
 private:
@@ -65,6 +67,10 @@ private:
 	/* Roll */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> RollMontage;
+
+	/* Dead */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> DeadMontage;
 
 
 private:

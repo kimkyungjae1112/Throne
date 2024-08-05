@@ -221,5 +221,16 @@ void UAbilityComponent::EndRoll(UAnimMontage* Target, bool IsProperlyEnded)
 {
 }
 
+void UAbilityComponent::BeginDead()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance();
+	if (Owner && AnimInstance)
+	{
+		Owner->SetActorEnableCollision(false);
+		AnimInstance->Montage_Play(DeadMontage);
+	}
+}
+
 
 

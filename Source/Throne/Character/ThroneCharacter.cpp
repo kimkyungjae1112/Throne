@@ -14,6 +14,7 @@
 #include "UI/HUDWidget.h"
 #include "Engine/OverlapResult.h"
 #include "Engine/DamageEvents.h"
+#include "Player/ThronePlayerController.h"
 
 AThroneCharacter::AThroneCharacter()
 {
@@ -212,6 +213,12 @@ void AThroneCharacter::Roll()
 
 void AThroneCharacter::Death()
 {
+	Ability->BeginDead();
+	AThronePlayerController* PlayerController = Cast<AThronePlayerController>(GetController());
+	if (PlayerController)
+	{
+		PlayerController->DisableInput(PlayerController);
+	}
 }
 
 void AThroneCharacter::DefaultAttackUseEnergy(float UseEnergy)
