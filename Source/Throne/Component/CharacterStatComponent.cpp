@@ -46,11 +46,11 @@ void UCharacterStatComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 float UCharacterStatComponent::ApplyDamage(float InDamage)
 {
-	const float ActualDamage = FMath::Clamp(InDamage, 0, InDamage);
-	const float PrevHp = CurrentHp - ActualDamage;
+	const float PrevHp = CurrentHp;
+	const float ActualDamage = FMath::Clamp<float>(InDamage, 0, InDamage);
 
-	SetHp(PrevHp);
-	if (PrevHp <= 0.0f)
+	SetHp(PrevHp - ActualDamage);
+	if (CurrentHp <= KINDA_SMALL_NUMBER)
 	{
 		OnHpZero.Broadcast();
 	}
@@ -59,11 +59,9 @@ float UCharacterStatComponent::ApplyDamage(float InDamage)
 
 void UCharacterStatComponent::SetHp(float NewHp)
 {
-	const float Hp = FMath::Clamp(NewHp, 0, MaxHp);
-	if (Hp > 0.0f)
-	{
-		OnHpChanged.Broadcast(Hp);
-	}
+	CurrentHp = FMath::Clamp<float>(NewHp, 0.0f, MaxHp);
+	UE_LOG(LogTemp, Display, TEXT("Player Current Hp : %f"), CurrentHp);
+	OnHpChanged.Broadcast(CurrentHp);
 }
 
 void UCharacterStatComponent::SetEnergy(float UsedEnergy)
