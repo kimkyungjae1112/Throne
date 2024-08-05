@@ -34,11 +34,17 @@ public:
 	/* Default Attack Hit Check */
 	virtual void DefaultAttackHitCheck() override;
 	bool CheckInRadialRange(AActor* Player, AActor* Target, float Radius, float RadialAngle);
-	void AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange);
+	void AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange, const FColor& Color);
 
 	/* Defend */
 	void BeginDefend();
 	void EndDefend(class UAnimMontage* Target, bool IsProperlyEnded);
+
+	/* Roll */
+	void BeginRoll();
+	void EndRoll(class UAnimMontage* Target, bool IsProperlyEnded);
+
+
 
 private:
 	/* Default Attack */
@@ -56,9 +62,13 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> DefendMontage;
 
+	/* Roll */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> RollMontage;
 
-	/* Stat */
+
 private:
+	/* Stat */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCharacterStatData> StatData;
 

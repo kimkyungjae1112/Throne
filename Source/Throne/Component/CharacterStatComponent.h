@@ -23,7 +23,8 @@ public:
 	FORCEINLINE const float GetAttackRange() const { return AttackRange; }
 	FORCEINLINE const float GetAttackSpeed() const { return AttackSpeed; }
 	FORCEINLINE const float GetAttackRadian() const { return AttackRadian; }
-	FORCEINLINE const float GetMoveSpeed() const { return MoveSpeed; }
+	FORCEINLINE const float GetWalkMoveSpeed() const { return WalkMoveSpeed; }
+	FORCEINLINE const float GetRunMoveSpeed() const { return RunMoveSpeed; }
 	FORCEINLINE const float GetMaxHp() const { return MaxHp; }
 	FORCEINLINE const float GetCurrentHp() const { return CurrentHp; }
 	FORCEINLINE const float GetMaxEnergy() const { return MaxEnergy; }
@@ -61,7 +62,10 @@ private:
 	float AttackRadian;
 
 	UPROPERTY(VisibleAnywhere, Category = "Stat")
-	float MoveSpeed;
+	float WalkMoveSpeed;
+
+	UPROPERTY(VisibleAnywhere, Category = "Stat")
+	float RunMoveSpeed;
 
 	UPROPERTY(VisibleAnywhere, Category = "Stat")
 	float MaxHp;

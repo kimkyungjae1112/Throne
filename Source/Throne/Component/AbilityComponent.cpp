@@ -119,6 +119,7 @@ void UAbilityComponent::DefaultAttackHitCheck()
 
 	FVector Start = GetOwner()->GetActorLocation();
 	FVector ForwardVector = GetOwner()->GetActorForwardVector();
+	FColor Color = FColor::Red;
 
 	FCollisionQueryParams Params(NAME_None, false, Owner);
 
@@ -133,10 +134,12 @@ void UAbilityComponent::DefaultAttackHitCheck()
 			{
 				APawn* OwnerPawn = Cast<APawn>(Owner);
 				OverlapResult.GetActor()->TakeDamage(AttackDamage, DamageEvent, OwnerPawn->GetController(), Owner);
-				AttackHitDebug(GetWorld(), Start, ForwardVector, StatData->AttackRadian);
+				Color = FColor::Green;
 			}
 		}
 	}
+	DrawDebugSphere(GetWorld(), Start, AttackRange, 16, Color, false, 3.0f);
+	AttackHitDebug(GetWorld(), Start, ForwardVector, AttackRange, Color);
 }
 
 bool UAbilityComponent::CheckInRadialRange(AActor* Player, AActor* Target, float Radius, float RadialAngle)
@@ -164,7 +167,7 @@ bool UAbilityComponent::CheckInRadialRange(AActor* Player, AActor* Target, float
 	return AngleToTargetDegrees <= (RadialAngle / 2.0f);
 }
 
-void UAbilityComponent::AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange)
+void UAbilityComponent::AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange, const FColor& Color)
 {
 	float AngleRadians = FMath::DegreesToRadians(StatData->AttackRadian / 2.0f);
 
@@ -176,11 +179,11 @@ void UAbilityComponent::AttackHitDebug(UWorld* World, const FVector& Start, cons
 	FVector RightEndpoint = Start + RightVector * AttackRange;
 
 	// 부채꼴의 중심선
-	DrawDebugLine(GetWorld(), Start, Start + ForwardVector * AttackRange, FColor::Green, false, 3.0f);
+	DrawDebugLine(GetWorld(), Start, Start + ForwardVector * AttackRange, Color, false, 3.0f);
 
 	// 부채꼴의 두 끝선
-	DrawDebugLine(GetWorld(), Start, LeftEndpoint, FColor::Green, false, 3.0f);
-	DrawDebugLine(GetWorld(), Start, RightEndpoint, FColor::Green, false, 3.0f);
+	DrawDebugLine(GetWorld(), Start, LeftEndpoint, Color, false, 3.0f);
+	DrawDebugLine(GetWorld(), Start, RightEndpoint, Color, false, 3.0f);
 }
 
 void UAbilityComponent::BeginDefend()
@@ -189,7 +192,7 @@ void UAbilityComponent::BeginDefend()
 	UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance();
 	if (Owner && AnimInstance)
 	{
-		StatData->MoveSpeed = 200.0f;
+		StatData->WalkMoveSpeed = 100.0f;
 		
 		AnimInstance->Montage_Play(DefendMontage);
 
@@ -201,7 +204,21 @@ void UAbilityComponent::BeginDefend()
 
 void UAbilityComponent::EndDefend(UAnimMontage* Target, bool IsProperlyEnded)
 {
-	StatData->MoveSpeed = 400.0f;
+	StatData->WalkMoveSpeed = 150.0f;
+}
+
+void UAbilityComponent::BeginRoll()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance();
+	if (Owner && AnimInstance)
+	{
+		AnimInstance->Montage_Play(RollMontage);
+	}
+}
+
+void UAbilityComponent::EndRoll(UAnimMontage* Target, bool IsProperlyEnded)
+{
 }
 
 

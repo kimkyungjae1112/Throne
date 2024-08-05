@@ -18,7 +18,8 @@ UCharacterStatComponent::UCharacterStatComponent()
 	AttackRange = StatData->AttackRange;
 	AttackSpeed = StatData->AttackSpeed;
 	AttackRadian = StatData->AttackRadian;
-	MoveSpeed = StatData->MoveSpeed;
+	WalkMoveSpeed = StatData->WalkMoveSpeed;
+	RunMoveSpeed = StatData->RunMoveSpeed;
 	MaxHp = StatData->Hp;
 	MaxEnergy = StatData->Enegy;
 

@@ -19,6 +19,10 @@ AThroneCharacter::AThroneCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	/* Components */
+	Ability = CreateDefaultSubobject<UAbilityComponent>(TEXT("Ability Component"));
+	Stat = CreateDefaultSubobject<UCharacterStatComponent>(TEXT("Stat Component"));
+
 	/* Capsule */
 	GetCapsuleComponent()->SetCapsuleSize(42.0f, 96.0f);
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
@@ -35,6 +39,7 @@ AThroneCharacter::AThroneCharacter()
 	/* Character Movement */
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	GetCharacterMovement()->MaxWalkSpeed = Stat->GetRunMoveSpeed();
 
 	/* Pawn */
 	bUseControllerRotationPitch = false;
@@ -82,6 +87,11 @@ AThroneCharacter::AThroneCharacter()
 	{
 		DefendAction = DefendActionRef.Object;
 	}
+	static  ConstructorHelpers::FObjectFinder<UInputAction> RollActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_Roll.IA_Roll'"));
+	if (RollActionRef.Object)
+	{
+		RollAction = RollActionRef.Object;
+	}
 
 	/* Item */
 	Sword = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Swoard"));
@@ -99,10 +109,6 @@ AThroneCharacter::AThroneCharacter()
 		Shield->SetSkeletalMesh(ShieldMeshRef.Object);
 	}
 	Shield->SetupAttachment(GetMesh(), TEXT("shield_l"));
-	
-	/* Components */
-	Ability = CreateDefaultSubobject<UAbilityComponent>(TEXT("Ability Component"));
-	Stat = CreateDefaultSubobject<UCharacterStatComponent>(TEXT("Stat Component"));
 
 }
 
@@ -139,6 +145,7 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(DefaultAttackAction, ETriggerEvent::Started, this, &AThroneCharacter::DefaultAttack);
 	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Started, this, &AThroneCharacter::Defend);
+	EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Started, this, &AThroneCharacter::Roll);
 
 }
 
@@ -164,6 +171,8 @@ void AThroneCharacter::SetHUD(UHUDWidget* InHUDWidget)
 	}
 }
 
+
+/************* Input *************/
 void AThroneCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D InputValue = Value.Get<FVector2D>();
@@ -178,7 +187,6 @@ void AThroneCharacter::Move(const FInputActionValue& Value)
 	AddMovementInput(RightDirection, InputValue.Y);
 }
 
-/************* Input *************/
 void AThroneCharacter::LookUp(const FInputActionValue& Value)
 {
 	FVector2D InputValue = Value.Get<FVector2D>();
@@ -194,8 +202,12 @@ void AThroneCharacter::DefaultAttack()
 
 void AThroneCharacter::Defend()
 {
-	UE_LOG(LogTemp, Display, TEXT("Defend"));
 	Ability->BeginDefend();
+}
+
+void AThroneCharacter::Roll()
+{
+	Ability->BeginRoll();
 }
 
 void AThroneCharacter::Death()

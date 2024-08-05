@@ -61,10 +61,14 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> DefendAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> RollAction;
+
 	void Move(const FInputActionValue& Value);	//Triggered WASD
 	void LookUp(const FInputActionValue& Value);	//Tirggered Mouse 2D Axis
 	void DefaultAttack();	//Started Mouse Left Click
 	void Defend();	//Triggerd Mouse Right Click
+	void Roll(); //Started Shift
 
 	//Animation
 	void Death();
@@ -82,8 +86,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UHUDWidget> HUDWidget;
 
-/* Components */
 
+/* Components */
 //Attack
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ability", meta = (AllowPrivateAccess = "true"))

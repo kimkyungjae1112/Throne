@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Enemy/Enemy.h"
+#include "Interface/AttackHitCheckInterface.h"
 #include "EnemyBoss.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THRONE_API AEnemyBoss : public AEnemy
+class THRONE_API AEnemyBoss : public AEnemy, public IAttackHitCheckInterface
 {
 	GENERATED_BODY()
 	
@@ -28,6 +29,11 @@ public:
 public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+/* Interface*/
+public:
+	virtual void DefaultAttackHitCheck() override;
+	bool CheckInRadialRange(AActor* Player, AActor* Target, float Radius, float RadialAngle);
+	void AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange, const FColor& Color);
 
 
 /* Item */

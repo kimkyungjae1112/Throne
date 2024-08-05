@@ -8,6 +8,8 @@
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
 #include "AI/AAIController.h"
+#include "Engine/OverlapResult.h"
+#include "Engine/DamageEvents.h"
 
 AEnemyBoss::AEnemyBoss()
 {
@@ -35,6 +37,9 @@ AEnemyBoss::AEnemyBoss()
 	/* Components */
 	Stat = CreateDefaultSubobject<UEnemyStatComponent>(TEXT("Stat Component"));
 
+
+	/* Character Movement */
+	GetCharacterMovement()->MaxWalkSpeed = Stat->GetMoveSpeed();
 }
 
 void AEnemyBoss::BeginPlay()
@@ -54,6 +59,80 @@ float AEnemyBoss::TakeDamage(float Damage, FDamageEvent const& DamageEvent, ACon
 	Stat->ApplyDamage(Damage);
 
 	return Damage;
+}
+
+void AEnemyBoss::DefaultAttackHitCheck()
+{
+	float ActualDamage = Stat->GetAttackDamage();
+	float AttackRange = Stat->GetAttackRange();
+
+	FVector Start = GetActorLocation();
+	FVector ForwardVector = GetActorForwardVector();
+	FCollisionQueryParams Param(NAME_None, false, this);
+	TArray<FOverlapResult> OverlapResults;
+	FColor Color = FColor::Red;
+
+	bool bHit = GetWorld()->OverlapMultiByChannel(OverlapResults, Start, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(AttackRange), Param);
+	if(bHit)
+	{
+		for (auto const& OverlapResult : OverlapResults)
+		{
+			AActor* Target = OverlapResult.GetActor();
+			if (CheckInRadialRange(this, Target, AttackRange, Stat->GetAttackRadian()))
+			{
+				FDamageEvent DamageEvent;
+				Target->TakeDamage(ActualDamage, DamageEvent, GetController(), this);
+				
+				Color = FColor::Green;
+			}
+		}
+	}
+
+	AttackHitDebug(GetWorld(), Start, ForwardVector, AttackRange, Color);
+}
+
+bool AEnemyBoss::CheckInRadialRange(AActor* Player, AActor* Target, float Radius, float RadialAngle)
+{
+	if (!Player || !Target) return false;
+
+	FVector PlayerLocation = Player->GetActorLocation();
+	FVector TargetLocation = Target->GetActorLocation();
+	FVector ForwardVector = Player->GetActorForwardVector();
+	FVector DirectionToTarget = (TargetLocation - PlayerLocation).GetSafeNormal();
+
+	// 타겟과의 거리 계산
+	float DistanceToTarget = FVector::Dist(PlayerLocation, TargetLocation);
+
+	// 타겟이 반경 내에 있는지 확인
+	if (DistanceToTarget >= Radius) return false;
+
+	// 타겟이 부채꼴 각도 내에 있는지 확인
+	float DotProduct = FVector::DotProduct(ForwardVector, DirectionToTarget);
+	float AngleToTarget = FMath::Acos(DotProduct);
+
+	// 라디안에서 각도로 변환
+	float AngleToTargetDegrees = FMath::RadiansToDegrees(AngleToTarget);
+
+	return AngleToTargetDegrees <= (RadialAngle / 2.0f);
+}
+
+void AEnemyBoss::AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange, const FColor& Color)
+{
+	float AngleRadians = FMath::DegreesToRadians(Stat->GetAttackRadian() / 2.0f);
+
+	// 부채꼴의 두 끝점 계산
+	FVector LeftVector = ForwardVector.RotateAngleAxis(-Stat->GetAttackRadian() / 2.0f, FVector::UpVector);
+	FVector RightVector = ForwardVector.RotateAngleAxis(Stat->GetAttackRadian() / 2.0f, FVector::UpVector);
+
+	FVector LeftEndpoint = Start + LeftVector * AttackRange;
+	FVector RightEndpoint = Start + RightVector * AttackRange;
+
+	// 부채꼴의 중심선
+	DrawDebugLine(GetWorld(), Start, Start + ForwardVector * AttackRange, Color, false, 3.0f);
+
+	// 부채꼴의 두 끝선
+	DrawDebugLine(GetWorld(), Start, LeftEndpoint, Color, false, 3.0f);
+	DrawDebugLine(GetWorld(), Start, RightEndpoint, Color, false, 3.0f);
 }
 
 void AEnemyBoss::SetDead()
