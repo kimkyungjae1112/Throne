@@ -114,6 +114,11 @@ AThroneCharacter::AThroneCharacter()
 	{
 		InteractAction = InteractActionRef.Object;
 	}
+	static ConstructorHelpers::FObjectFinder<UInputAction> SheathActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_Sheath.IA_Sheath'"));
+	if (SheathActionRef.Object)
+	{
+		SheathAction = SheathActionRef.Object;
+	}
 
 	/* Item */
 	Sword = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Swoard"));
@@ -159,10 +164,11 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(DefaultAttackAction, ETriggerEvent::Started, this, &AThroneCharacter::DefaultAttack);
-	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Triggered, this, &AThroneCharacter::Defend);
+	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Triggered, this, &AThroneCharacter::BeginDefend);
 	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Completed, this, &AThroneCharacter::EndDefend);
 	EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Started, this, &AThroneCharacter::Roll);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::AcquisitionItem);
+	EnhancedInputComponent->BindAction(SheathAction, ETriggerEvent::Started, this, &AThroneCharacter::Sheath);
 
 }
 
@@ -231,16 +237,11 @@ void AThroneCharacter::DefaultAttack()
 	}
 }
 
-void AThroneCharacter::Defend()
+void AThroneCharacter::BeginDefend()
 {
 	if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
 	{
-		UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-		if (AnimInstance)
-		{
-			//GetCharacterMovement()->MaxWalkSpeed = Stat->GetWalkMoveSpeed();
-			AnimInstance->bIsShield = true;
-		}
+		Ability->BeginShieldUp();
 	}
 }
 
@@ -248,12 +249,7 @@ void AThroneCharacter::EndDefend()
 {
 	if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
 	{
-		UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-		if (AnimInstance)
-		{
-			//GetCharacterMovement()->MaxWalkSpeed = Stat->GetRunMoveSpeed();
-			AnimInstance->bIsShield = false;
-		}
+		Ability->EndShieldUp();
 	}
 }
 
@@ -272,6 +268,38 @@ void AThroneCharacter::AcquisitionItem()
 		CurrentCharacterMode = ECharacterMode::HoldWeapon;
 		GetMesh()->SetAnimInstanceClass(HoldWeaponAnim);
 	}
+}
+
+void AThroneCharacter::Sheath()
+{
+	if (CurrentCharacterMode == ECharacterMode::Default)
+	{
+		Ability->BeginSheath(false);
+		Ability->OnOutSheath.BindUObject(this, &AThroneCharacter::AttachWeaponHand);
+	}
+	else if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
+	{
+		Ability->BeginSheath(true);
+		Ability->OnInSheath.BindUObject(this, &AThroneCharacter::AttachWeaponSheath);
+	}
+}
+
+void AThroneCharacter::AttachWeaponSheath()
+{
+	Sword->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Sheath_l"));
+	Shield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("SwordonBack"));
+
+	CurrentCharacterMode = ECharacterMode::Default;
+	GetMesh()->SetAnimInstanceClass(DefaultAnim);
+}
+
+void AThroneCharacter::AttachWeaponHand()
+{
+	Sword->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("weapon_r"));
+	Shield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("shield_l"));
+
+	CurrentCharacterMode = ECharacterMode::HoldWeapon;
+	GetMesh()->SetAnimInstanceClass(HoldWeaponAnim);
 }
 
 void AThroneCharacter::Death()

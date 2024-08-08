@@ -10,6 +10,8 @@
 #include "AI/AAIController.h"
 #include "Engine/OverlapResult.h"
 #include "Engine/DamageEvents.h"
+#include "UI/ThroneWidgetComponent.h"
+#include "UI/BossHpBarWidget.h"
 
 AEnemyBoss::AEnemyBoss()
 {
@@ -36,7 +38,14 @@ AEnemyBoss::AEnemyBoss()
 
 	/* Components */
 	Stat = CreateDefaultSubobject<UEnemyStatComponent>(TEXT("Stat Component"));
+	ThroneWidgetComponent = CreateDefaultSubobject<UThroneWidgetComponent>(TEXT("Widget Component"));
+	ThroneWidgetComponent->SetupAttachment(RootComponent);
 
+	static ConstructorHelpers::FClassFinder<UBossHpBarWidget> WidgetClassRef(TEXT("/Game/Throne/UI/WBP_BossHpBar.WBP_BossHpBar_C"));
+	if (WidgetClassRef.Class)
+	{
+		ThroneWidgetComponent->SetWidgetClass(WidgetClassRef.Class);
+	}
 
 	/* Character Movement */
 	GetCharacterMovement()->MaxWalkSpeed = Stat->GetMoveSpeed();
@@ -47,13 +56,16 @@ void AEnemyBoss::BeginPlay()
 	Super::BeginPlay();
 
 	Stat->OnHpZero.AddUObject(this, &AEnemyBoss::SetDead);
+
 }
 
+/* AI Interface */
 void AEnemyBoss::AttackByAI(UAnimMontage* InAnimMontage)
 {
 	Super::AttackByAI(DefaultAttackMontage);
 }
 
+/* overriding */
 float AEnemyBoss::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Stat->ApplyDamage(Damage);
@@ -133,6 +145,19 @@ void AEnemyBoss::AttackHitDebug(UWorld* World, const FVector& Start, const FVect
 	// 부채꼴의 두 끝선
 	DrawDebugLine(GetWorld(), Start, LeftEndpoint, Color, false, 3.0f);
 	DrawDebugLine(GetWorld(), Start, RightEndpoint, Color, false, 3.0f);
+}
+
+/* Interface */
+void AEnemyBoss::SetWidget(UBossHpBarWidget* InBossHpBarWidget)
+{
+	BossHpBarWidget = InBossHpBarWidget;
+	
+	if(BossHpBarWidget)
+	{
+		BossHpBarWidget->SetMaxHp(Stat->GetMaxHp());
+		BossHpBarWidget->UpdateHpBar(Stat->GetCurrentHp());
+		Stat->OnHpChanged.AddUObject(BossHpBarWidget, &UBossHpBarWidget::UpdateHpBar);
+	}
 }
 
 void AEnemyBoss::SetDead()

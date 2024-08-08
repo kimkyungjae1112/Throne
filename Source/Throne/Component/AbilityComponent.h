@@ -8,6 +8,8 @@
 #include "AbilityComponent.generated.h"
 
 DECLARE_DELEGATE_OneParam(FOnDefaultAttackUseEnergy, float /* Use Energy */)
+DECLARE_DELEGATE(FOnInSheath)
+DECLARE_DELEGATE(FOnOutSheath)
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class THRONE_API UAbilityComponent : public UActorComponent, public IAttackHitCheckInterface
@@ -22,6 +24,8 @@ protected:
 
 public:
 	FOnDefaultAttackUseEnergy OnDefaultAttackUseEnergy;
+	FOnInSheath OnInSheath;
+	FOnOutSheath OnOutSheath;
 
 public:
 	/* Default Attack */
@@ -36,6 +40,10 @@ public:
 	bool CheckInRadialRange(AActor* Player, AActor* Target, float Radius, float RadialAngle);
 	void AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange, const FColor& Color);
 
+	/* Defend */
+	void BeginShieldUp();
+	void EndShieldUp();
+
 	/* Roll */
 	void BeginRoll();
 	void EndRoll(class UAnimMontage* Target, bool IsProperlyEnded);
@@ -43,6 +51,9 @@ public:
 	/* Dead */
 	void BeginDead();
 
+	/* Sheath */
+	void BeginSheath(bool IsHoldWeapon);
+	void EndSheath(class UAnimMontage* Target, bool IsProperlyEnded);
 
 private:
 	/* Default Attack */
@@ -63,6 +74,17 @@ private:
 	/* Dead */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> DeadMontage;
+
+	/* Sheath Action */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> SheathInMontage;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> SheathOutMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> AnimMontage;
+	
 
 
 private:

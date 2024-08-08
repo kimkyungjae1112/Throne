@@ -76,14 +76,19 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> InteractAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> SheathAction;
+
 	void Move(const FInputActionValue& Value);	//Triggered WASD
 	void LookUp(const FInputActionValue& Value);	//Tirggered Mouse 2D Axis
 	void DefaultAttack();	//Started Mouse Left Click
-	void Defend();	//Triggerd Mouse Right Click
+	void BeginDefend();	//Triggerd Mouse Right Click
 	void EndDefend();	//Completed Mouse Right Click
 	void Roll(); //Started Shift
 	void AcquisitionItem();	//Started E
-
+	void Sheath();	//Started Q
+	void AttachWeaponSheath();
+	void AttachWeaponHand();
 
 /* Item */
 private:
@@ -127,6 +132,11 @@ private:
 
 	void Death();
 
+
+
+
+/* Utility */
+private:
 	class AThronePlayerController* GetPlayerController();
 
 };

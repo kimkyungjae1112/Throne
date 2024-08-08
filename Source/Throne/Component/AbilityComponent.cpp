@@ -10,6 +10,7 @@
 #include "Character/CharacterStatData.h"
 #include "Engine/OverlapResult.h"
 #include "Engine/DamageEvents.h"
+#include "Animation/CharacterAnimInstance.h"
 
 UAbilityComponent::UAbilityComponent()
 {
@@ -186,6 +187,28 @@ void UAbilityComponent::AttackHitDebug(UWorld* World, const FVector& Start, cons
 	DrawDebugLine(GetWorld(), Start, RightEndpoint, Color, false, 3.0f);
 }
 
+void UAbilityComponent::BeginShieldUp()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		AnimInstance->bIsShield = true;
+		Owner->GetCharacterMovement()->MaxWalkSpeed = StatData->WalkMoveSpeed;
+	}
+}
+
+void UAbilityComponent::EndShieldUp()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		AnimInstance->bIsShield = false;
+		Owner->GetCharacterMovement()->MaxWalkSpeed = StatData->RunMoveSpeed;
+	}
+}
+
 void UAbilityComponent::BeginRoll()
 {
 	ACharacter* Owner = Cast<ACharacter>(GetOwner());
@@ -208,6 +231,51 @@ void UAbilityComponent::BeginDead()
 	{
 		Owner->SetActorEnableCollision(false);
 		AnimInstance->Montage_Play(DeadMontage);
+	}
+}
+
+void UAbilityComponent::BeginSheath(bool IsHoldWeapon)
+{
+	if (IsHoldWeapon)
+	{
+		AnimMontage = SheathInMontage;
+	}
+	else
+	{
+		AnimMontage = SheathOutMontage;
+	}
+
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance();
+	if (Owner && AnimInstance)
+	{
+		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+		AnimInstance->Montage_Play(AnimMontage);
+
+		FOnMontageEnded MontageEnded;
+		MontageEnded.BindUObject(this, &UAbilityComponent::EndSheath);
+		AnimInstance->Montage_SetEndDelegate(MontageEnded, AnimMontage);
+	}
+}
+
+void UAbilityComponent::EndSheath(class UAnimMontage* Target, bool IsProperlyEnded)
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance();
+	if (Owner && AnimInstance)
+	{
+		if (AnimMontage == SheathInMontage)
+		{
+			UE_LOG(LogTemp, Display, TEXT("SheathIn"));
+			OnInSheath.ExecuteIfBound();
+		}
+		else if (AnimMontage == SheathOutMontage)
+		{
+			UE_LOG(LogTemp, Display, TEXT("SheathOut"));
+			OnOutSheath.ExecuteIfBound();
+		}
+
+		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	}
 }
 

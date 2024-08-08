@@ -3,6 +3,7 @@
 
 #include "Player/ThronePlayerController.h"
 #include "UI/HUDWidget.h"
+#include "UI/BossHpBarWidget.h"
 
 AThronePlayerController::AThronePlayerController()
 {
@@ -15,6 +16,11 @@ AThronePlayerController::AThronePlayerController()
 	if (ItemInteractClassRef.Class)
 	{
 		ItemInteractClass = ItemInteractClassRef.Class;
+	}
+	static ConstructorHelpers::FClassFinder<UBossHpBarWidget> BossHpBarWidgetClassRef(TEXT("/Game/Throne/UI/WBP_BossHpBar.WBP_BossHpBar_C"));
+	if (BossHpBarWidgetClassRef.Class)
+	{
+		BossHpBarWidgetClass = BossHpBarWidgetClassRef.Class;
 	}
 }
 
@@ -30,11 +36,17 @@ void AThronePlayerController::BeginPlay()
 	{
 		HUDWidgetPtr->AddToViewport();
 	}
+	
+	ItemInteractPtr = CreateWidget<UUserWidget>(this, ItemInteractClass);
+	BossHpBarWidgetPtr = CreateWidget<UBossHpBarWidget>(this, BossHpBarWidgetClass);
+	if (BossHpBarWidgetPtr)
+	{
+		BossHpBarWidgetPtr->AddToViewport();
+	}
 }
 
 void AThronePlayerController::DisplayItemInteract()
 {
-	ItemInteractPtr = CreateWidget<UUserWidget>(this, ItemInteractClass);
 	if (ItemInteractPtr)
 	{
 		ItemInteractPtr->AddToViewport();
@@ -45,7 +57,6 @@ void AThronePlayerController::HideItemInteract()
 {
 	if (ItemInteractPtr && ItemInteractPtr->IsInViewport())
 	{
-		UE_LOG(LogTemp, Display, TEXT("PlayerController Remove"));
 		ItemInteractPtr->RemoveFromViewport();
 	}
 }

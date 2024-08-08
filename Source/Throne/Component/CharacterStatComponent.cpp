@@ -8,7 +8,7 @@ UCharacterStatComponent::UCharacterStatComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UCharacterStatData> StatDataRef(TEXT("/Script/Throne.CharacterStatData'/Game/Throne/Character/DA_CharacterStat.DA_CharacterStat'"));
+	static ConstructorHelpers::FObjectFinder<UCharacterStatData> StatDataRef(TEXT("/Script/Throne.CharacterStatData'/Game/Throne/Character/Data/DA_CharacterStat.DA_CharacterStat'"));
 	if (StatDataRef.Object)
 	{
 		StatData = StatDataRef.Object;

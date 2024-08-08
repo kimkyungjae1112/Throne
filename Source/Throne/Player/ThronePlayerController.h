@@ -38,4 +38,13 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UUserWidget> ItemInteractPtr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UBossHpBarWidget> BossHpBarWidgetClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UBossHpBarWidget> BossHpBarWidgetPtr;
+
+	UPROPERTY()
+	TObjectPtr<class UEnemyStatData> EnemyStat;
 };
