@@ -318,7 +318,6 @@ void AThroneCharacter::AttachWeaponHand()
 	ChangeCharacterControl();
 }
 
-
 void AThroneCharacter::Death()
 {
 	Ability->BeginDead();
@@ -329,15 +328,15 @@ void AThroneCharacter::Death()
 	}
 }
 
+void AThroneCharacter::DefaultAttackUseEnergy(float UseEnergy)
+{
+	Stat->SetEnergy(UseEnergy);
+}
+
 AThronePlayerController* AThroneCharacter::GetPlayerController()
 {
 	AThronePlayerController* PlayerController = CastChecked<AThronePlayerController>(GetController());
 	return PlayerController;
-}
-
-void AThroneCharacter::DefaultAttackUseEnergy(float UseEnergy)
-{
-	Stat->SetEnergy(UseEnergy);
 }
 
 

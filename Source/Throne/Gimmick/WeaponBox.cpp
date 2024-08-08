@@ -61,7 +61,6 @@ void AWeaponBox::OnItemGetAreaEndOverlap(UPrimitiveComponent* OverlappedComponen
 	IItemAcquisitionInterface* ItemInterface = Cast<IItemAcquisitionInterface>(OtherActor);
 	if (ItemInterface)
 	{
-		UE_LOG(LogTemp, Display, TEXT("WeaponBox EndOverlap"));
 		ItemInterface->EndOverlapTakeItem();
 	}
 }

@@ -209,20 +209,6 @@ void UAbilityComponent::EndShieldUp()
 	}
 }
 
-void UAbilityComponent::BeginRoll()
-{
-	ACharacter* Owner = Cast<ACharacter>(GetOwner());
-	UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance();
-	if (Owner && AnimInstance)
-	{
-		AnimInstance->Montage_Play(RollMontage);
-	}
-}
-
-void UAbilityComponent::EndRoll(UAnimMontage* Target, bool IsProperlyEnded)
-{
-}
-
 void UAbilityComponent::BeginDead()
 {
 	ACharacter* Owner = Cast<ACharacter>(GetOwner());

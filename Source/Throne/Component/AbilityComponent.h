@@ -44,10 +44,6 @@ public:
 	void BeginShieldUp();
 	void EndShieldUp();
 
-	/* Roll */
-	void BeginRoll();
-	void EndRoll(class UAnimMontage* Target, bool IsProperlyEnded);
-
 	/* Dead */
 	void BeginDead();
 
@@ -68,10 +64,6 @@ private:
 	int32 CurrentCombo = 0;
 	FTimerHandle ComboTimerHandle;
 	bool HasNextComboCommand = false;
-
-	/* Roll */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UAnimMontage> RollMontage;
 
 	/* Dead */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
