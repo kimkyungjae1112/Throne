@@ -98,11 +98,6 @@ AThroneCharacter::AThroneCharacter()
 	{
 		DefendAction = DefendActionRef.Object;
 	}
-	static ConstructorHelpers::FObjectFinder<UInputAction> RollActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_Roll.IA_Roll'"));
-	if (RollActionRef.Object)
-	{
-		RollAction = RollActionRef.Object;
-	}
 	static ConstructorHelpers::FObjectFinder<UInputAction> InteractActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_Interact.IA_Interact'"));
 	if (InteractActionRef.Object)
 	{
@@ -156,7 +151,6 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(DefaultAttackAction, ETriggerEvent::Started, this, &AThroneCharacter::DefaultAttack);
 	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Triggered, this, &AThroneCharacter::BeginDefend);
 	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Completed, this, &AThroneCharacter::EndDefend);
-	EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Started, this, &AThroneCharacter::Roll);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::AcquisitionItem);
 	EnhancedInputComponent->BindAction(SheathAction, ETriggerEvent::Started, this, &AThroneCharacter::Sheath);
 
@@ -263,11 +257,6 @@ void AThroneCharacter::BeginDefend()
 void AThroneCharacter::EndDefend()
 {
 	Ability->EndShieldUp();
-}
-
-void AThroneCharacter::Roll()
-{
-	Ability->BeginRoll();
 }
 
 void AThroneCharacter::AcquisitionItem()

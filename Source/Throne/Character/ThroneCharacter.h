@@ -75,9 +75,6 @@ private:
 	TObjectPtr<class UInputAction> DefendAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputAction> RollAction;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> InteractAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
@@ -88,7 +85,6 @@ private:
 	void DefaultAttack();	//Started Mouse Left Click
 	void BeginDefend();	//Triggerd Mouse Right Click
 	void EndDefend();	//Completed Mouse Right Click
-	void Roll(); //Started Shift
 	void AcquisitionItem();	//Started E
 	void Sheath();	//Started Q
 	void AttachWeaponSheath();	//Sheath
