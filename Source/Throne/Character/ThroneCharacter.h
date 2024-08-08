@@ -52,8 +52,12 @@ private:
 
 /* Input */
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UInputMappingContext> IMC;
+	//Input Mapping Context
+	void ChangeCharacterControl();
+	void SetCharacterControl(ECharacterMode InCharacterMode);
+	
+	UPROPERTY(EditAnywhere, Category = "CharacterControl", meta = (AllowPrivateAccess = "true"))
+	TMap<ECharacterMode, class UCharacterControlData*> CharacterControlManager;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> MoveAction;
@@ -87,8 +91,10 @@ private:
 	void Roll(); //Started Shift
 	void AcquisitionItem();	//Started E
 	void Sheath();	//Started Q
-	void AttachWeaponSheath();
-	void AttachWeaponHand();
+	void AttachWeaponSheath();	//Sheath
+	void AttachWeaponHand();	//Sheath
+
+	
 
 /* Item */
 private:
@@ -102,6 +108,7 @@ private:
 	TObjectPtr<class UItemData> ItemData;
 
 	ECharacterMode CurrentCharacterMode;
+	bool bHasWeapon = false;
 
 /* UI */
 private:
@@ -124,11 +131,6 @@ private:
 
 /* Animation */
 private:
-	UPROPERTY(EditAnywhere, Category = "AnimClass", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<class UAnimInstance> DefaultAnim;
-
-	UPROPERTY(EditAnywhere, Category = "AnimClass", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<class UAnimInstance> HoldWeaponAnim;
 
 	void Death();
 

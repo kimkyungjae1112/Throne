@@ -15,7 +15,7 @@ UCharacterAnimInstance::UCharacterAnimInstance()
 	bIsJumping = false;
 	bIsFalling = false;
 	bIsShield = false;
-	bIsDefault = false;
+	bIsDefault = true;
 	Velocity = FVector::Zero();
 	Angle = FVector::Zero();
 }

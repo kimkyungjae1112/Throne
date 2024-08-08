@@ -17,6 +17,7 @@
 #include "Player/ThronePlayerController.h"
 #include "Item/ItemData.h"
 #include "Animation/CharacterAnimInstance.h"
+#include "Character/CharacterControlData.h"
 
 AThroneCharacter::AThroneCharacter()
 {
@@ -39,19 +40,7 @@ AThroneCharacter::AThroneCharacter()
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 	GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-
-	/* Animation */
-	static ConstructorHelpers::FClassFinder<UAnimInstance> DefaultAnimRef(TEXT("/Game/Throne/Animation/Player/ABP_Default.ABP_Default_C"));
-	if (DefaultAnimRef.Class)
-	{
-		DefaultAnim = DefaultAnimRef.Class;
-	}
-	static ConstructorHelpers::FClassFinder<UAnimInstance> HoldWeaponAnimRef(TEXT("/Game/Throne/Animation/Player/ABP_HoldWeapon.ABP_HoldWeapon_C"));
-	if (HoldWeaponAnimRef.Class)
-	{
-		HoldWeaponAnim = HoldWeaponAnimRef.Class;
-	}
-
+	CurrentCharacterMode = ECharacterMode::Default;
 
 	/* Character Movement */
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -74,10 +63,15 @@ AThroneCharacter::AThroneCharacter()
 	Camera->bUsePawnControlRotation = false;
 
 	/* Input */
-	static ConstructorHelpers::FObjectFinder<UInputMappingContext> IMCRef(TEXT("/Script/EnhancedInput.InputMappingContext'/Game/Throne/Input/IMC/IMC_Default.IMC_Default'"));
-	if (IMCRef.Object)
+	static ConstructorHelpers::FObjectFinder<UCharacterControlData> DefaultModeRef(TEXT("/Script/Throne.CharacterControlData'/Game/Throne/Character/Data/DA_DefaultControl.DA_DefaultControl'"));
+	if (DefaultModeRef.Object)
 	{
-		IMC = IMCRef.Object;
+		CharacterControlManager.Add(ECharacterMode::Default, DefaultModeRef.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UCharacterControlData> HoldWeaponModeRef(TEXT("/Script/Throne.CharacterControlData'/Game/Throne/Character/Data/DA_HoldWeaponControl.DA_HoldWeaponControl'"));
+	if (DefaultModeRef.Object)
+	{
+		CharacterControlManager.Add(ECharacterMode::HoldWeapon, HoldWeaponModeRef.Object);
 	}
 	static ConstructorHelpers::FObjectFinder<UInputAction> MoveActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_Move.IA_Move'"));
 	if (MoveActionRef.Object)
@@ -133,18 +127,14 @@ void AThroneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	APlayerController* PlayerController = CastChecked<APlayerController>(GetController());
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-	{
-		Subsystem->AddMappingContext(IMC, 0);
-	}
-
-	GetMesh()->SetAnimInstanceClass(DefaultAnim);
-	CurrentCharacterMode = ECharacterMode::Default;
+	SetCharacterControl(CurrentCharacterMode);
 
 	/* Delegate */
 	Stat->OnHpZero.AddUObject(this, &AThroneCharacter::Death);
 	Ability->OnDefaultAttackUseEnergy.BindUObject(this, &AThroneCharacter::DefaultAttackUseEnergy);
+	Ability->OnOutSheath.BindUObject(this, &AThroneCharacter::AttachWeaponHand);
+	Ability->OnInSheath.BindUObject(this, &AThroneCharacter::AttachWeaponSheath);
+
 }
 
 void AThroneCharacter::Tick(float DeltaTime)
@@ -207,6 +197,37 @@ void AThroneCharacter::EndOverlapTakeItem()
 
 
 /************* Input *************/
+void AThroneCharacter::ChangeCharacterControl()
+{
+	if (CurrentCharacterMode == ECharacterMode::Default)
+	{
+		SetCharacterControl(ECharacterMode::HoldWeapon);
+	}
+	else if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
+	{
+		SetCharacterControl(ECharacterMode::Default);
+	}
+}
+
+void AThroneCharacter::SetCharacterControl(ECharacterMode InCharacterMode)
+{
+	UCharacterControlData* ControlData = CharacterControlManager[InCharacterMode];
+	ensure(ControlData);
+
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetPlayerController()->GetLocalPlayer()))
+	{
+		Subsystem->ClearAllMappings();
+		UInputMappingContext* MappingContext = ControlData->InputMappingContext;
+		if (MappingContext)
+		{
+			Subsystem->AddMappingContext(MappingContext, 0);
+		}
+	}
+
+	CurrentCharacterMode = InCharacterMode;
+}
+
+
 void AThroneCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D InputValue = Value.Get<FVector2D>();
@@ -231,26 +252,17 @@ void AThroneCharacter::LookUp(const FInputActionValue& Value)
 
 void AThroneCharacter::DefaultAttack()
 {
-	if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
-	{
-		Ability->BeginComboAttack();
-	}
+	Ability->BeginComboAttack();
 }
 
 void AThroneCharacter::BeginDefend()
 {
-	if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
-	{
-		Ability->BeginShieldUp();
-	}
+	Ability->BeginShieldUp();
 }
 
 void AThroneCharacter::EndDefend()
 {
-	if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
-	{
-		Ability->EndShieldUp();
-	}
+	Ability->EndShieldUp();
 }
 
 void AThroneCharacter::Roll()
@@ -260,13 +272,21 @@ void AThroneCharacter::Roll()
 
 void AThroneCharacter::AcquisitionItem()
 {
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (bHasWeapon)
+	{
+		return;
+	}
+
 	if (GetPlayerController()->IsDisplay())
 	{
 		Sword->SetSkeletalMesh(ItemData->SwordMesh);
 		Shield->SetSkeletalMesh(ItemData->ShieldMesh);
 
-		CurrentCharacterMode = ECharacterMode::HoldWeapon;
-		GetMesh()->SetAnimInstanceClass(HoldWeaponAnim);
+		ChangeCharacterControl();
+
+		AnimInstance->bIsDefault = false;
+		bHasWeapon = true;
 	}
 }
 
@@ -274,13 +294,11 @@ void AThroneCharacter::Sheath()
 {
 	if (CurrentCharacterMode == ECharacterMode::Default)
 	{
-		Ability->BeginSheath(false);
-		Ability->OnOutSheath.BindUObject(this, &AThroneCharacter::AttachWeaponHand);
+		Ability->BeginOutSheath();
 	}
 	else if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
 	{
-		Ability->BeginSheath(true);
-		Ability->OnInSheath.BindUObject(this, &AThroneCharacter::AttachWeaponSheath);
+		Ability->BeginSheath();
 	}
 }
 
@@ -289,8 +307,7 @@ void AThroneCharacter::AttachWeaponSheath()
 	Sword->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Sheath_l"));
 	Shield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("SwordonBack"));
 
-	CurrentCharacterMode = ECharacterMode::Default;
-	GetMesh()->SetAnimInstanceClass(DefaultAnim);
+	ChangeCharacterControl();
 }
 
 void AThroneCharacter::AttachWeaponHand()
@@ -298,9 +315,9 @@ void AThroneCharacter::AttachWeaponHand()
 	Sword->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("weapon_r"));
 	Shield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("shield_l"));
 
-	CurrentCharacterMode = ECharacterMode::HoldWeapon;
-	GetMesh()->SetAnimInstanceClass(HoldWeaponAnim);
+	ChangeCharacterControl();
 }
+
 
 void AThroneCharacter::Death()
 {

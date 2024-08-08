@@ -234,50 +234,62 @@ void UAbilityComponent::BeginDead()
 	}
 }
 
-void UAbilityComponent::BeginSheath(bool IsHoldWeapon)
+void UAbilityComponent::BeginSheath()
 {
-	if (IsHoldWeapon)
-	{
-		AnimMontage = SheathInMontage;
-	}
-	else
-	{
-		AnimMontage = SheathOutMontage;
-	}
-
 	ACharacter* Owner = Cast<ACharacter>(GetOwner());
 	UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance();
+
 	if (Owner && AnimInstance)
 	{
 		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-		AnimInstance->Montage_Play(AnimMontage);
+		AnimInstance->Montage_Play(SheathInMontage);
 
 		FOnMontageEnded MontageEnded;
 		MontageEnded.BindUObject(this, &UAbilityComponent::EndSheath);
-		AnimInstance->Montage_SetEndDelegate(MontageEnded, AnimMontage);
+		AnimInstance->Montage_SetEndDelegate(MontageEnded, SheathInMontage);
 	}
 }
 
 void UAbilityComponent::EndSheath(class UAnimMontage* Target, bool IsProperlyEnded)
 {
 	ACharacter* Owner = Cast<ACharacter>(GetOwner());
-	UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance();
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+
 	if (Owner && AnimInstance)
 	{
-		if (AnimMontage == SheathInMontage)
-		{
-			UE_LOG(LogTemp, Display, TEXT("SheathIn"));
-			OnInSheath.ExecuteIfBound();
-		}
-		else if (AnimMontage == SheathOutMontage)
-		{
-			UE_LOG(LogTemp, Display, TEXT("SheathOut"));
-			OnOutSheath.ExecuteIfBound();
-		}
-
+		OnInSheath.ExecuteIfBound();
 		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	
+		AnimInstance->bIsDefault = true;
 	}
 }
 
+void UAbilityComponent::BeginOutSheath()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance();
 
+	if (Owner && AnimInstance)
+	{
+		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+		OnOutSheath.ExecuteIfBound();
 
+		AnimInstance->Montage_Play(SheathOutMontage);
+
+		FOnMontageEnded MontageEnded;
+		MontageEnded.BindUObject(this, &UAbilityComponent::EndOutSheath);
+		AnimInstance->Montage_SetEndDelegate(MontageEnded, SheathOutMontage);
+	}
+}
+
+void UAbilityComponent::EndOutSheath(class UAnimMontage* Target, bool IsProperlyEnded)
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+
+	if (Owner && AnimInstance)
+	{
+		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+		AnimInstance->bIsDefault = false;
+	}
+}

@@ -52,8 +52,10 @@ public:
 	void BeginDead();
 
 	/* Sheath */
-	void BeginSheath(bool IsHoldWeapon);
+	void BeginSheath();
 	void EndSheath(class UAnimMontage* Target, bool IsProperlyEnded);
+	void BeginOutSheath();
+	void EndOutSheath(class UAnimMontage* Target, bool IsProperlyEnded);
 
 private:
 	/* Default Attack */
@@ -81,9 +83,6 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> SheathOutMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UAnimMontage> AnimMontage;
 	
 
 
