@@ -16,6 +16,7 @@
 #include "Engine/DamageEvents.h"
 #include "Player/ThronePlayerController.h"
 #include "Item/ItemData.h"
+#include "Animation/CharacterAnimInstance.h"
 
 AThroneCharacter::AThroneCharacter()
 {
@@ -121,7 +122,6 @@ AThroneCharacter::AThroneCharacter()
 	Shield = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Shiled"));
 	Shield->SetupAttachment(GetMesh(), TEXT("shield_l"));
 	
-	//IsAcquisition();
 }
 
 void AThroneCharacter::BeginPlay()
@@ -159,7 +159,8 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(DefaultAttackAction, ETriggerEvent::Started, this, &AThroneCharacter::DefaultAttack);
-	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Started, this, &AThroneCharacter::Defend);
+	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Triggered, this, &AThroneCharacter::Defend);
+	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Completed, this, &AThroneCharacter::EndDefend);
 	EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Started, this, &AThroneCharacter::Roll);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::AcquisitionItem);
 
@@ -195,7 +196,6 @@ void AThroneCharacter::BeginOverlapTakeItem(UItemData* InItemData)
 
 void AThroneCharacter::EndOverlapTakeItem()
 {
-	UE_LOG(LogTemp, Display, TEXT("Character EndOverlap"));
 	GetPlayerController()->HideItemInteract();
 }
 
@@ -235,7 +235,25 @@ void AThroneCharacter::Defend()
 {
 	if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
 	{
-		Ability->BeginDefend();
+		UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+		if (AnimInstance)
+		{
+			//GetCharacterMovement()->MaxWalkSpeed = Stat->GetWalkMoveSpeed();
+			AnimInstance->bIsShield = true;
+		}
+	}
+}
+
+void AThroneCharacter::EndDefend()
+{
+	if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
+	{
+		UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+		if (AnimInstance)
+		{
+			//GetCharacterMovement()->MaxWalkSpeed = Stat->GetRunMoveSpeed();
+			AnimInstance->bIsShield = false;
+		}
 	}
 }
 

@@ -36,10 +36,6 @@ public:
 	bool CheckInRadialRange(AActor* Player, AActor* Target, float Radius, float RadialAngle);
 	void AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange, const FColor& Color);
 
-	/* Defend */
-	void BeginDefend();
-	void EndDefend(class UAnimMontage* Target, bool IsProperlyEnded);
-
 	/* Roll */
 	void BeginRoll();
 	void EndRoll(class UAnimMontage* Target, bool IsProperlyEnded);
@@ -59,10 +55,6 @@ private:
 	int32 CurrentCombo = 0;
 	FTimerHandle ComboTimerHandle;
 	bool HasNextComboCommand = false;
-
-	/* Defend */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UAnimMontage> DefendMontage;
 
 	/* Roll */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))

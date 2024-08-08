@@ -45,6 +45,9 @@ public:
 	uint8 bIsFalling : 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")
+	uint8 bIsShield : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")
 	FVector Velocity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")

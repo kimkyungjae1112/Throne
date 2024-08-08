@@ -186,27 +186,6 @@ void UAbilityComponent::AttackHitDebug(UWorld* World, const FVector& Start, cons
 	DrawDebugLine(GetWorld(), Start, RightEndpoint, Color, false, 3.0f);
 }
 
-void UAbilityComponent::BeginDefend()
-{
-	ACharacter* Owner = Cast<ACharacter>(GetOwner());
-	UAnimInstance* AnimInstance = Owner->GetMesh()->GetAnimInstance();
-	if (Owner && AnimInstance)
-	{
-		StatData->WalkMoveSpeed = 100.0f;
-		
-		AnimInstance->Montage_Play(DefendMontage);
-
-		FOnMontageEnded MontageEnded;
-		MontageEnded.BindUObject(this, &UAbilityComponent::EndDefend);
-		AnimInstance->Montage_SetEndDelegate(MontageEnded, DefendMontage);
-	}
-}
-
-void UAbilityComponent::EndDefend(UAnimMontage* Target, bool IsProperlyEnded)
-{
-	StatData->WalkMoveSpeed = 150.0f;
-}
-
 void UAbilityComponent::BeginRoll()
 {
 	ACharacter* Owner = Cast<ACharacter>(GetOwner());

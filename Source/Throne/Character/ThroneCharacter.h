@@ -80,6 +80,7 @@ private:
 	void LookUp(const FInputActionValue& Value);	//Tirggered Mouse 2D Axis
 	void DefaultAttack();	//Started Mouse Left Click
 	void Defend();	//Triggerd Mouse Right Click
+	void EndDefend();	//Completed Mouse Right Click
 	void Roll(); //Started Shift
 	void AcquisitionItem();	//Started E
 
