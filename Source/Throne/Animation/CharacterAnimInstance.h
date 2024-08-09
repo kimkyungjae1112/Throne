@@ -51,6 +51,9 @@ public:
 	uint8 bIsDefault : 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")
+	uint8 bIsAimKnife : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")
 	FVector Velocity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")

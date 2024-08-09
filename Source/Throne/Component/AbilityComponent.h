@@ -53,6 +53,10 @@ public:
 	void BeginOutSheath();
 	void EndOutSheath(class UAnimMontage* Target, bool IsProperlyEnded);
 
+	/* Aim Knife */
+	void BeginAimKnife();
+	void EndAimKnife();
+
 private:
 	/* Default Attack */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
@@ -82,6 +86,9 @@ private:
 	/* Stat */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCharacterStatData> StatData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UCharacterAimKnifeData> AimData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
 	float DefaultAttackUseEnergy;

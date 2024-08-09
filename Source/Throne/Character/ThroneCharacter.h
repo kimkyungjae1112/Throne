@@ -80,31 +80,50 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SheathAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> AimKnifeAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> FireKnifeAction;
+
 	void Move(const FInputActionValue& Value);	//Triggered WASD
 	void LookUp(const FInputActionValue& Value);	//Tirggered Mouse 2D Axis
 	void DefaultAttack();	//Started Mouse Left Click
 	void BeginDefend();	//Triggerd Mouse Right Click
 	void EndDefend();	//Completed Mouse Right Click
+
 	void AcquisitionItem();	//Started E
 	void Sheath();	//Started Q
 	void AttachWeaponSheath();	//Sheath
 	void AttachWeaponHand();	//Sheath
 
-	
+	void BeginAimKnife(const FInputActionValue& Value);	//Trigger Mouse Right Click
+	void EndAimKnife();
+	void FireKnife();	//Stated Mouse Left Click
 
-/* Item */
+/* Weapon */
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Item")
+	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<class USkeletalMeshComponent> Sword;
 
-	UPROPERTY(VisibleAnywhere, Category = "Item")
+	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<class USkeletalMeshComponent> Shield;
 
-	UPROPERTY(VisibleAnywhere, Category = "Item")
+	UPROPERTY(VisibleAnywhere, Category = "Weapon")
+	TObjectPtr<class USkeletalMeshComponent> Knife;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Weapon")
+	TSubclassOf<class AKnife> KnifeClass;
+
+	UPROPERTY(VisibleAnywhere, Category = "Weapon")
+	TObjectPtr<USceneComponent> KnifeSceneComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<class UItemData> ItemData;
 
 	ECharacterMode CurrentCharacterMode;
 	bool bHasWeapon = false;
+	bool bIsAiming = false;
 
 /* UI */
 private:
@@ -122,19 +141,20 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCharacterStatComponent> Stat;
 
-	void DefaultAttackUseEnergy(float UseEnergy);
-
+	void DefaultAttackUseEnergy(const float UseEnergy);
 
 /* Animation */
 private:
-
 	void Death();
 
-
-
+/* Data Asset */
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
+	TArray<class UCharacterAimKnifeData*> AimKnifeDatas;
 
 /* Utility */
 private:
 	class AThronePlayerController* GetPlayerController();
-
+	void SetAimKnifeData(const uint8 Index);
+	uint8 CurrentAimKnife = 0;
 };

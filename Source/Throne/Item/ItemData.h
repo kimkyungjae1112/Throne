@@ -23,5 +23,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Shield")
 	TObjectPtr<class USkeletalMesh> ShieldMesh;
 
-	
+	UPROPERTY(EditAnywhere, Category = "Knife")
+	TObjectPtr<class USkeletalMesh> KnifeMesh;
 };

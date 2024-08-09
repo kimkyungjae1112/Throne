@@ -8,6 +8,7 @@
 #include "Animation/AnimMontage.h"
 #include "Character/CharacterComboActionData.h"
 #include "Character/CharacterStatData.h"
+#include "Character/CharacterAimKnifeData.h"
 #include "Engine/OverlapResult.h"
 #include "Engine/DamageEvents.h"
 #include "Animation/CharacterAnimInstance.h"
@@ -277,5 +278,27 @@ void UAbilityComponent::EndOutSheath(class UAnimMontage* Target, bool IsProperly
 	{
 		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 		AnimInstance->bIsDefault = false;
+	}
+}
+
+void UAbilityComponent::BeginAimKnife()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+
+	if (Owner && AnimInstance)
+	{
+		AnimInstance->bIsAimKnife = true;
+	}
+}
+
+void UAbilityComponent::EndAimKnife()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+
+	if (Owner && AnimInstance)
+	{
+		AnimInstance->bIsAimKnife = false;
 	}
 }

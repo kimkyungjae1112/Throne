@@ -16,6 +16,7 @@ UCharacterAnimInstance::UCharacterAnimInstance()
 	bIsFalling = false;
 	bIsShield = false;
 	bIsDefault = true;
+	bIsAimKnife = false;
 	Velocity = FVector::Zero();
 	Angle = FVector::Zero();
 }

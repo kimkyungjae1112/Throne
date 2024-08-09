@@ -18,6 +18,9 @@
 #include "Item/ItemData.h"
 #include "Animation/CharacterAnimInstance.h"
 #include "Character/CharacterControlData.h"
+#include "Character/CharacterAimKnifeData.h"
+#include "Item/Knife.h"
+#include "Interface/KnifeInterface.h"
 
 AThroneCharacter::AThroneCharacter()
 {
@@ -108,14 +111,52 @@ AThroneCharacter::AThroneCharacter()
 	{
 		SheathAction = SheathActionRef.Object;
 	}
+	static ConstructorHelpers::FObjectFinder<UInputAction> AimKnifeActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_AimKnife.IA_AimKnife'"));
+	if (AimKnifeActionRef.Object)
+	{
+		AimKnifeAction = AimKnifeActionRef.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<UInputAction> FireKnifeActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_FireKnife.IA_FireKnife'"));
+	if (FireKnifeActionRef.Object)
+	{
+		FireKnifeAction = FireKnifeActionRef.Object;
+	}
 
+	/* Data Asset */
+	static ConstructorHelpers::FObjectFinder<UCharacterAimKnifeData> AimKnifeDataRef(TEXT("/Script/Throne.CharacterAimKnifeData'/Game/Throne/Character/Data/DA_AimKnife.DA_AimKnife'"));
+	if (AimKnifeDataRef.Object)
+	{
+		AimKnifeDatas.Add(AimKnifeDataRef.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UCharacterAimKnifeData> NonAimKnifeDataRef(TEXT("/Script/Throne.CharacterAimKnifeData'/Game/Throne/Character/Data/DA_NonAimKnife.DA_NonAimKnife'"));
+	if (NonAimKnifeDataRef.Object)
+	{
+		AimKnifeDatas.Add(NonAimKnifeDataRef.Object);
+	}
+	static ConstructorHelpers::FObjectFinder<UItemData> ItemDataRef(TEXT("/Script/Throne.ItemData'/Game/Throne/Item/DA_Item.DA_Item'"));
+	if (ItemDataRef.Object)
+	{
+		ItemData = ItemDataRef.Object;
+	}
+	
 	/* Item */
 	Sword = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Swoard"));
 	Sword->SetupAttachment(GetMesh(), TEXT("weapon_r"));
 
 	Shield = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Shiled"));
 	Shield->SetupAttachment(GetMesh(), TEXT("shield_l"));
-	
+
+	Knife = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Knife"));
+	Knife->SetupAttachment(GetMesh());
+
+	static ConstructorHelpers::FClassFinder<AKnife> KnifeClassRef(TEXT("/Game/Throne/Blueprints/BP_Knife.BP_Knife_C"));
+	if (KnifeClassRef.Class)
+	{
+		KnifeClass = KnifeClassRef.Class;
+	}
+	KnifeSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Knife Scene Component"));
+	KnifeSceneComponent->SetupAttachment(GetMesh(), TEXT("weapon_r"));
+
 }
 
 void AThroneCharacter::BeginPlay()
@@ -153,7 +194,9 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Completed, this, &AThroneCharacter::EndDefend);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::AcquisitionItem);
 	EnhancedInputComponent->BindAction(SheathAction, ETriggerEvent::Started, this, &AThroneCharacter::Sheath);
-
+	EnhancedInputComponent->BindAction(AimKnifeAction, ETriggerEvent::Started, this, &AThroneCharacter::BeginAimKnife);
+	EnhancedInputComponent->BindAction(AimKnifeAction, ETriggerEvent::Completed, this, &AThroneCharacter::EndAimKnife);
+	EnhancedInputComponent->BindAction(FireKnifeAction, ETriggerEvent::Started, this, &AThroneCharacter::FireKnife);
 }
 
 float AThroneCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -267,7 +310,7 @@ void AThroneCharacter::AcquisitionItem()
 		return;
 	}
 
-	if (GetPlayerController()->IsDisplay())
+	if (GetPlayerController()->IsDisplay() && !AimKnifeDatas[CurrentAimKnife]->bCanThrow)
 	{
 		Sword->SetSkeletalMesh(ItemData->SwordMesh);
 		Shield->SetSkeletalMesh(ItemData->ShieldMesh);
@@ -307,6 +350,42 @@ void AThroneCharacter::AttachWeaponHand()
 	ChangeCharacterControl();
 }
 
+void AThroneCharacter::BeginAimKnife(const FInputActionValue& Value)
+{
+	bIsAiming = Value.Get<bool>();
+
+	Ability->BeginAimKnife();
+	CurrentAimKnife = 0;
+	SetAimKnifeData(CurrentAimKnife);
+
+	Knife->SetSkeletalMesh(ItemData->KnifeMesh);
+	Knife->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("weapon_r"));
+}
+
+void AThroneCharacter::EndAimKnife()
+{
+	Ability->EndAimKnife();
+	CurrentAimKnife = 1;
+	SetAimKnifeData(CurrentAimKnife);
+
+	Knife->SetSkeletalMesh(nullptr);
+	Knife->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+}
+
+void AThroneCharacter::FireKnife()
+{
+	if (bIsAiming)
+	{
+		AActor* KnifeActor = GetWorld()->SpawnActor<AKnife>(KnifeClass, KnifeSceneComponent->GetComponentLocation(), KnifeSceneComponent->GetComponentRotation());
+		IKnifeInterface* KnifeInterface = Cast<IKnifeInterface>(KnifeActor);
+		if (KnifeInterface)
+		{
+			KnifeInterface->SetKnifeDirection(GetActorForwardVector());
+		}
+
+	}
+}
+
 void AThroneCharacter::Death()
 {
 	Ability->BeginDead();
@@ -317,7 +396,7 @@ void AThroneCharacter::Death()
 	}
 }
 
-void AThroneCharacter::DefaultAttackUseEnergy(float UseEnergy)
+void AThroneCharacter::DefaultAttackUseEnergy(const float UseEnergy)
 {
 	Stat->SetEnergy(UseEnergy);
 }
@@ -326,6 +405,31 @@ AThronePlayerController* AThroneCharacter::GetPlayerController()
 {
 	AThronePlayerController* PlayerController = CastChecked<AThronePlayerController>(GetController());
 	return PlayerController;
+}
+
+void AThroneCharacter::SetAimKnifeData(const uint8 Index)
+{
+	if (!AimKnifeDatas.IsValidIndex(Index))
+	{
+		return;
+	}
+
+	SpringArm->TargetArmLength = AimKnifeDatas[Index]->TargetArmLength;
+	SpringArm->bUsePawnControlRotation = AimKnifeDatas[Index]->UsePawnControlRotation;
+	GetCharacterMovement()->bOrientRotationToMovement = AimKnifeDatas[Index]->OrientRotationToMovement;
+	GetCharacterMovement()->bUseControllerDesiredRotation = AimKnifeDatas[Index]->UseControllerDesiredRotation;
+	bUseControllerRotationYaw = AimKnifeDatas[Index]->UseControllerRotationYaw;
+
+	if (Index == 0)
+	{
+		SpringArm->SetRelativeLocation(FVector(0.0f, 60.0f, 70.0f));
+		GetCharacterMovement()->MaxWalkSpeed = Stat->GetWalkMoveSpeed();
+	}
+	else if (Index == 1)
+	{
+		SpringArm->SetRelativeLocation(FVector(0.0f, 0.0f, 70.0f));
+		GetCharacterMovement()->MaxWalkSpeed = Stat->GetRunMoveSpeed();
+	}
 }
 
 
