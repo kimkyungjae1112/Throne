@@ -17,6 +17,7 @@
 UAbilityComponent::UAbilityComponent()
 {
 	DefaultAttackUseEnergy = 10.0f;
+	JumpAttackUseEnergy = 30.0f;
 }
 
 
@@ -312,6 +313,7 @@ void UAbilityComponent::BeginJumpAttack()
 	{		
 		Owner->DisableInput(PlayerController);		
 		AnimInstance->Montage_Play(JumpAttackMontage);
+		OnJumpAttackUseEnergy.ExecuteIfBound(JumpAttackUseEnergy);
 
 		FOnMontageEnded MontageEnded;
 		MontageEnded.BindUObject(this, &UAbilityComponent::EndJumpAttack);
@@ -325,6 +327,27 @@ void UAbilityComponent::EndJumpAttack(class UAnimMontage* Target, bool IsProperl
 	ensure(Owner);
 
 	Owner->EnableInput(PlayerController);
+}
+
+void UAbilityComponent::JumpAttackDoneHitCheck()
+{
+	float Damage = StatData->AttackDamage * 2;
+	float Range = StatData->AttackRange;
+
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	FVector Start = Owner->GetActorLocation() + FVector(30.0f, 0.0f, 0.0f);
+	FCollisionQueryParams Params(NAME_None, false, GetOwner());
+	TArray<FOverlapResult> OverlapResults;
+
+	bool bHit = GetWorld()->OverlapMultiByChannel(OverlapResults, Start, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(Range), Params);
+	if (bHit)
+	{
+		for (auto const& OverlapResult : OverlapResults)
+		{
+			FDamageEvent DamageEvent;
+			OverlapResult.GetActor()->TakeDamage(Damage, DamageEvent, Owner->GetController(), Owner);
+		}
+	}
 }
 
 void UAbilityComponent::SetPlayerController(AThronePlayerController* InPlayerController)

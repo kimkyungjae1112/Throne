@@ -116,9 +116,6 @@ private:
 	TSubclassOf<class AKnife> KnifeClass;
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
-	TObjectPtr<USceneComponent> KnifeSceneComponent;
-
-	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<class UItemData> ItemData;
 
 	ECharacterMode CurrentCharacterMode;
@@ -141,11 +138,11 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCharacterStatComponent> Stat;
 
-	void DefaultAttackUseEnergy(const float UseEnergy);
 
 /* Animation */
 private:
 	void Death();
+
 
 /* Data Asset */
 private:

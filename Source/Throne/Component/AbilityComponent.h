@@ -8,6 +8,7 @@
 #include "AbilityComponent.generated.h"
 
 DECLARE_DELEGATE_OneParam(FOnDefaultAttackUseEnergy, float /* Use Energy */)
+DECLARE_DELEGATE_OneParam(FOnJumpAttackUseEnergy, float /* Use Energy */)
 DECLARE_DELEGATE(FOnInSheath)
 DECLARE_DELEGATE(FOnOutSheath)
 
@@ -24,6 +25,7 @@ protected:
 
 public:
 	FOnDefaultAttackUseEnergy OnDefaultAttackUseEnergy;
+	FOnJumpAttackUseEnergy OnJumpAttackUseEnergy;
 	FOnInSheath OnInSheath;
 	FOnOutSheath OnOutSheath;
 
@@ -60,6 +62,12 @@ public:
 	/* Jump Attack */
 	void BeginJumpAttack();
 	void EndJumpAttack(class UAnimMontage* Target, bool IsProperlyEnded);
+
+	/* Jump Attack Hit Check*/
+	virtual void JumpAttackDoneHitCheck() override;
+
+
+	/* Utility */
 	void SetPlayerController(class AThronePlayerController* InPlayerController);
 
 private:
@@ -101,7 +109,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCharacterAimKnifeData> AimData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere)
 	float DefaultAttackUseEnergy;
 
+	UPROPERTY(EditAnywhere)
+	float JumpAttackUseEnergy;
 };

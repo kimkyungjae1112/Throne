@@ -36,6 +36,7 @@ public:
 	bool CheckInRadialRange(AActor* Player, AActor* Target, float Radius, float RadialAngle);
 	void AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange, const FColor& Color);
 
+	virtual void JumpAttackDoneHitCheck() override;
 	virtual void SetWidget(class UBossHpBarWidget* InBossHpBarWidget) override;
 
 

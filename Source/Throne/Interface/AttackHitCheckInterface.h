@@ -23,4 +23,5 @@ class THRONE_API IAttackHitCheckInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void DefaultAttackHitCheck() = 0;
+	virtual void JumpAttackDoneHitCheck() = 0;
 };

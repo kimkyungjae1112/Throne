@@ -147,6 +147,10 @@ void AEnemyBoss::AttackHitDebug(UWorld* World, const FVector& Start, const FVect
 	DrawDebugLine(GetWorld(), Start, RightEndpoint, Color, false, 3.0f);
 }
 
+void AEnemyBoss::JumpAttackDoneHitCheck()
+{
+}
+
 /* Interface */
 void AEnemyBoss::SetWidget(UBossHpBarWidget* InBossHpBarWidget)
 {

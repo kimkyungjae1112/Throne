@@ -142,6 +142,7 @@ AThroneCharacter::AThroneCharacter()
 	/* Item */
 	Sword = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Swoard"));
 	Sword->SetupAttachment(GetMesh(), TEXT("weapon_r"));
+	Sword->SetCollisionProfileName(TEXT("ThroneTrigger"));
 
 	Shield = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Shiled"));
 	Shield->SetupAttachment(GetMesh(), TEXT("shield_l"));
@@ -154,8 +155,6 @@ AThroneCharacter::AThroneCharacter()
 	{
 		KnifeClass = KnifeClassRef.Class;
 	}
-	KnifeSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Knife Scene Component"));
-	KnifeSceneComponent->SetupAttachment(GetMesh(), TEXT("weapon_r"));
 
 }
 
@@ -169,10 +168,10 @@ void AThroneCharacter::BeginPlay()
 
 	/* Delegate */
 	Stat->OnHpZero.AddUObject(this, &AThroneCharacter::Death);
-	Ability->OnDefaultAttackUseEnergy.BindUObject(this, &AThroneCharacter::DefaultAttackUseEnergy);
 	Ability->OnOutSheath.BindUObject(this, &AThroneCharacter::AttachWeaponHand);
 	Ability->OnInSheath.BindUObject(this, &AThroneCharacter::AttachWeaponSheath);
-	
+	Ability->OnDefaultAttackUseEnergy.BindUObject(Stat, &UCharacterStatComponent::SetEnergy);
+	Ability->OnJumpAttackUseEnergy.BindUObject(Stat, &UCharacterStatComponent::SetEnergy);
 }
 
 void AThroneCharacter::Tick(float DeltaTime)
@@ -333,7 +332,7 @@ void AThroneCharacter::AcquisitionItem()
 
 void AThroneCharacter::Sheath()
 {
-	if (CurrentCharacterMode == ECharacterMode::Default)
+	if (CurrentCharacterMode == ECharacterMode::Default && bHasWeapon)
 	{
 		Ability->BeginOutSheath();
 	}
@@ -402,11 +401,6 @@ void AThroneCharacter::Death()
 		DisableInput(PlayerController);
 	}
 	Ability->BeginDead();
-}
-
-void AThroneCharacter::DefaultAttackUseEnergy(const float UseEnergy)
-{
-	Stat->SetEnergy(UseEnergy);
 }
 
 AThronePlayerController* AThroneCharacter::GetPlayerController()
