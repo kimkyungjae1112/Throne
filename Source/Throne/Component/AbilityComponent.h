@@ -70,6 +70,12 @@ public:
 	/* Utility */
 	void SetPlayerController(class AThronePlayerController* InPlayerController);
 
+	UPROPERTY(EditAnywhere)
+	float DefaultAttackUseEnergy;
+
+	UPROPERTY(EditAnywhere)
+	float JumpAttackUseEnergy;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class AThronePlayerController> PlayerController;
@@ -101,6 +107,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> JumpAttackMontage;
 
+	UPROPERTY(EditAnywhere, Category = "Effects")
+	TObjectPtr<class UParticleSystem> JumpAttackParticle;
+
 private:
 	/* Stat */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
@@ -109,9 +118,4 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCharacterAimKnifeData> AimData;
 
-	UPROPERTY(EditAnywhere)
-	float DefaultAttackUseEnergy;
-
-	UPROPERTY(EditAnywhere)
-	float JumpAttackUseEnergy;
 };

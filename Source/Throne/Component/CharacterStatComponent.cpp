@@ -25,6 +25,9 @@ UCharacterStatComponent::UCharacterStatComponent()
 
 	CurrentHp = MaxHp;
 	CurrentEnergy = MaxEnergy;
+
+	EnergyRegenTime = 0.0f;
+	HealthRegenTime = 0.0f;
 }
 
 
@@ -42,6 +45,26 @@ void UCharacterStatComponent::TickComponent(float DeltaTime, ELevelTick TickType
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	EnergyRegenTime += DeltaTime;
+	HealthRegenTime += DeltaTime;
+
+	if (EnergyRegenTime >= 1.0f)
+	{
+		if (CurrentEnergy < MaxEnergy)
+		{
+			SetEnergy(-5.0f);
+		}
+		EnergyRegenTime = 0.0f;
+	}
+
+	if (HealthRegenTime >= 3.0f)
+	{
+		if (CurrentHp <= MaxHp)
+		{
+			SetHp(CurrentHp + 1000.0f);
+		}
+		HealthRegenTime = 0.0f;
+	}
 }
 
 float UCharacterStatComponent::ApplyDamage(float InDamage)
@@ -67,5 +90,6 @@ void UCharacterStatComponent::SetHp(float NewHp)
 void UCharacterStatComponent::SetEnergy(float UsedEnergy)
 {
 	CurrentEnergy -= UsedEnergy;
+	UE_LOG(LogTemp, Display, TEXT("CurrentEnergy : %f"), CurrentEnergy);
 	OnEnergyChanged.Broadcast(CurrentEnergy);
 }

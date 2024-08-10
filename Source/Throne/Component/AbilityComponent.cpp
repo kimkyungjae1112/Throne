@@ -13,6 +13,7 @@
 #include "Engine/DamageEvents.h"
 #include "Animation/CharacterAnimInstance.h"
 #include "Player/ThronePlayerController.h"
+#include "Kismet/GameplayStatics.h"
 
 UAbilityComponent::UAbilityComponent()
 {
@@ -338,6 +339,8 @@ void UAbilityComponent::JumpAttackDoneHitCheck()
 	FVector Start = Owner->GetActorLocation() + FVector(30.0f, 0.0f, 0.0f);
 	FCollisionQueryParams Params(NAME_None, false, GetOwner());
 	TArray<FOverlapResult> OverlapResults;
+
+	UGameplayStatics::SpawnEmitterAtLocation(Owner->GetWorld(), JumpAttackParticle, Start);
 
 	bool bHit = GetWorld()->OverlapMultiByChannel(OverlapResults, Start, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(Range), Params);
 	if (bHit)

@@ -78,4 +78,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Stat")
 	float CurrentEnergy;
+
+private:
+	float EnergyRegenTime;
+	float HealthRegenTime;
 };
