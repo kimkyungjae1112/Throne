@@ -156,5 +156,5 @@ private:
 private:
 	class AThronePlayerController* GetPlayerController();
 	void SetAimKnifeData(const uint8 Index);
-	uint8 CurrentAimKnife = 0;
+	uint8 CurrentAimKnife = 1;
 };

@@ -7,10 +7,10 @@
 
 AKnife::AKnife()
 {
-
 	KnifeMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("KnifeMesh"));
-	KnifeMesh->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 	RootComponent = KnifeMesh;
+	
+	KnifeMesh->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> KnifeMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/DARK_C_KNIGHT/MESHES/WEAPONS/KNIFE/SK_DC_Knight_knife_weapon.SK_DC_Knight_knife_weapon'"));
 	if (KnifeMeshRef.Object)
 	{
@@ -22,22 +22,19 @@ AKnife::AKnife()
 	BoxCollision->SetCollisionProfileName(TEXT("Knife"));
 
 	PMC = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement Component"));
-	PMC->SetUpdatedComponent(BoxCollision);
-	PMC->InitialSpeed = 1500.0f;
-	PMC->MaxSpeed = 1500.0f;
+	PMC->UpdatedComponent = KnifeMesh;
+	PMC->InitialSpeed = 1200.0f;
+	PMC->MaxSpeed = 1200.0f;
 	PMC->bRotationFollowsVelocity = true;
+
 }
 
 void AKnife::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
-void AKnife::SetKnifeDirection(const FVector& InDirection)
-{
-	PMC->Velocity = InDirection * PMC->InitialSpeed;
-}
 
 
 

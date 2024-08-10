@@ -4,11 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Interface/KnifeInterface.h"
 #include "Knife.generated.h"
 
 UCLASS()
-class THRONE_API AKnife : public AActor, public IKnifeInterface
+class THRONE_API AKnife : public AActor
 {
 	GENERATED_BODY()
 	
@@ -19,8 +18,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void SetKnifeDirection(const FVector& InDirection);
-
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
@@ -31,4 +28,5 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Projectile")
 	TObjectPtr<class UProjectileMovementComponent> PMC;
+
 };

@@ -12,6 +12,7 @@
 #include "Engine/OverlapResult.h"
 #include "Engine/DamageEvents.h"
 #include "Animation/CharacterAnimInstance.h"
+#include "Player/ThronePlayerController.h"
 
 UAbilityComponent::UAbilityComponent()
 {
@@ -301,4 +302,32 @@ void UAbilityComponent::EndAimKnife()
 	{
 		AnimInstance->bIsAimKnife = false;
 	}
+}
+
+void UAbilityComponent::BeginJumpAttack()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	if (Owner && AnimInstance)
+	{		
+		Owner->DisableInput(PlayerController);		
+		AnimInstance->Montage_Play(JumpAttackMontage);
+
+		FOnMontageEnded MontageEnded;
+		MontageEnded.BindUObject(this, &UAbilityComponent::EndJumpAttack);
+		AnimInstance->Montage_SetEndDelegate(MontageEnded, JumpAttackMontage);
+	}
+}
+
+void UAbilityComponent::EndJumpAttack(class UAnimMontage* Target, bool IsProperlyEnded)
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	ensure(Owner);
+
+	Owner->EnableInput(PlayerController);
+}
+
+void UAbilityComponent::SetPlayerController(AThronePlayerController* InPlayerController)
+{
+	PlayerController = InPlayerController;
 }

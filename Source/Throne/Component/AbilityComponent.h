@@ -57,6 +57,15 @@ public:
 	void BeginAimKnife();
 	void EndAimKnife();
 
+	/* Jump Attack */
+	void BeginJumpAttack();
+	void EndJumpAttack(class UAnimMontage* Target, bool IsProperlyEnded);
+	void SetPlayerController(class AThronePlayerController* InPlayerController);
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class AThronePlayerController> PlayerController;
+
 private:
 	/* Default Attack */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
@@ -80,7 +89,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> SheathOutMontage;
 	
-
+	/* Jump Attack */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> JumpAttackMontage;
 
 private:
 	/* Stat */

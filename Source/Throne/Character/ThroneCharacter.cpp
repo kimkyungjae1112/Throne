@@ -165,12 +165,14 @@ void AThroneCharacter::BeginPlay()
 	
 	SetCharacterControl(CurrentCharacterMode);
 
+	Ability->SetPlayerController(GetPlayerController());
+
 	/* Delegate */
 	Stat->OnHpZero.AddUObject(this, &AThroneCharacter::Death);
 	Ability->OnDefaultAttackUseEnergy.BindUObject(this, &AThroneCharacter::DefaultAttackUseEnergy);
 	Ability->OnOutSheath.BindUObject(this, &AThroneCharacter::AttachWeaponHand);
 	Ability->OnInSheath.BindUObject(this, &AThroneCharacter::AttachWeaponSheath);
-
+	
 }
 
 void AThroneCharacter::Tick(float DeltaTime)
@@ -289,7 +291,14 @@ void AThroneCharacter::LookUp(const FInputActionValue& Value)
 
 void AThroneCharacter::DefaultAttack()
 {
-	Ability->BeginComboAttack();
+	if (!GetCharacterMovement()->IsFalling())
+	{
+		Ability->BeginComboAttack();
+	}
+	else if (GetCharacterMovement()->IsFalling())
+	{
+		Ability->BeginJumpAttack();
+	}
 }
 
 void AThroneCharacter::BeginDefend()
@@ -376,24 +385,23 @@ void AThroneCharacter::FireKnife()
 {
 	if (bIsAiming)
 	{
-		AActor* KnifeActor = GetWorld()->SpawnActor<AKnife>(KnifeClass, KnifeSceneComponent->GetComponentLocation(), KnifeSceneComponent->GetComponentRotation());
-		IKnifeInterface* KnifeInterface = Cast<IKnifeInterface>(KnifeActor);
-		if (KnifeInterface)
-		{
-			KnifeInterface->SetKnifeDirection(GetActorForwardVector());
-		}
-
+		FVector SpawnLocation = GetMesh()->GetSocketLocation(TEXT("weapon_r"));
+		FRotator SpawnRotation = GetMesh()->GetSocketRotation(TEXT("weapon_r"));
+	
+		AKnife* KnifeActor = GetWorld()->SpawnActor<AKnife>(KnifeClass, SpawnLocation, SpawnRotation);
+		KnifeActor->SetOwner(this);
 	}
 }
 
 void AThroneCharacter::Death()
 {
-	Ability->BeginDead();
-	AThronePlayerController* PlayerController = Cast<AThronePlayerController>(GetController());
+	AThronePlayerController* PlayerController = GetPlayerController();	
 	if (PlayerController)
 	{
-		PlayerController->DisableInput(PlayerController);
+		UE_LOG(LogTemp, Display, TEXT("DisableInput 실행"));
+		DisableInput(PlayerController);
 	}
+	Ability->BeginDead();
 }
 
 void AThroneCharacter::DefaultAttackUseEnergy(const float UseEnergy)

@@ -9,7 +9,7 @@
 UCharacterAnimInstance::UCharacterAnimInstance()
 {
 	MovingThreshould = 3.0f;
-	JumpingThreshould = 100.0f;
+	JumpingThreshould = 30.0f;
 	GroundSpeed = 0.0f;
 	bIsIdle = false;
 	bIsJumping = false;
