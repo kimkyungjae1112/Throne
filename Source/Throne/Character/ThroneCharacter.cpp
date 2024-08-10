@@ -290,11 +290,11 @@ void AThroneCharacter::LookUp(const FInputActionValue& Value)
 
 void AThroneCharacter::DefaultAttack()
 {
-	if (!GetCharacterMovement()->IsFalling())
+	if (!GetCharacterMovement()->IsFalling() && Stat->GetCurrentEnergy() >= Ability->DefaultAttackUseEnergy)
 	{
 		Ability->BeginComboAttack();
 	}
-	else if (GetCharacterMovement()->IsFalling())
+	else if (GetCharacterMovement()->IsFalling() && Stat->GetCurrentEnergy() >= Ability->JumpAttackUseEnergy)
 	{
 		Ability->BeginJumpAttack();
 	}
@@ -397,7 +397,6 @@ void AThroneCharacter::Death()
 	AThronePlayerController* PlayerController = GetPlayerController();	
 	if (PlayerController)
 	{
-		UE_LOG(LogTemp, Display, TEXT("DisableInput 실행"));
 		DisableInput(PlayerController);
 	}
 	Ability->BeginDead();
