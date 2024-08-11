@@ -388,6 +388,8 @@ void AThroneCharacter::FireKnife()
 		FRotator SpawnRotation = GetMesh()->GetSocketRotation(TEXT("weapon_r"));
 	
 		AKnife* KnifeActor = GetWorld()->SpawnActor<AKnife>(KnifeClass, SpawnLocation, SpawnRotation);
+		
+		KnifeActor->SetDirection(GetActorForwardVector());
 		KnifeActor->SetOwner(this);
 	}
 }

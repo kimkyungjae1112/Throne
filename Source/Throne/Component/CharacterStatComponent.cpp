@@ -83,13 +83,11 @@ float UCharacterStatComponent::ApplyDamage(float InDamage)
 void UCharacterStatComponent::SetHp(float NewHp)
 {
 	CurrentHp = FMath::Clamp<float>(NewHp, 0.0f, MaxHp);
-	UE_LOG(LogTemp, Display, TEXT("Player Current Hp : %f"), CurrentHp);
 	OnHpChanged.Broadcast(CurrentHp);
 }
 
 void UCharacterStatComponent::SetEnergy(float UsedEnergy)
 {
 	CurrentEnergy -= UsedEnergy;
-	UE_LOG(LogTemp, Display, TEXT("CurrentEnergy : %f"), CurrentEnergy);
 	OnEnergyChanged.Broadcast(CurrentEnergy);
 }

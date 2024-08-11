@@ -18,6 +18,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	void SetDirection(const FVector& InDirection);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
