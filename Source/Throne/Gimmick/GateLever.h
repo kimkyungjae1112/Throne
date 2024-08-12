@@ -7,6 +7,9 @@
 #include "Interface/GateLeverDelegateInterface.h"
 #include "GateLever.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnGateLeverOpen)
+DECLARE_MULTICAST_DELEGATE(FOnGateLeverClose)
+
 UENUM(BlueprintType)
 enum class ELeverType : uint8
 {
@@ -25,13 +28,14 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	virtual void Tick(float DeltaTime) override;
 
-public:
-	void OnTriggerGateLever();
 
 public:
+	static FOnGateLeverOpen OnGateLeverOpen;
+	static FOnGateLeverClose OnGateLeverClose;
+
 	FORCEINLINE ELeverType GetLeverType() const { return CurrentLeverType; }
 	FORCEINLINE bool GetGateLeverFlag() const { return bGateLever; }
 
@@ -41,15 +45,18 @@ public:
 	UFUNCTION()
 	void OnLeverTriggerEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+public:
+	void OnTriggerGateLever();
+
 private:
+	UPROPERTY(VisibleAnywhere, Category = "GateLevel")
+	TObjectPtr<class USkeletalMeshComponent> Mesh;
+
 	UPROPERTY(VisibleAnywhere, Category = "GateLevel")
 	TObjectPtr<USceneComponent> Root;
 
 	UPROPERTY(VisibleAnywhere, Category = "GateLevel")
 	TObjectPtr<class UBoxComponent> BoxCollision;
-
-	UPROPERTY(VisibleAnywhere, Category = "GateLevel")
-	TObjectPtr<class USkeletalMeshComponent> Mesh;
 
 	UPROPERTY(VisibleAnywhere, Category = "GateLevel")
 	TObjectPtr<class UNiagaraComponent> NiagaraComponent;

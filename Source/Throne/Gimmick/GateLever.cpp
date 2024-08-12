@@ -7,10 +7,11 @@
 #include "NiagaraSystem.h"
 #include "Blueprint/UserWidget.h"
 
+FOnGateLeverOpen AGateLever::OnGateLeverOpen;
+FOnGateLeverClose AGateLever::OnGateLeverClose;
+
 AGateLever::AGateLever()
 {
-	PrimaryActorTick.bCanEverTick = true;
-	
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	RootComponent = Root;
 
@@ -52,14 +53,14 @@ AGateLever::AGateLever()
 void AGateLever::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	
+
 }
 
 void AGateLever::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	
 }
 
 void AGateLever::OnTriggerGateLever()
@@ -72,6 +73,7 @@ void AGateLever::OnTriggerGateLever()
 			NiagaraComponent->SetActive(true);
 
 			CurrentLeverType = ELeverType::Open;
+			OnGateLeverOpen.Broadcast();
 		}
 		else if (WidgetPtr->IsInViewport() && CurrentLeverType == ELeverType::Open)
 		{
@@ -79,6 +81,7 @@ void AGateLever::OnTriggerGateLever()
 			NiagaraComponent->SetActive(false);
 
 			CurrentLeverType = ELeverType::Close;
+			OnGateLeverClose.Broadcast();
 		}
 	}
 }
