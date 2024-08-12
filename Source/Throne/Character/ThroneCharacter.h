@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "Interface/HUDWidgetInterface.h"
 #include "Interface/ItemAcquisitionInterface.h"
+#include "Interface/GateLeverDelegateInterface.h"
 #include "ThroneCharacter.generated.h"
 
 UENUM(BlueprintType)
@@ -17,10 +18,10 @@ enum class ECharacterMode : uint8
 };
 
 UCLASS()
-class THRONE_API AThroneCharacter : public ACharacter, public IHUDWidgetInterface, public IItemAcquisitionInterface
+class THRONE_API AThroneCharacter : public ACharacter, public IHUDWidgetInterface, public IItemAcquisitionInterface, public IGateLeverDelegateInterface
 {
 	GENERATED_BODY()
-
+	
 public:
 	AThroneCharacter();
 
@@ -39,8 +40,11 @@ public:
 
 /* Interface */
 	virtual void SetHUD(class UHUDWidget* InHUDWidget) override;
+
 	virtual void BeginOverlapTakeItem(class UItemData* InItemData) override;
 	virtual void EndOverlapTakeItem() override;
+	
+	virtual void SetGateLever(class AGateLever* InGateLever) override;
 
 /* Camera */
 private:
@@ -93,6 +97,7 @@ private:
 	void EndDefend();	//Completed Mouse Right Click
 
 	void AcquisitionItem();	//Started E
+	void GateLeverInteract(); //Started E
 	void Sheath();	//Started Q
 	void AttachWeaponSheath();	//Sheath
 	void AttachWeaponHand();	//Sheath
@@ -101,7 +106,8 @@ private:
 	void EndAimKnife();
 	void FireKnife();	//Stated Mouse Left Click
 
-/* Weapon */
+/* Item */
+//Weapon
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<class USkeletalMeshComponent> Sword;
@@ -121,6 +127,10 @@ private:
 	ECharacterMode CurrentCharacterMode;
 	bool bHasWeapon = false;
 	bool bIsAiming = false;
+
+//Gimmick
+	UPROPERTY(VisibleAnywhere, Category = "Gimmick")
+	TObjectPtr<class AGateLever> GateLever;
 
 /* UI */
 private:
@@ -143,11 +153,12 @@ private:
 private:
 	void Death();
 
-
 /* Data Asset */
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
 	TArray<class UCharacterAimKnifeData*> AimKnifeDatas;
+
+
 
 /* Utility */
 private:

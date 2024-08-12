@@ -66,6 +66,12 @@ public:
 	/* Jump Attack Hit Check*/
 	virtual void JumpAttackDoneHitCheck() override;
 
+	/* Gimmick */
+	void BeginLeverOpen();
+	void EndLeverOpen(class UAnimMontage* Target, bool IsProperlyEnded);
+	void BeginLeverClose();
+	void EndLeverClose(class UAnimMontage* Target, bool IsProperlyEnded);
+
 
 	/* Utility */
 	void SetPlayerController(class AThronePlayerController* InPlayerController);
@@ -109,6 +115,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Effects")
 	TObjectPtr<class UParticleSystem> JumpAttackParticle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> OpenLeverMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> CloseLeverMontage;
 
 private:
 	/* Stat */

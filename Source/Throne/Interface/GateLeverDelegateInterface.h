@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "KnifeInterface.generated.h"
+#include "GateLeverDelegateInterface.generated.h"
+
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UKnifeInterface : public UInterface
+class UGateLeverDelegateInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,11 +17,11 @@ class UKnifeInterface : public UInterface
 /**
  * 
  */
-class THRONE_API IKnifeInterface
+class THRONE_API IGateLeverDelegateInterface
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void SetKnifeDirection(FVector& InDirectino) = 0;
+	virtual void SetGateLever(class AGateLever* InGateLever) = 0;
 };

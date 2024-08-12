@@ -20,7 +20,7 @@
 #include "Character/CharacterControlData.h"
 #include "Character/CharacterAimKnifeData.h"
 #include "Item/Knife.h"
-#include "Interface/KnifeInterface.h"
+#include "Gimmick/GateLever.h"
 
 AThroneCharacter::AThroneCharacter()
 {
@@ -155,7 +155,6 @@ AThroneCharacter::AThroneCharacter()
 	{
 		KnifeClass = KnifeClassRef.Class;
 	}
-
 }
 
 void AThroneCharacter::BeginPlay()
@@ -194,6 +193,7 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Triggered, this, &AThroneCharacter::BeginDefend);
 	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Completed, this, &AThroneCharacter::EndDefend);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::AcquisitionItem);
+	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::GateLeverInteract);
 	EnhancedInputComponent->BindAction(SheathAction, ETriggerEvent::Started, this, &AThroneCharacter::Sheath);
 	EnhancedInputComponent->BindAction(AimKnifeAction, ETriggerEvent::Started, this, &AThroneCharacter::BeginAimKnife);
 	EnhancedInputComponent->BindAction(AimKnifeAction, ETriggerEvent::Completed, this, &AThroneCharacter::EndAimKnife);
@@ -233,6 +233,10 @@ void AThroneCharacter::EndOverlapTakeItem()
 	GetPlayerController()->HideItemInteract();
 }
 
+void AThroneCharacter::SetGateLever(AGateLever* InGateLever)
+{
+	GateLever = InGateLever;
+}
 
 /************* Input *************/
 void AThroneCharacter::ChangeCharacterControl()
@@ -312,7 +316,6 @@ void AThroneCharacter::EndDefend()
 
 void AThroneCharacter::AcquisitionItem()
 {
-	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (bHasWeapon)
 	{
 		return;
@@ -325,8 +328,40 @@ void AThroneCharacter::AcquisitionItem()
 
 		ChangeCharacterControl();
 
+		UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 		AnimInstance->bIsDefault = false;
 		bHasWeapon = true;
+	}
+}
+
+void AThroneCharacter::GateLeverInteract()
+{
+	if (GateLever == nullptr)
+	{
+		return;
+	}
+	if (!GateLever->GetGateLeverFlag())
+	{
+		return;
+	}
+
+	GateLever->OnTriggerGateLever();
+	FVector LeverLocation = GateLever->GetActorLocation();
+	FVector PlayerLocation = LeverLocation + FVector(0.0f, 150.0f, 0.0f);
+	FVector TargetToVector = LeverLocation - PlayerLocation;
+	FRotator TargetRot = FRotationMatrix::MakeFromX(TargetToVector).Rotator();
+
+	SetActorLocation(PlayerLocation);
+	SetActorRotation(TargetRot);
+
+	if (GateLever->GetLeverType() == ELeverType::Open)
+	{
+		Ability->BeginLeverOpen();
+		
+	}
+	else
+	{
+		Ability->BeginLeverClose();
 	}
 }
 

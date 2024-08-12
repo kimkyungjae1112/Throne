@@ -353,6 +353,57 @@ void UAbilityComponent::JumpAttackDoneHitCheck()
 	}
 }
 
+void UAbilityComponent::BeginLeverOpen()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	UE_LOG(LogTemp, Display, TEXT("Begin Lever Open 함수 안1"));
+	if (Owner && AnimInstance)
+	{
+		Owner->DisableInput(PlayerController);
+		AnimInstance->Montage_Play(OpenLeverMontage);
+		UE_LOG(LogTemp, Display, TEXT("Begin Lever Open 함수 안2"));
+
+		FOnMontageEnded MontageEnded;
+		MontageEnded.BindUObject(this, &UAbilityComponent::EndLeverOpen);
+		AnimInstance->Montage_SetEndDelegate(MontageEnded, OpenLeverMontage);
+	}
+}
+
+void UAbilityComponent::EndLeverOpen(class UAnimMontage* Target, bool IsProperlyEnded)
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	ensure(Owner);
+
+	Owner->EnableInput(PlayerController);
+}
+
+void UAbilityComponent::BeginLeverClose()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	UE_LOG(LogTemp, Display, TEXT("Begin Lever Close 함수 안1"));
+	if (Owner && AnimInstance)
+	{
+		Owner->DisableInput(PlayerController);
+		AnimInstance->Montage_Play(CloseLeverMontage);
+		UE_LOG(LogTemp, Display, TEXT("Begin Lever Close 함수 안2"));
+
+		FOnMontageEnded MontageEnded;
+		MontageEnded.BindUObject(this, &UAbilityComponent::EndLeverClose);
+		AnimInstance->Montage_SetEndDelegate(MontageEnded, CloseLeverMontage);
+	}
+}
+
+void UAbilityComponent::EndLeverClose(class UAnimMontage* Target, bool IsProperlyEnded)
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	ensure(Owner);
+
+	Owner->EnableInput(PlayerController);
+}
+
+
 void UAbilityComponent::SetPlayerController(AThronePlayerController* InPlayerController)
 {
 	PlayerController = InPlayerController;
