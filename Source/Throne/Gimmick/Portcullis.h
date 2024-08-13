@@ -32,6 +32,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Portcullis")
 	TObjectPtr<class UStaticMeshComponent> Mesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UCameraShakeBase> CameraShakeClass;
+
 	bool bOpenFlag;
 	bool bCloseFlag;
 	FVector Start;

@@ -3,6 +3,7 @@
 
 #include "Gimmick/Portcullis.h"
 #include "Gimmick/GateLever.h"
+#include "Camera/CameraShakeBase.h"
 
 APortcullis::APortcullis()
 {
@@ -17,6 +18,12 @@ APortcullis::APortcullis()
 	if (MeshRef.Object)
 	{
 		Mesh->SetStaticMesh(MeshRef.Object);
+	}
+
+	static ConstructorHelpers::FClassFinder<UCameraShakeBase> CameraShakeClassRef(TEXT("/Game/DRAGON_CATACOMB/BLUEPRINTS/INTERACTIVE/BP_Camera_shake_basic.BP_Camera_shake_basic_C"));
+	if (CameraShakeClassRef.Class)
+	{
+		CameraShakeClass = CameraShakeClassRef.Class;
 	}
 
 	bOpenFlag = false;
@@ -50,9 +57,8 @@ void APortcullis::Tick(float DeltaTime)
 		if (Current == Target)
 		{
 			bOpenFlag = false;
-			UE_LOG(LogTemp, Display, TEXT("False"));
+			GetWorld()->GetFirstPlayerController()->ClientStopCameraShake(CameraShakeClass);
 		}
-		UE_LOG(LogTemp, Display, TEXT("True"));
 	}
 	if (bCloseFlag)
 	{
@@ -66,26 +72,23 @@ void APortcullis::Tick(float DeltaTime)
 		if (Current == Target)
 		{
 			bCloseFlag = false;
-			UE_LOG(LogTemp, Display, TEXT("False"));
 		}
-		UE_LOG(LogTemp, Display, TEXT("True"));
 	}
 }
 
 void APortcullis::Open()
 {
-	UE_LOG(LogTemp, Display, TEXT("UP"));
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle,
 		[&]()
 		{
 			bOpenFlag = true;
+			GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(CameraShakeClass);
 		}, 3.0f, false);
 }
 
 void APortcullis::Close()
 {
-	UE_LOG(LogTemp, Display, TEXT("DOWNDOWN"));
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle,
 		[&]()
