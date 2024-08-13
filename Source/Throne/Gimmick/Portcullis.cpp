@@ -38,7 +38,7 @@ void APortcullis::BeginPlay()
 	AGateLever::OnGateLeverClose.AddUObject(this, &APortcullis::Close);
 
 	Start = GetActorLocation();
-	MoveTime = 4.0f;
+	MoveTime = 2.0f;
 }
 
 void APortcullis::Tick(float DeltaTime)
@@ -72,6 +72,7 @@ void APortcullis::Tick(float DeltaTime)
 		if (Current == Target)
 		{
 			bCloseFlag = false;
+			GetWorld()->GetFirstPlayerController()->ClientStopCameraShake(CameraShakeClass);
 		}
 	}
 }

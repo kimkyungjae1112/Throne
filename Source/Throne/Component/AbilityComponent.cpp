@@ -359,7 +359,7 @@ void UAbilityComponent::BeginLeverOpen()
 	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
 	if (Owner && AnimInstance)
 	{
-		Owner->DisableInput(PlayerController);
+		//Owner->DisableInput(PlayerController);
 		AnimInstance->Montage_Play(OpenLeverMontage);
 
 		FOnMontageEnded MontageEnded;
@@ -370,10 +370,7 @@ void UAbilityComponent::BeginLeverOpen()
 
 void UAbilityComponent::EndLeverOpen(class UAnimMontage* Target, bool IsProperlyEnded)
 {
-	ACharacter* Owner = Cast<ACharacter>(GetOwner());
-	ensure(Owner);
 
-	Owner->EnableInput(PlayerController);
 }
 
 void UAbilityComponent::BeginLeverClose()
@@ -382,7 +379,6 @@ void UAbilityComponent::BeginLeverClose()
 	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
 	if (Owner && AnimInstance)
 	{
-		Owner->DisableInput(PlayerController);
 		AnimInstance->Montage_Play(CloseLeverMontage);
 
 		FOnMontageEnded MontageEnded;
@@ -393,10 +389,36 @@ void UAbilityComponent::BeginLeverClose()
 
 void UAbilityComponent::EndLeverClose(class UAnimMontage* Target, bool IsProperlyEnded)
 {
-	ACharacter* Owner = Cast<ACharacter>(GetOwner());
-	ensure(Owner);
 
-	Owner->EnableInput(PlayerController);
+}
+
+void UAbilityComponent::BeginDragonGateOpen(EGateType GateType)
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	
+	if (Owner && AnimInstance)
+	{
+		switch (GateType)
+		{
+		case EGateType::Small:
+			AnimInstance->Montage_Play(OpenSmallDragonGateMontage);
+			break;
+		case EGateType::Normal:
+			AnimInstance->Montage_Play(OpenNormalDragonGateMontage);
+			break;
+		case EGateType::Big:
+			AnimInstance->Montage_Play(OpenBigDragonGateMontage);
+			break;
+		default:
+			return;
+		}
+	}
+}
+
+void UAbilityComponent::EndDragonGateOpen(class UAnimMontage* Target, bool IsProperlyEnded)
+{
+
 }
 
 

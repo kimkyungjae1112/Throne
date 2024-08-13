@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Interface/AttackHitCheckInterface.h"
+#include "Gimmick/DragonGate.h"
 #include "AbilityComponent.generated.h"
 
 DECLARE_DELEGATE_OneParam(FOnDefaultAttackUseEnergy, float /* Use Energy */)
@@ -66,12 +67,14 @@ public:
 	/* Jump Attack Hit Check*/
 	virtual void JumpAttackDoneHitCheck() override;
 
-	/* Gimmick */
+	/* Gimmick */ /* 기믹에 있는 End 함수들 없애도 되지만 기능 확장시 필요할 것 같아 남겨둠 */
 	void BeginLeverOpen();
 	void EndLeverOpen(class UAnimMontage* Target, bool IsProperlyEnded);
 	void BeginLeverClose();
 	void EndLeverClose(class UAnimMontage* Target, bool IsProperlyEnded);
 
+	void BeginDragonGateOpen(EGateType GateType);
+	void EndDragonGateOpen(class UAnimMontage* Target, bool IsProperlyEnded);
 
 	/* Utility */
 	void SetPlayerController(class AThronePlayerController* InPlayerController);
@@ -116,11 +119,21 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Effects")
 	TObjectPtr<class UParticleSystem> JumpAttackParticle;
 
+	/* Gimmick */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> OpenLeverMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> CloseLeverMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> OpenSmallDragonGateMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> OpenNormalDragonGateMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> OpenBigDragonGateMontage;
 
 private:
 	/* Stat */

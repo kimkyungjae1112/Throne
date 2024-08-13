@@ -9,6 +9,7 @@
 #include "Interface/ItemAcquisitionInterface.h"
 #include "Interface/GateLeverDelegateInterface.h"
 #include "Interface/DoorInterface.h"
+#include "Interface/DragonGateInterface.h"
 #include "ThroneCharacter.generated.h"
 
 UENUM(BlueprintType)
@@ -19,7 +20,7 @@ enum class ECharacterMode : uint8
 };
 
 UCLASS()
-class THRONE_API AThroneCharacter : public ACharacter, public IHUDWidgetInterface, public IItemAcquisitionInterface, public IGateLeverDelegateInterface, public IDoorInterface
+class THRONE_API AThroneCharacter : public ACharacter, public IHUDWidgetInterface, public IItemAcquisitionInterface, public IGateLeverDelegateInterface, public IDoorInterface, public IDragonGateInterface
 {
 	GENERATED_BODY()
 	
@@ -47,6 +48,7 @@ public:
 	
 	virtual void SetGateLever(class AGateLever* InGateLever) override;
 	virtual void SetDoorPointer(class ADoor* InDoor) override;
+	virtual void SetDragonGate(class ADragonGate* InDragonGate) override;
 
 /* Camera */
 private:
@@ -100,7 +102,8 @@ private:
 
 	void AcquisitionItem();	//Started E
 	void GateLeverInteract(); //Started E
-	void DoorInteract();
+	void DoorInteract(); //Started E
+	void DragonGateInteract(); //Started E
 	void Sheath();	//Started Q
 	void AttachWeaponSheath();	//Sheath
 	void AttachWeaponHand();	//Sheath
@@ -137,6 +140,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Gimmick")
 	TObjectPtr<class ADoor> Door;
+
+	UPROPERTY(VisibleAnywhere, Category = "Gimmick")
+	TObjectPtr<class ADragonGate> DragonGate;
 
 /* UI */
 private:

@@ -22,6 +22,7 @@
 #include "Item/Knife.h"
 #include "Gimmick/GateLever.h"
 #include "Gimmick/Door.h"
+#include "Gimmick/DragonGate.h"
 
 AThroneCharacter::AThroneCharacter()
 {
@@ -196,10 +197,12 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::AcquisitionItem);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::GateLeverInteract);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::DoorInteract);
+	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::DragonGateInteract);
 	EnhancedInputComponent->BindAction(SheathAction, ETriggerEvent::Started, this, &AThroneCharacter::Sheath);
 	EnhancedInputComponent->BindAction(AimKnifeAction, ETriggerEvent::Started, this, &AThroneCharacter::BeginAimKnife);
 	EnhancedInputComponent->BindAction(AimKnifeAction, ETriggerEvent::Completed, this, &AThroneCharacter::EndAimKnife);
 	EnhancedInputComponent->BindAction(FireKnifeAction, ETriggerEvent::Started, this, &AThroneCharacter::FireKnife);
+
 }
 
 float AThroneCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -243,6 +246,11 @@ void AThroneCharacter::SetGateLever(AGateLever* InGateLever)
 void AThroneCharacter::SetDoorPointer(ADoor* InDoor)
 {
 	Door = InDoor;
+}
+
+void AThroneCharacter::SetDragonGate(ADragonGate* InDragonGate)
+{
+	DragonGate = InDragonGate;
 }
 
 /************* Input *************/
@@ -364,7 +372,6 @@ void AThroneCharacter::GateLeverInteract()
 	if (GateLever->GetLeverType() == ELeverType::Open)
 	{
 		Ability->BeginLeverOpen();
-		
 	}
 	else
 	{
@@ -380,6 +387,17 @@ void AThroneCharacter::DoorInteract()
 	}
 
 	Door->OnTriggerDoor();
+}
+
+void AThroneCharacter::DragonGateInteract()
+{
+	if (DragonGate == nullptr)
+	{
+		return;
+	}
+
+	DragonGate->OnDragonGateTrigger();
+	Ability->BeginDragonGateOpen(DragonGate->GetGateType());
 }
 
 void AThroneCharacter::Sheath()
