@@ -8,6 +8,7 @@
 #include "Interface/HUDWidgetInterface.h"
 #include "Interface/ItemAcquisitionInterface.h"
 #include "Interface/GateLeverDelegateInterface.h"
+#include "Interface/DoorInterface.h"
 #include "ThroneCharacter.generated.h"
 
 UENUM(BlueprintType)
@@ -18,7 +19,7 @@ enum class ECharacterMode : uint8
 };
 
 UCLASS()
-class THRONE_API AThroneCharacter : public ACharacter, public IHUDWidgetInterface, public IItemAcquisitionInterface, public IGateLeverDelegateInterface
+class THRONE_API AThroneCharacter : public ACharacter, public IHUDWidgetInterface, public IItemAcquisitionInterface, public IGateLeverDelegateInterface, public IDoorInterface
 {
 	GENERATED_BODY()
 	
@@ -45,6 +46,7 @@ public:
 	virtual void EndOverlapTakeItem() override;
 	
 	virtual void SetGateLever(class AGateLever* InGateLever) override;
+	virtual void SetDoorPointer(class ADoor* InDoor) override;
 
 /* Camera */
 private:
@@ -98,12 +100,13 @@ private:
 
 	void AcquisitionItem();	//Started E
 	void GateLeverInteract(); //Started E
+	void DoorInteract();
 	void Sheath();	//Started Q
 	void AttachWeaponSheath();	//Sheath
 	void AttachWeaponHand();	//Sheath
 
 	void BeginAimKnife(const FInputActionValue& Value);	//Trigger Mouse Right Click
-	void EndAimKnife();
+	void EndAimKnife();	//Completed Mouse Right Click
 	void FireKnife();	//Stated Mouse Left Click
 
 /* Item */
@@ -131,6 +134,9 @@ private:
 //Gimmick
 	UPROPERTY(VisibleAnywhere, Category = "Gimmick")
 	TObjectPtr<class AGateLever> GateLever;
+
+	UPROPERTY(VisibleAnywhere, Category = "Gimmick")
+	TObjectPtr<class ADoor> Door;
 
 /* UI */
 private:

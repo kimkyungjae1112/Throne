@@ -84,7 +84,7 @@ void APortcullis::Open()
 		{
 			bOpenFlag = true;
 			GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(CameraShakeClass);
-		}, 3.0f, false);
+		}, 3.5f, false);
 }
 
 void APortcullis::Close()
@@ -94,6 +94,7 @@ void APortcullis::Close()
 		[&]()
 		{
 			bCloseFlag = true;
-		}, 3.0f, false);
+			GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(CameraShakeClass);
+		}, 3.5f, false);
 }
 

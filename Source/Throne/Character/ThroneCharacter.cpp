@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ // Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Character/ThroneCharacter.h"
@@ -21,6 +21,7 @@
 #include "Character/CharacterAimKnifeData.h"
 #include "Item/Knife.h"
 #include "Gimmick/GateLever.h"
+#include "Gimmick/Door.h"
 
 AThroneCharacter::AThroneCharacter()
 {
@@ -194,6 +195,7 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(DefendAction, ETriggerEvent::Completed, this, &AThroneCharacter::EndDefend);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::AcquisitionItem);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::GateLeverInteract);
+	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::DoorInteract);
 	EnhancedInputComponent->BindAction(SheathAction, ETriggerEvent::Started, this, &AThroneCharacter::Sheath);
 	EnhancedInputComponent->BindAction(AimKnifeAction, ETriggerEvent::Started, this, &AThroneCharacter::BeginAimKnife);
 	EnhancedInputComponent->BindAction(AimKnifeAction, ETriggerEvent::Completed, this, &AThroneCharacter::EndAimKnife);
@@ -236,6 +238,11 @@ void AThroneCharacter::EndOverlapTakeItem()
 void AThroneCharacter::SetGateLever(AGateLever* InGateLever)
 {
 	GateLever = InGateLever;
+}
+
+void AThroneCharacter::SetDoorPointer(ADoor* InDoor)
+{
+	Door = InDoor;
 }
 
 /************* Input *************/
@@ -363,6 +370,16 @@ void AThroneCharacter::GateLeverInteract()
 	{
 		Ability->BeginLeverClose();
 	}
+}
+
+void AThroneCharacter::DoorInteract()
+{
+	if (Door == nullptr)
+	{
+		return;
+	}
+
+	Door->OnTriggerDoor();
 }
 
 void AThroneCharacter::Sheath()
