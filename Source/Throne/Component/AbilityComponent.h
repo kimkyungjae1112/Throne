@@ -142,5 +142,4 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data Asset", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCharacterAimKnifeData> AimData;
-
 };

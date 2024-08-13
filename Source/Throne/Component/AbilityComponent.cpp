@@ -359,7 +359,6 @@ void UAbilityComponent::BeginLeverOpen()
 	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
 	if (Owner && AnimInstance)
 	{
-		//Owner->DisableInput(PlayerController);
 		AnimInstance->Montage_Play(OpenLeverMontage);
 
 		FOnMontageEnded MontageEnded;
@@ -414,11 +413,11 @@ void UAbilityComponent::BeginDragonGateOpen(EGateType GateType)
 			return;
 		}
 	}
+
 }
 
 void UAbilityComponent::EndDragonGateOpen(class UAnimMontage* Target, bool IsProperlyEnded)
 {
-
 }
 
 

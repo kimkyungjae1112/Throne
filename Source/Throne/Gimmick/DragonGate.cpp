@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Interface/DragonGateInterface.h"
+#include "Camera/CameraShakeBase.h"
 
 ADragonGate::ADragonGate()
 {
@@ -27,6 +28,12 @@ ADragonGate::ADragonGate()
 	if (WidgetClassRef.Class)
 	{
 		WidgetClass = WidgetClassRef.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UCameraShakeBase> CameraShakeClassRef(TEXT("/Game/DRAGON_CATACOMB/BLUEPRINTS/INTERACTIVE/BP_Camera_shake_basic.BP_Camera_shake_basic_C"));
+	if (CameraShakeClassRef.Class)
+	{
+		CameraShakeClass = CameraShakeClassRef.Class;
 	}
 }
 
@@ -79,5 +86,13 @@ void ADragonGate::OnDragonGateTrigger()
 	}
 
 	Mesh->PlayAnimation(OpenAnimation, false);
+	GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(CameraShakeClass);
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle,
+		[&]()
+		{
+			GetWorld()->GetFirstPlayerController()->ClientStopCameraShake(CameraShakeClass);
+		}, 3.0f, false);
 }
 

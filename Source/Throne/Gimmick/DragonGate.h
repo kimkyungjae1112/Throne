@@ -60,4 +60,10 @@ private:
 
 	UPROPERTY(EditInstanceOnly, Category = "Instance")
 	EGateType CurrentType;
+
+private:
+	/* Camera */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UCameraShakeBase> CameraShakeClass;
+
 };
