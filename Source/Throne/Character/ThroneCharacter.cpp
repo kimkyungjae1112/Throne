@@ -407,6 +407,8 @@ void AThroneCharacter::BeginAimKnife(const FInputActionValue& Value)
 
 void AThroneCharacter::EndAimKnife()
 {
+	bIsAiming = false;
+
 	Ability->EndAimKnife();
 	CurrentAimKnife = 1;
 	SetAimKnifeData(CurrentAimKnife);
