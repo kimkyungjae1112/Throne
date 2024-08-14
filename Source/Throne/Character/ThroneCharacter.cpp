@@ -398,6 +398,14 @@ void AThroneCharacter::DragonGateInteract()
 
 	DragonGate->OnDragonGateTrigger();
 	Ability->BeginDragonGateOpen(DragonGate->GetGateType());
+
+	FVector GateLocation = DragonGate->GetActorLocation();
+	FVector PlayerLocation = GateLocation - FVector(0.0f, 20.0f, 0.0f);
+	FVector TargetToVector = GateLocation - PlayerLocation;
+	FRotator TargetRot = FRotationMatrix::MakeFromX(TargetToVector).Rotator();
+
+	SetActorLocation(PlayerLocation);
+	SetActorRotation(TargetRot);
 }
 
 void AThroneCharacter::Sheath()
