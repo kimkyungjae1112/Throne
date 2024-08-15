@@ -35,6 +35,9 @@ ADragonGate::ADragonGate()
 	{
 		CameraShakeClass = CameraShakeClassRef.Class;
 	}
+
+	InteractPos = CreateDefaultSubobject<USceneComponent>(TEXT("Interact Pos"));
+	InteractPos->SetupAttachment(Root);
 }
 
 void ADragonGate::BeginPlay()

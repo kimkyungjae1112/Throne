@@ -361,10 +361,6 @@ void AThroneCharacter::GateLeverInteract()
 	}
 
 	GateLever->OnTriggerGateLever();
-	//FVector LeverLocation = GateLever->GetActorLocation();
-	//FVector PlayerLocation = GetActorLocation();
-	//FVector TargetToVector = LeverLocation - PlayerLocation;
-	//FRotator TargetRot = FRotationMatrix::MakeFromX(TargetToVector).Rotator();
 
 	float X = GateLever->GetInteractLocation().X;
 	float Y = GateLever->GetInteractLocation().Y;
@@ -401,13 +397,11 @@ void AThroneCharacter::DragonGateInteract()
 	DragonGate->OnDragonGateTrigger();
 	Ability->BeginDragonGateOpen(DragonGate->GetGateType());
 
-	FVector GateLocation = DragonGate->GetActorLocation();
-	FVector PlayerLocation = GateLocation - FVector(0.0f, 20.0f, 0.0f);
-	FVector TargetToVector = GateLocation - PlayerLocation;
-	FRotator TargetRot = FRotationMatrix::MakeFromX(TargetToVector).Rotator();
+	float X = DragonGate->GetInteractLocation().X;
+	float Y = DragonGate->GetInteractLocation().Y;
 
-	SetActorLocation(PlayerLocation);
-	SetActorRotation(TargetRot);
+	SetActorLocation(FVector(X, Y, GetActorLocation().Z));
+	SetActorRotation(DragonGate->GetInteractRotation());
 }
 
 void AThroneCharacter::Sheath()

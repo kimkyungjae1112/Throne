@@ -30,6 +30,8 @@ public:
 
 public:
 	FORCEINLINE EGateType GetGateType() const { return CurrentType; }
+	FORCEINLINE FVector GetInteractLocation() const { return InteractPos->GetComponentLocation(); }
+	FORCEINLINE FRotator GetInteractRotation() const { return InteractPos->GetComponentRotation(); }
 
 	UFUNCTION()
 	void OnDragonGateBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -57,6 +59,9 @@ private:
 
 	UPROPERTY(EditInstanceOnly, Category = "Instance")
 	TObjectPtr<class UAnimationAsset> OpenAnimation;
+
+	UPROPERTY(EditAnywhere, Category = "Interact")
+	TObjectPtr<USceneComponent> InteractPos;
 
 	UPROPERTY(EditInstanceOnly, Category = "Instance")
 	EGateType CurrentType;
