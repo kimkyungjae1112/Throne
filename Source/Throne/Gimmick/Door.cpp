@@ -140,6 +140,8 @@ void ADoor::OnDoorEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* O
 	{
 		WidgetPtr->RemoveFromViewport();
 	}
+
+	bDoorFlag = false;
 }
 
 void ADoor::OnTriggerDoor()
