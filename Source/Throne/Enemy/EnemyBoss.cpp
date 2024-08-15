@@ -47,6 +47,13 @@ AEnemyBoss::AEnemyBoss()
 		ThroneWidgetComponent->SetWidgetClass(WidgetClassRef.Class);
 	}
 
+	/* UI */
+	static ConstructorHelpers::FClassFinder<UBossHpBarWidget> BossHpBarWidgetClassRef(TEXT("/Game/Throne/UI/WBP_BossHpBar.WBP_BossHpBar_C"));
+	if (BossHpBarWidgetClassRef.Class)
+	{
+		BossHpBarWidgetClass = BossHpBarWidgetClassRef.Class;
+	}
+
 	/* Character Movement */
 	GetCharacterMovement()->MaxWalkSpeed = Stat->GetMoveSpeed();
 }
@@ -57,6 +64,7 @@ void AEnemyBoss::BeginPlay()
 
 	Stat->OnHpZero.AddUObject(this, &AEnemyBoss::SetDead);
 
+	SetUI();
 }
 
 /* AI Interface */
@@ -151,19 +159,6 @@ void AEnemyBoss::JumpAttackDoneHitCheck()
 {
 }
 
-/* Interface */
-void AEnemyBoss::SetWidget(UBossHpBarWidget* InBossHpBarWidget)
-{
-	BossHpBarWidget = InBossHpBarWidget;
-	
-	if(BossHpBarWidget)
-	{
-		BossHpBarWidget->SetMaxHp(Stat->GetMaxHp());
-		BossHpBarWidget->UpdateHpBar(Stat->GetCurrentHp());
-		Stat->OnHpChanged.AddUObject(BossHpBarWidget, &UBossHpBarWidget::UpdateHpBar);
-	}
-}
-
 void AEnemyBoss::SetDead()
 {
 	UAnimInstance* AnimInstacne = GetMesh()->GetAnimInstance();
@@ -176,4 +171,17 @@ void AEnemyBoss::SetDead()
 		AnimInstacne->Montage_Play(DeadMontage);
 		SetActorEnableCollision(false);
 	}
+}
+
+void AEnemyBoss::SetUI()
+{
+	BossHpBarWidgetPtr = CreateWidget<UBossHpBarWidget>(GetWorld(), BossHpBarWidgetClass);
+	if (BossHpBarWidgetPtr)
+	{
+		BossHpBarWidgetPtr->SetMaxHp(Stat->GetMaxHp());
+		BossHpBarWidgetPtr->UpdateHpBar(Stat->GetCurrentHp());
+		Stat->OnHpChanged.AddUObject(BossHpBarWidgetPtr, &UBossHpBarWidget::UpdateHpBar);
+	}
+
+	BossHpBarWidgetPtr->AddToViewport();
 }

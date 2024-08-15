@@ -66,10 +66,10 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "GateLevel")
 	TObjectPtr<class UNiagaraSystem> NiagaraAsset;
 	
-	UPROPERTY(VisibleAnywhere, Category = "GateLevel")
+	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TObjectPtr<class UUserWidget> WidgetPtr;
 
-	UPROPERTY(VisibleAnywhere, Category = "GateLevel")
+	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TSubclassOf<class UUserWidget> WidgetClass;
 
 	UPROPERTY(EditAnywhere, Category = "GateLevel")

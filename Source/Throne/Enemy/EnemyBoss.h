@@ -5,14 +5,13 @@
 #include "CoreMinimal.h"
 #include "Enemy/Enemy.h"
 #include "Interface/AttackHitCheckInterface.h"
-#include "Interface/BossWidgetInterface.h"
 #include "EnemyBoss.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THRONE_API AEnemyBoss : public AEnemy, public IAttackHitCheckInterface, public IBossWidgetInterface
+class THRONE_API AEnemyBoss : public AEnemy, public IAttackHitCheckInterface
 {
 	GENERATED_BODY()
 	
@@ -37,7 +36,6 @@ public:
 	void AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange, const FColor& Color);
 
 	virtual void JumpAttackDoneHitCheck() override;
-	virtual void SetWidget(class UBossHpBarWidget* InBossHpBarWidget) override;
 
 
 /* Item */
@@ -67,5 +65,10 @@ private:
 	TObjectPtr<class UThroneWidgetComponent> ThroneWidgetComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "UI")
-	TObjectPtr<class UBossHpBarWidget> BossHpBarWidget;
+	TObjectPtr<class UBossHpBarWidget> BossHpBarWidgetPtr;
+
+	UPROPERTY(VisibleAnywhere, Category = "UI")
+	TSubclassOf<class UBossHpBarWidget> BossHpBarWidgetClass;
+
+	void SetUI();
 };

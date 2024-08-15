@@ -3,7 +3,6 @@
 
 #include "UI/BossHpBarWidget.h"
 #include "Components/ProgressBar.h"
-#include "Interface/BossWidgetInterface.h"
 
 UBossHpBarWidget::UBossHpBarWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -15,18 +14,25 @@ void UBossHpBarWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	HpBarPtr = Cast<UProgressBar>(GetWidgetFromName(TEXT("HpBar")));
-	ensure(HpBarPtr);
-
-	IBossWidgetInterface* HpBarInterface = Cast<IBossWidgetInterface>(OwningActor);
-	if (HpBarInterface)
+	if (!HpBarPtr)
 	{
-		HpBarInterface->SetWidget(this);
+		UE_LOG(LogTemp, Error, TEXT("HpBarPtr is NULL. Ensure that the widget named 'HpBar' exists in the UMG widget tree."));
+		HpBarPtr->SetPercent(1.0f);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HpBarPtr successfully initialized."));
 	}
 }
 
 void UBossHpBarWidget::UpdateHpBar(float NewHp)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Update HpBar "));
-	UE_LOG(LogTemp, Warning, TEXT("MaxHp : %f"), MaxHp);
-	HpBarPtr->SetPercent(NewHp / MaxHp);	
+	if (HpBarPtr)
+	{
+		HpBarPtr->SetPercent(NewHp / MaxHp);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("HpBarPtr is NULL. Cannot update HP bar."));
+	}
 }

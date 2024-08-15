@@ -29,7 +29,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Actor")
 	TObjectPtr<AActor> OwningActor;
 
-	UPROPERTY(VisibleAnywhere, Category = "HpBar")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widget", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UProgressBar> HpBarPtr;
 
 	float MaxHp;
