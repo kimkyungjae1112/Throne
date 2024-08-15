@@ -14,15 +14,9 @@ void UBossHpBarWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	HpBarPtr = Cast<UProgressBar>(GetWidgetFromName(TEXT("HpBar")));
-	if (!HpBarPtr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("HpBarPtr is NULL. Ensure that the widget named 'HpBar' exists in the UMG widget tree."));
-		HpBarPtr->SetPercent(1.0f);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("HpBarPtr successfully initialized."));
-	}
+	ensure(HpBarPtr);
+
+	HpBarPtr->SetPercent(1.0f);
 }
 
 void UBossHpBarWidget::UpdateHpBar(float NewHp)

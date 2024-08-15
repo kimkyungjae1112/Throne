@@ -181,7 +181,6 @@ void AEnemyBoss::SetUI()
 		BossHpBarWidgetPtr->SetMaxHp(Stat->GetMaxHp());
 		BossHpBarWidgetPtr->UpdateHpBar(Stat->GetCurrentHp());
 		Stat->OnHpChanged.AddUObject(BossHpBarWidgetPtr, &UBossHpBarWidget::UpdateHpBar);
+		BossHpBarWidgetPtr->AddToViewport();
 	}
-
-	BossHpBarWidgetPtr->AddToViewport();
 }
