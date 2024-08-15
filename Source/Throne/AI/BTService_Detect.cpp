@@ -48,6 +48,10 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 		{
 			APawn* TargetPawn = Cast<APawn>(OverlapResult.GetActor());
 			OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("Target"), TargetPawn);
+		
+			DrawDebugSphere(GetWorld(), Origin, Detect, 16, FColor::Green, false, 1.5f);
+			DrawDebugLine(GetWorld(), Origin, TargetPawn->GetActorLocation(), FColor::Green, false, 1.5f);
+
 			return;
 		}
 	}

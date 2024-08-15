@@ -62,9 +62,6 @@ private:
 
 	//UI
 	UPROPERTY(VisibleAnywhere, Category = "UI")
-	TObjectPtr<class UThroneWidgetComponent> ThroneWidgetComponent;
-
-	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TObjectPtr<class UBossHpBarWidget> BossHpBarWidgetPtr;
 
 	UPROPERTY(VisibleAnywhere, Category = "UI")

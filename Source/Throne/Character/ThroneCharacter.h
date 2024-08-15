@@ -157,7 +157,7 @@ private:
 	TObjectPtr<class UAbilityComponent> Ability;
 
 //Stat
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCharacterStatComponent> Stat;
 
 

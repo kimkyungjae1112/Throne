@@ -129,7 +129,7 @@ void UAbilityComponent::DefaultAttackHitCheck()
 	FCollisionQueryParams Params(NAME_None, false, Owner);
 
 	TArray<FOverlapResult> OverlapResults;
-	bool bHit = GetWorld()->OverlapMultiByChannel(OverlapResults, Start, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(AttackRange), Params);
+	bool bHit = GetWorld()->OverlapMultiByChannel(OverlapResults, Start, FQuat::Identity, ECC_GameTraceChannel2, FCollisionShape::MakeSphere(AttackRange), Params);
 	if (bHit)
 	{
 		for (auto const& OverlapResult : OverlapResults)
@@ -342,7 +342,7 @@ void UAbilityComponent::JumpAttackDoneHitCheck()
 
 	UGameplayStatics::SpawnEmitterAtLocation(Owner->GetWorld(), JumpAttackParticle, Start);
 
-	bool bHit = GetWorld()->OverlapMultiByChannel(OverlapResults, Start, FQuat::Identity, ECC_GameTraceChannel1, FCollisionShape::MakeSphere(Range), Params);
+	bool bHit = GetWorld()->OverlapMultiByChannel(OverlapResults, Start, FQuat::Identity, ECC_GameTraceChannel2, FCollisionShape::MakeSphere(Range), Params);
 	if (bHit)
 	{
 		for (auto const& OverlapResult : OverlapResults)

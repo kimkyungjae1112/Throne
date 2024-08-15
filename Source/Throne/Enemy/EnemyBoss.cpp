@@ -38,14 +38,6 @@ AEnemyBoss::AEnemyBoss()
 
 	/* Components */
 	Stat = CreateDefaultSubobject<UEnemyStatComponent>(TEXT("Stat Component"));
-	ThroneWidgetComponent = CreateDefaultSubobject<UThroneWidgetComponent>(TEXT("Widget Component"));
-	ThroneWidgetComponent->SetupAttachment(RootComponent);
-
-	static ConstructorHelpers::FClassFinder<UBossHpBarWidget> WidgetClassRef(TEXT("/Game/Throne/UI/WBP_BossHpBar.WBP_BossHpBar_C"));
-	if (WidgetClassRef.Class)
-	{
-		ThroneWidgetComponent->SetWidgetClass(WidgetClassRef.Class);
-	}
 
 	/* UI */
 	static ConstructorHelpers::FClassFinder<UBossHpBarWidget> BossHpBarWidgetClassRef(TEXT("/Game/Throne/UI/WBP_BossHpBar.WBP_BossHpBar_C"));
