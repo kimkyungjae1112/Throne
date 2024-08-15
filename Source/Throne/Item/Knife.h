@@ -20,6 +20,9 @@ protected:
 public:
 	void SetDirection(const FVector& InDirection);
 
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
 	TObjectPtr<class USkeletalMeshComponent> KnifeMesh;
