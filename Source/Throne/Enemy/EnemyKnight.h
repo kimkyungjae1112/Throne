@@ -20,6 +20,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+/* AI Interface */
+public:
+	virtual void AttackByAI(class UAnimMontage* InAnimMontage) override;
+
 /* Overriding */
 public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
@@ -32,9 +36,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UEnemyStatComponent> Stat;
 
+
+/* Animation */
+private:
+	//Montage
 	UPROPERTY(EditAnywhere, Category = "Montage")
 	TObjectPtr<class UAnimMontage> DeadMontage;
 
-private:
+	UPROPERTY(EditAnywhere, Category = "Montage")
+	TObjectPtr<class UAnimMontage> AttackMontage;
+
+	//Animation Function
 	void SetDead();
 };

@@ -41,6 +41,11 @@ void AEnemyKnight::BeginPlay()
 	Stat->OnHpZero.AddUObject(this, &AEnemyKnight::SetDead);
 }
 
+void AEnemyKnight::AttackByAI(UAnimMontage* InAnimMontage)
+{
+	Super::AttackByAI(AttackMontage);
+}
+
 float AEnemyKnight::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Stat->ApplyDamage(Damage);
