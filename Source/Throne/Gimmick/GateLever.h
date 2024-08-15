@@ -38,6 +38,8 @@ public:
 
 	FORCEINLINE ELeverType GetLeverType() const { return CurrentLeverType; }
 	FORCEINLINE bool GetGateLeverFlag() const { return bGateLever; }
+	FORCEINLINE FVector GetInteractLocation() const { return InteractLocation->GetComponentLocation(); }
+	FORCEINLINE FRotator GetInteractRotation() const { return InteractLocation->GetComponentRotation(); }
 
 	UFUNCTION()
 	void OnLeverTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -69,6 +71,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "GateLevel")
 	TSubclassOf<class UUserWidget> WidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "GateLevel")
+	TObjectPtr<USceneComponent> InteractLocation;
 
 	ELeverType CurrentLeverType;
 

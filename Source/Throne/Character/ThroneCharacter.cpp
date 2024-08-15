@@ -361,13 +361,15 @@ void AThroneCharacter::GateLeverInteract()
 	}
 
 	GateLever->OnTriggerGateLever();
-	FVector LeverLocation = GateLever->GetActorLocation();
-	FVector PlayerLocation = LeverLocation + FVector(0.0f, 150.0f, 0.0f);
-	FVector TargetToVector = LeverLocation - PlayerLocation;
-	FRotator TargetRot = FRotationMatrix::MakeFromX(TargetToVector).Rotator();
+	//FVector LeverLocation = GateLever->GetActorLocation();
+	//FVector PlayerLocation = GetActorLocation();
+	//FVector TargetToVector = LeverLocation - PlayerLocation;
+	//FRotator TargetRot = FRotationMatrix::MakeFromX(TargetToVector).Rotator();
 
-	SetActorLocation(PlayerLocation);
-	SetActorRotation(TargetRot);
+	float X = GateLever->GetInteractLocation().X;
+	float Y = GateLever->GetInteractLocation().Y;
+	SetActorLocation(FVector(X, Y, GetActorLocation().Z));
+	SetActorRotation(GateLever->GetInteractRotation());
 
 	if (GateLever->GetLeverType() == ELeverType::Open)
 	{

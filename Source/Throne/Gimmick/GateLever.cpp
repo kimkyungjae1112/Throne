@@ -46,6 +46,9 @@ AGateLever::AGateLever()
 		WidgetClass = WidgetClassRef.Class;
 	}
 
+	InteractLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Interact"));
+	InteractLocation->SetupAttachment(Root);
+
 	CurrentLeverType = ELeverType::Close;
 	bGateLever = false;
 }

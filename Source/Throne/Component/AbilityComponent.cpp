@@ -359,6 +359,7 @@ void UAbilityComponent::BeginLeverOpen()
 	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
 	if (Owner && AnimInstance)
 	{
+		Owner->SetActorEnableCollision(false);
 		AnimInstance->Montage_Play(OpenLeverMontage);
 
 		FOnMontageEnded MontageEnded;
@@ -369,7 +370,12 @@ void UAbilityComponent::BeginLeverOpen()
 
 void UAbilityComponent::EndLeverOpen(class UAnimMontage* Target, bool IsProperlyEnded)
 {
-
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	if (Owner && AnimInstance)
+	{
+		Owner->SetActorEnableCollision(true);
+	}
 }
 
 void UAbilityComponent::BeginLeverClose()
@@ -378,6 +384,7 @@ void UAbilityComponent::BeginLeverClose()
 	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
 	if (Owner && AnimInstance)
 	{
+		Owner->SetActorEnableCollision(false);
 		AnimInstance->Montage_Play(CloseLeverMontage);
 
 		FOnMontageEnded MontageEnded;
@@ -388,7 +395,12 @@ void UAbilityComponent::BeginLeverClose()
 
 void UAbilityComponent::EndLeverClose(class UAnimMontage* Target, bool IsProperlyEnded)
 {
-
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	if (Owner && AnimInstance)
+	{
+		Owner->SetActorEnableCollision(true);
+	}
 }
 
 void UAbilityComponent::BeginDragonGateOpen(EGateType GateType)
