@@ -54,6 +54,15 @@ public:
 	uint8 bIsAimKnife : 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")
+	uint8 bCanClimbingLadder : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")
+	uint8 bCanClimbUp : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")
+	uint8 bCanClimbDown : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")
 	FVector Velocity;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Var")
