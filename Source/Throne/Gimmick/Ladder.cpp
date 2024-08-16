@@ -4,6 +4,8 @@
 #include "Gimmick/Ladder.h"
 #include "Components/BoxComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Animation/CharacterAnimInstance.h"
+#include "Interface/LadderInterface.h"
 
 ALadder::ALadder()
 {
@@ -76,6 +78,12 @@ void ALadder::OnLadderBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	{
 		WidgetPtr->AddToViewport();
 	}
+
+	ILadderInterface* Interface = Cast<ILadderInterface>(OtherActor);
+	if (Interface)
+	{
+		Interface->SetLadder(this);
+	}
 }
 
 void ALadder::OnLadderEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -84,5 +92,15 @@ void ALadder::OnLadderEndOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	{
 		WidgetPtr->RemoveFromViewport();
 	}
+
+	ILadderInterface* Interface = Cast<ILadderInterface>(OtherActor);
+	if (Interface)
+	{
+		Interface->SetLadder(nullptr);
+	}
+}
+
+void ALadder::OnLadderClimb()
+{
 }
 

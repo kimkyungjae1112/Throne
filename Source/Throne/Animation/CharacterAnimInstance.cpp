@@ -17,6 +17,9 @@ UCharacterAnimInstance::UCharacterAnimInstance()
 	bIsShield = false;
 	bIsDefault = true;
 	bIsAimKnife = false;
+	bCanClimbingLadder = false;
+	bCanClimbUp = false;
+	bCanClimbDown = false;
 	Velocity = FVector::Zero();
 	Angle = FVector::Zero();
 }
@@ -44,5 +47,29 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsIdle = MovingThreshould > Velocity.Size2D();
 		bIsFalling = Movement->IsFalling();
 		bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
+	}
+
+	if (bCanClimbingLadder)
+	{
+		if (Velocity.Z > 0.0f)
+		{
+			bCanClimbUp = true;
+			bCanClimbDown = false;
+		}
+		else if (Velocity.Z < 0.0f)
+		{
+			bCanClimbUp = false;
+			bCanClimbDown = true;
+		}
+		else
+		{
+			bCanClimbUp = false;
+			bCanClimbDown = false;
+		}
+	}
+	else
+	{
+		bCanClimbUp = false;
+		bCanClimbDown = false;
 	}
 }

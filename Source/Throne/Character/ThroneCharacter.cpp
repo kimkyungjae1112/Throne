@@ -23,6 +23,7 @@
 #include "Gimmick/GateLever.h"
 #include "Gimmick/Door.h"
 #include "Gimmick/DragonGate.h"
+#include "Gimmick/Ladder.h"
 
 AThroneCharacter::AThroneCharacter()
 {
@@ -78,10 +79,20 @@ AThroneCharacter::AThroneCharacter()
 	{
 		CharacterControlManager.Add(ECharacterMode::HoldWeapon, HoldWeaponModeRef.Object);
 	}
+	static ConstructorHelpers::FObjectFinder<UCharacterControlData> LadderModeRef(TEXT("/Script/Throne.CharacterControlData'/Game/Throne/Character/Data/DA_LadderControl.DA_LadderControl'"));
+	if (LadderModeRef.Object)
+	{
+		CharacterControlManager.Add(ECharacterMode::Ladder, LadderModeRef.Object);
+	}
 	static ConstructorHelpers::FObjectFinder<UInputAction> MoveActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_Move.IA_Move'"));
 	if (MoveActionRef.Object)
 	{
 		MoveAction = MoveActionRef.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<UInputAction> MoveLadderActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_MoveLadder.IA_MoveLadder'"));
+	if (MoveLadderActionRef.Object)
+	{
+		MoveLadderAction = MoveLadderActionRef.Object;
 	}
 	static ConstructorHelpers::FObjectFinder<UInputAction> LookUpActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_LookUp.IA_LookUp'"));
 	if (LookUpActionRef.Object)
@@ -187,6 +198,7 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
 
+	EnhancedInputComponent->BindAction(MoveLadderAction, ETriggerEvent::Triggered, this, &AThroneCharacter::MoveLadder);
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AThroneCharacter::Move);
 	EnhancedInputComponent->BindAction(LookUpAction, ETriggerEvent::Triggered, this, &AThroneCharacter::LookUp);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
@@ -198,6 +210,7 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::GateLeverInteract);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::DoorInteract);
 	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::DragonGateInteract);
+	EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AThroneCharacter::LadderInteract);
 	EnhancedInputComponent->BindAction(SheathAction, ETriggerEvent::Started, this, &AThroneCharacter::Sheath);
 	EnhancedInputComponent->BindAction(AimKnifeAction, ETriggerEvent::Started, this, &AThroneCharacter::BeginAimKnife);
 	EnhancedInputComponent->BindAction(AimKnifeAction, ETriggerEvent::Completed, this, &AThroneCharacter::EndAimKnife);
@@ -253,6 +266,11 @@ void AThroneCharacter::SetDragonGate(ADragonGate* InDragonGate)
 	DragonGate = InDragonGate;
 }
 
+void AThroneCharacter::SetLadder(ALadder* InLadder)
+{
+	Ladder = InLadder;
+}
+
 /************* Input *************/
 void AThroneCharacter::ChangeCharacterControl()
 {
@@ -297,6 +315,15 @@ void AThroneCharacter::Move(const FInputActionValue& Value)
 
 	AddMovementInput(ForwardDirection, InputValue.X);
 	AddMovementInput(RightDirection, InputValue.Y);
+}
+
+void AThroneCharacter::MoveLadder(const FInputActionValue& Value)
+{
+	float InputValue = Value.Get<float>();
+	FVector Direction = GetActorUpVector() * InputValue;
+
+
+	AddMovementInput(Direction);
 }
 
 void AThroneCharacter::LookUp(const FInputActionValue& Value)
@@ -402,6 +429,26 @@ void AThroneCharacter::DragonGateInteract()
 
 	SetActorLocation(FVector(X, Y, GetActorLocation().Z));
 	SetActorRotation(DragonGate->GetInteractRotation());
+}
+
+void AThroneCharacter::LadderInteract()
+{
+	if (Ladder == nullptr)
+	{
+		return;
+	}
+
+	Ladder->OnLadderClimb();
+
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		SetCharacterControl(ECharacterMode::Ladder);
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
+		GetCharacterMovement()->MaxFlySpeed = 100.0f;
+		GetCharacterMovement()->BrakingDecelerationFlying = 2048.0f;
+		AnimInstance->bCanClimbingLadder = ~AnimInstance->bCanClimbingLadder;
+	}
 }
 
 void AThroneCharacter::Sheath()

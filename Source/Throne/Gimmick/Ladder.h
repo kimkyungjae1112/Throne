@@ -27,6 +27,8 @@ public:
 	UFUNCTION()
 	void OnLadderEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	void OnLadderClimb();
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
 	TObjectPtr<USceneComponent> Root;

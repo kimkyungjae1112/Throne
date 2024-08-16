@@ -10,17 +10,19 @@
 #include "Interface/GateLeverDelegateInterface.h"
 #include "Interface/DoorInterface.h"
 #include "Interface/DragonGateInterface.h"
+#include "Interface/LadderInterface.h"
 #include "ThroneCharacter.generated.h"
 
 UENUM(BlueprintType)
 enum class ECharacterMode : uint8
 {
 	Default = 0,
-	HoldWeapon
+	HoldWeapon,
+	Ladder
 };
 
 UCLASS()
-class THRONE_API AThroneCharacter : public ACharacter, public IHUDWidgetInterface, public IItemAcquisitionInterface, public IGateLeverDelegateInterface, public IDoorInterface, public IDragonGateInterface
+class THRONE_API AThroneCharacter : public ACharacter, public IHUDWidgetInterface, public IItemAcquisitionInterface, public IGateLeverDelegateInterface, public IDoorInterface, public IDragonGateInterface, public ILadderInterface
 {
 	GENERATED_BODY()
 	
@@ -49,6 +51,7 @@ public:
 	virtual void SetGateLever(class AGateLever* InGateLever) override;
 	virtual void SetDoorPointer(class ADoor* InDoor) override;
 	virtual void SetDragonGate(class ADragonGate* InDragonGate) override;
+	virtual void SetLadder(class ALadder* InLadder) override;
 
 /* Camera */
 private:
@@ -69,6 +72,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> MoveAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> MoveLadderAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> LookUpAction;
@@ -95,6 +101,7 @@ private:
 	TObjectPtr<class UInputAction> FireKnifeAction;
 
 	void Move(const FInputActionValue& Value);	//Triggered WASD
+	void MoveLadder(const FInputActionValue& Value); //Triggerd WS
 	void LookUp(const FInputActionValue& Value);	//Tirggered Mouse 2D Axis
 	void DefaultAttack();	//Started Mouse Left Click
 	void BeginDefend();	//Triggerd Mouse Right Click
@@ -104,6 +111,7 @@ private:
 	void GateLeverInteract(); //Started E
 	void DoorInteract(); //Started E
 	void DragonGateInteract(); //Started E
+	void LadderInteract(); //Started E
 	void Sheath();	//Started Q
 	void AttachWeaponSheath();	//Sheath
 	void AttachWeaponHand();	//Sheath
@@ -143,6 +151,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Gimmick")
 	TObjectPtr<class ADragonGate> DragonGate;
+
+	UPROPERTY(VisibleAnywhere, Category = "Gimmick")
+	TObjectPtr<class ALadder> Ladder;
 
 /* UI */
 private:
