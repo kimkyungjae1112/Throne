@@ -31,7 +31,8 @@ bool UBTDecorator_AttackInRange::CalculateRawConditionValue(UBehaviorTreeCompone
 	
 	const float AttackRange = AIPawn->GetAttackInRange();
 	const float Distance = FVector::Distance(Target->GetActorLocation(), PossessPawn->GetActorLocation());
-
+	UE_LOG(LogTemp, Display, TEXT("Attack Range : %f"), AttackRange);
+	UE_LOG(LogTemp, Display, TEXT("Distance : %f"), Distance);
 	if (AttackRange >= Distance)
 	{
 		return true;

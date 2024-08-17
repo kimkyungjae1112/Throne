@@ -40,7 +40,7 @@ float AEnemy::GetDetectRadius()
 
 float AEnemy::GetAttackInRange()
 {
-	return 200.0f;
+	return 300.0f;
 }
 
 float AEnemy::GetTurnSpeed()

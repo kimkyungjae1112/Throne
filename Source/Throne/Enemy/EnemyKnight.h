@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Enemy/Enemy.h"
+#include "Interface/EnemyAttackHitCheckInterface.h"
 #include "EnemyKnight.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THRONE_API AEnemyKnight : public AEnemy
+class THRONE_API AEnemyKnight : public AEnemy, public IEnemyAttackHitCheckInterface
 {
 	GENERATED_BODY()
 	
@@ -24,6 +25,9 @@ protected:
 public:
 	virtual void AttackByAI(class UAnimMontage* InAnimMontage) override;
 
+/* Interface */
+	virtual void DefaultAttackHitCheck() override;
+
 /* Overriding */
 public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
@@ -32,6 +36,12 @@ public:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
 	TArray<class USkeletalMesh*> MeshArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class USkeletalMeshComponent> Weapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class USkeletalMeshComponent> Shield;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UEnemyStatComponent> Stat;
