@@ -76,6 +76,9 @@ public:
 	void BeginDragonGateOpen(EGateType GateType);
 	void EndDragonGateOpen(class UAnimMontage* Target, bool IsProperlyEnded);
 
+	void BeginLadderBottomStart();
+	void EndLadderTopStart();
+
 	/* Utility */
 	void SetPlayerController(class AThronePlayerController* InPlayerController);
 
@@ -134,6 +137,13 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> OpenBigDragonGateMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> LadderBottomStartMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> LadderTopStartMontage;
+
 
 private:
 	/* Stat */

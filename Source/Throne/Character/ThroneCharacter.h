@@ -139,6 +139,7 @@ private:
 	TObjectPtr<class UItemData> ItemData;
 
 	ECharacterMode CurrentCharacterMode;
+	ECharacterMode PrevMode;
 	bool bHasWeapon = false;
 	bool bIsAiming = false;
 

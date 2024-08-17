@@ -47,6 +47,7 @@ AThroneCharacter::AThroneCharacter()
 	GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	CurrentCharacterMode = ECharacterMode::Default;
+	PrevMode = CurrentCharacterMode;
 
 	/* Character Movement */
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -277,10 +278,16 @@ void AThroneCharacter::ChangeCharacterControl()
 	if (CurrentCharacterMode == ECharacterMode::Default)
 	{
 		SetCharacterControl(ECharacterMode::HoldWeapon);
+		PrevMode = ECharacterMode::HoldWeapon;
 	}
 	else if (CurrentCharacterMode == ECharacterMode::HoldWeapon)
 	{
 		SetCharacterControl(ECharacterMode::Default);
+		PrevMode = ECharacterMode::Default;
+	}
+	else if (CurrentCharacterMode == ECharacterMode::Ladder)
+	{
+		SetCharacterControl(PrevMode);
 	}
 }
 
@@ -320,10 +327,15 @@ void AThroneCharacter::Move(const FInputActionValue& Value)
 void AThroneCharacter::MoveLadder(const FInputActionValue& Value)
 {
 	float InputValue = Value.Get<float>();
-	FVector Direction = GetActorUpVector() * InputValue;
-
-
-	AddMovementInput(Direction);
+	if (InputValue != 0.0f)
+	{
+		FVector Direction = GetActorUpVector() * InputValue;
+		AddMovementInput(Direction);
+	}
+	else
+	{
+		GetCharacterMovement()->StopMovementImmediately();
+	}
 }
 
 void AThroneCharacter::LookUp(const FInputActionValue& Value)
@@ -443,11 +455,20 @@ void AThroneCharacter::LadderInteract()
 	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance)
 	{
-		SetCharacterControl(ECharacterMode::Ladder);
-		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
-		GetCharacterMovement()->MaxFlySpeed = 100.0f;
-		GetCharacterMovement()->BrakingDecelerationFlying = 2048.0f;
 		AnimInstance->bCanClimbingLadder = ~AnimInstance->bCanClimbingLadder;
+		if (AnimInstance->bCanClimbingLadder)
+		{
+			Ability->BeginLadderBottomStart();
+			SetCharacterControl(ECharacterMode::Ladder);
+			GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
+			GetCharacterMovement()->MaxFlySpeed = 100.0f;
+			GetCharacterMovement()->BrakingDecelerationFlying = 2048.0f;
+		}
+		else
+		{
+			ChangeCharacterControl();
+			GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+		}
 	}
 }
 

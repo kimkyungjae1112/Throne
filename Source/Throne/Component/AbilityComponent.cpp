@@ -432,6 +432,25 @@ void UAbilityComponent::EndDragonGateOpen(class UAnimMontage* Target, bool IsPro
 {
 }
 
+void UAbilityComponent::BeginLadderBottomStart()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	if (Owner && AnimInstance)
+	{
+		AnimInstance->Montage_Play(LadderBottomStartMontage);
+	}
+}
+
+void UAbilityComponent::EndLadderTopStart()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	if (Owner && AnimInstance)
+	{
+		AnimInstance->Montage_Play(LadderTopStartMontage);
+	}
+}
 
 void UAbilityComponent::SetPlayerController(AThronePlayerController* InPlayerController)
 {
