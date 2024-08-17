@@ -2,7 +2,7 @@
 
 
 #include "Animation/EnemyAttackHitCheckNotify.h"
-#include "Interface/AttackHitCheckInterface.h"
+#include "Interface/BossAttackHitCheckInterface.h"
 
 UEnemyAttackHitCheckNotify::UEnemyAttackHitCheckNotify()
 {
@@ -12,7 +12,7 @@ void UEnemyAttackHitCheckNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimS
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	IAttackHitCheckInterface* AttackInterface = Cast<IAttackHitCheckInterface>(MeshComp->GetOwner());
+	IBossAttackHitCheckInterface* AttackInterface = Cast<IBossAttackHitCheckInterface>(MeshComp->GetOwner());
 	if (AttackInterface)
 	{
 		AttackInterface->DefaultAttackHitCheck();

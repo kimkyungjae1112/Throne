@@ -71,6 +71,9 @@ public:
 	void BeginKickAttack();
 	void EndKickAttack(class UAnimMontage* Target, bool IsProperlyEnded);
 
+	/* Kick Hit Check */
+	virtual void KickAttackHitCheck() override;
+
 	/* Gimmick */ /* 기믹에 있는 End 함수들 없애도 되지만 기능 확장시 필요할 것 같아 남겨둠 */
 	void BeginLeverOpen();
 	void EndLeverOpen(class UAnimMontage* Target, bool IsProperlyEnded);

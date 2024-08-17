@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "AttackHitCheckInterface.generated.h"
+#include "BossAttackHitCheckInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UAttackHitCheckInterface : public UInterface
+class UBossAttackHitCheckInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,13 +16,11 @@ class UAttackHitCheckInterface : public UInterface
 /**
  * 
  */
-class THRONE_API IAttackHitCheckInterface
+class THRONE_API IBossAttackHitCheckInterface
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void DefaultAttackHitCheck() = 0;
-	virtual void JumpAttackDoneHitCheck() = 0;
-	virtual void KickAttackHitCheck() = 0;
 };

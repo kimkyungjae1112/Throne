@@ -147,10 +147,6 @@ void AEnemyBoss::AttackHitDebug(UWorld* World, const FVector& Start, const FVect
 	DrawDebugLine(GetWorld(), Start, RightEndpoint, Color, false, 3.0f);
 }
 
-void AEnemyBoss::JumpAttackDoneHitCheck()
-{
-}
-
 void AEnemyBoss::SetDead()
 {
 	UAnimInstance* AnimInstacne = GetMesh()->GetAnimInstance();

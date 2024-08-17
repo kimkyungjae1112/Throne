@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Enemy/Enemy.h"
-#include "Interface/AttackHitCheckInterface.h"
+#include "Interface/BossAttackHitCheckInterface.h"
 #include "EnemyBoss.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THRONE_API AEnemyBoss : public AEnemy, public IAttackHitCheckInterface
+class THRONE_API AEnemyBoss : public AEnemy, public IBossAttackHitCheckInterface
 {
 	GENERATED_BODY()
 	
@@ -35,7 +35,6 @@ public:
 	bool CheckInRadialRange(AActor* Player, AActor* Target, float Radius, float RadialAngle);
 	void AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange, const FColor& Color);
 
-	virtual void JumpAttackDoneHitCheck() override;
 
 
 /* Item */

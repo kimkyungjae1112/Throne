@@ -373,8 +373,35 @@ void UAbilityComponent::EndKickAttack(class UAnimMontage* Target, bool IsProperl
 	ACharacter* Owner = Cast<ACharacter>(GetOwner());
 	if (Owner)
 	{
-		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	}
+}
+
+void UAbilityComponent::KickAttackHitCheck()
+{
+	float Damage = 300.0f;
+	float Range = 200.0f;
+	
+	UE_LOG(LogTemp, Display, TEXT("실행됨"));
+	FVector Start = GetOwner()->GetActorLocation();
+	FVector End = Start + FVector(Range, 0.0f, 0.0f);
+	FCollisionQueryParams Params(NAME_None, false, GetOwner());
+	
+	TArray<FHitResult> HitResults;
+	bool bHit = GetWorld()->SweepMultiByChannel(HitResults, Start, End, FQuat::Identity, ECC_GameTraceChannel2 ,FCollisionShape::MakeBox(FVector3f(Range, Range, Range)), Params);
+	if (bHit)
+	{
+		for (auto const& HitResult : HitResults)
+		{
+			ACharacter* Actor = Cast<ACharacter>(HitResult.GetActor());
+			FDamageEvent DamagEvent;
+			Actor->TakeDamage(Damage, DamagEvent, PlayerController, GetOwner());
+
+			FVector Direction(-500.0f, 0.0f, 0.0f);
+			Actor->LaunchCharacter(Direction, true, false);
+		}
+	}
+
 }
 
 /******* Gimmick *******/
