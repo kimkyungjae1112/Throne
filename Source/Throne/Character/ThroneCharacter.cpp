@@ -135,6 +135,11 @@ AThroneCharacter::AThroneCharacter()
 	{
 		FireKnifeAction = FireKnifeActionRef.Object;
 	}
+	static ConstructorHelpers::FObjectFinder<UInputAction> KickActionRef(TEXT("/Script/EnhancedInput.InputAction'/Game/Throne/Input/Action/IA_Kick.IA_Kick'"));
+	if (KickActionRef.Object)
+	{
+		KickAction = KickActionRef.Object;
+	}
 
 	/* Data Asset */
 	static ConstructorHelpers::FObjectFinder<UCharacterAimKnifeData> AimKnifeDataRef(TEXT("/Script/Throne.CharacterAimKnifeData'/Game/Throne/Character/Data/DA_AimKnife.DA_AimKnife'"));
@@ -216,7 +221,7 @@ void AThroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	EnhancedInputComponent->BindAction(AimKnifeAction, ETriggerEvent::Started, this, &AThroneCharacter::BeginAimKnife);
 	EnhancedInputComponent->BindAction(AimKnifeAction, ETriggerEvent::Completed, this, &AThroneCharacter::EndAimKnife);
 	EnhancedInputComponent->BindAction(FireKnifeAction, ETriggerEvent::Started, this, &AThroneCharacter::FireKnife);
-
+	EnhancedInputComponent->BindAction(KickAction, ETriggerEvent::Started, this, &AThroneCharacter::Kick);
 }
 
 float AThroneCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -366,6 +371,11 @@ void AThroneCharacter::BeginDefend()
 void AThroneCharacter::EndDefend()
 {
 	Ability->EndShieldUp();
+}
+
+void AThroneCharacter::Kick()
+{
+	Ability->BeginKickAttack();
 }
 
 void AThroneCharacter::AcquisitionItem()

@@ -100,12 +100,16 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> FireKnifeAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> KickAction;
+
 	void Move(const FInputActionValue& Value);	//Triggered WASD
 	void MoveLadder(const FInputActionValue& Value); //Triggerd WS
 	void LookUp(const FInputActionValue& Value);	//Tirggered Mouse 2D Axis
 	void DefaultAttack();	//Started Mouse Left Click
 	void BeginDefend();	//Triggerd Mouse Right Click
 	void EndDefend();	//Completed Mouse Right Click
+	void Kick();
 
 	void AcquisitionItem();	//Started E
 	void GateLeverInteract(); //Started E

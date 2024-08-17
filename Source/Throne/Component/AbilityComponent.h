@@ -31,14 +31,14 @@ public:
 	FOnOutSheath OnOutSheath;
 
 public:
-	/* Default Attack */
+	/* Weapon Default Attack */
 	void BeginComboAttack();
 	void BeginDefaultAttack();
 	void EndDefaultAttack(class UAnimMontage* Target, bool IsProperlyEnded);
 	void SetComboCheckTimer();
 	void ComboCheck();
 
-	/* Default Attack Hit Check */
+	/* Weapon Default Attack Hit Check */
 	virtual void DefaultAttackHitCheck() override;
 	bool CheckInRadialRange(AActor* Player, AActor* Target, float Radius, float RadialAngle);
 	void AttackHitDebug(UWorld* World, const FVector& Start, const FVector& ForwardVector, const float AttackRange, const FColor& Color);
@@ -67,6 +67,10 @@ public:
 	/* Jump Attack Hit Check*/
 	virtual void JumpAttackDoneHitCheck() override;
 
+	/* Kick Attack */
+	void BeginKickAttack();
+	void EndKickAttack(class UAnimMontage* Target, bool IsProperlyEnded);
+
 	/* Gimmick */ /* 기믹에 있는 End 함수들 없애도 되지만 기능 확장시 필요할 것 같아 남겨둠 */
 	void BeginLeverOpen();
 	void EndLeverOpen(class UAnimMontage* Target, bool IsProperlyEnded);
@@ -76,9 +80,9 @@ public:
 	void BeginDragonGateOpen(EGateType GateType);
 	void EndDragonGateOpen(class UAnimMontage* Target, bool IsProperlyEnded);
 
-	void BeginLadderBottomStart();
+	/*void BeginLadderBottomStart();
 	void EndLadderBottomStart(class UAnimMontage* Target, bool IsProperlyEnded);
-	void BeginLadderTopStart();
+	void BeginLadderTopStart();*/
 
 	/* Utility */
 	void SetPlayerController(class AThronePlayerController* InPlayerController);
@@ -145,6 +149,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> LadderTopStartMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> KickMontage;
 
 private:
 	/* Stat */
