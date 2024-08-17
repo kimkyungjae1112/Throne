@@ -455,10 +455,10 @@ void AThroneCharacter::LadderInteract()
 	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance)
 	{
+		//Ability->BeginLadderBottomStart();
 		AnimInstance->bCanClimbingLadder = ~AnimInstance->bCanClimbingLadder;
 		if (AnimInstance->bCanClimbingLadder)
 		{
-			Ability->BeginLadderBottomStart();
 			SetCharacterControl(ECharacterMode::Ladder);
 			GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
 			GetCharacterMovement()->MaxFlySpeed = 100.0f;

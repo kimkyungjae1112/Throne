@@ -77,7 +77,8 @@ public:
 	void EndDragonGateOpen(class UAnimMontage* Target, bool IsProperlyEnded);
 
 	void BeginLadderBottomStart();
-	void EndLadderTopStart();
+	void EndLadderBottomStart(class UAnimMontage* Target, bool IsProperlyEnded);
+	void BeginLadderTopStart();
 
 	/* Utility */
 	void SetPlayerController(class AThronePlayerController* InPlayerController);

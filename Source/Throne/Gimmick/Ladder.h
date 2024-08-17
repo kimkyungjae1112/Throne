@@ -56,4 +56,5 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
 	TSubclassOf<class UUserWidget> WidgetClass;
+
 };

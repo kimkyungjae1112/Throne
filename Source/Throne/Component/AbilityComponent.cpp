@@ -439,10 +439,27 @@ void UAbilityComponent::BeginLadderBottomStart()
 	if (Owner && AnimInstance)
 	{
 		AnimInstance->Montage_Play(LadderBottomStartMontage);
+	
+		/*FOnMontageEnded MontageEnded;
+		MontageEnded.BindUObject(this, &UAbilityComponent::EndLadderBottomStart);
+		AnimInstance->Montage_SetEndDelegate(MontageEnded, LadderBottomStartMontage);*/
 	}
 }
 
-void UAbilityComponent::EndLadderTopStart()
+void UAbilityComponent::EndLadderBottomStart(class UAnimMontage* Target, bool IsProperlyEnded)
+{
+	/*ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		AnimInstance->bCanClimbingLadder = true;
+		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
+		Owner->GetCharacterMovement()->MaxFlySpeed = 100.0f;
+		Owner->GetCharacterMovement()->BrakingDecelerationFlying = 2048.0f;
+	}*/
+}
+
+void UAbilityComponent::BeginLadderTopStart()
 {
 	ACharacter* Owner = Cast<ACharacter>(GetOwner());
 	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
