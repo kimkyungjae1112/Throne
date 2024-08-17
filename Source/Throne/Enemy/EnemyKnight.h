@@ -46,6 +46,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Montage")
 	TObjectPtr<class UAnimMontage> AttackMontage;
 
-	//Animation Function
+	UPROPERTY(EditAnywhere, Category = "Montage")
+	TObjectPtr<class UAnimMontage> HitReactionMontage;
+
+/* Animation Function */
+private:
+	//Dead
 	void SetDead();
+
+	//HitReaction
+	void BeginHitReaction();
+	void EndHitReaction(class UAnimMontage* Target, bool IsProperlyEnded);
+
+	
 };

@@ -48,21 +48,39 @@ void AEnemyKnight::AttackByAI(UAnimMontage* InAnimMontage)
 
 float AEnemyKnight::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	BeginHitReaction();
 	Stat->ApplyDamage(Damage);
-	
 	return Damage;
 }
 
 void AEnemyKnight::SetDead()
 {
-	UAnimInstance* AnimInstacne = GetMesh()->GetAnimInstance();
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	AAAIController* AIController = Cast<AAAIController>(GetController());
 
-	if (AnimInstacne && AIController)
+	if (AnimInstance && AIController)
 	{
 		AIController->StopAI();
 
-		AnimInstacne->Montage_Play(DeadMontage);
+		AnimInstance->Montage_Play(DeadMontage);
 		SetActorEnableCollision(false);
 	}
+}
+
+void AEnemyKnight::BeginHitReaction()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance)
+	{
+		AnimInstance->Montage_Play(HitReactionMontage);
+
+		FOnMontageEnded MontageEnd;
+		MontageEnd.BindUObject(this, &AEnemyKnight::EndHitReaction);
+		AnimInstance->Montage_SetEndDelegate(MontageEnd, HitReactionMontage);
+	}
+}
+
+void AEnemyKnight::EndHitReaction(UAnimMontage* Target, bool IsProperlyEnded)
+{
 }
