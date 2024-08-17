@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Animation/EnemyAttackHitCheckNotify.h"
-#include "Interface/BossAttackHitCheckInterface.h"
+#include "AnimationEnemy/EnemyAttackHitCheckNotify.h"
+#include "Interface/EnemyAttackHitCheckInterface.h"
 
 UEnemyAttackHitCheckNotify::UEnemyAttackHitCheckNotify()
 {
@@ -12,7 +12,7 @@ void UEnemyAttackHitCheckNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimS
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	IBossAttackHitCheckInterface* AttackInterface = Cast<IBossAttackHitCheckInterface>(MeshComp->GetOwner());
+	IEnemyAttackHitCheckInterface* AttackInterface = Cast<IEnemyAttackHitCheckInterface>(MeshComp->GetOwner());
 	if (AttackInterface)
 	{
 		AttackInterface->DefaultAttackHitCheck();

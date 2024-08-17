@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Animation/KickAttackNotify.h"
+#include "AnimationPlayer/KickAttackNotify.h"
 #include "Interface/AttackHitCheckInterface.h"
 #include "Component/AbilityComponent.h"
 

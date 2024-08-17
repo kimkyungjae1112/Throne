@@ -4,8 +4,7 @@
 #include "Gimmick/Ladder.h"
 #include "Components/BoxComponent.h"
 #include "Blueprint/UserWidget.h"
-#include "Animation/CharacterAnimInstance.h"
-#include "Interface/LadderInterface.h"
+#include "GimmickInterface/LadderInterface.h"
 
 ALadder::ALadder()
 {

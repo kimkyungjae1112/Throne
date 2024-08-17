@@ -4,7 +4,7 @@
 #include "Gimmick/Door.h"
 #include "Components/BoxComponent.h"
 #include "Blueprint/UserWidget.h"
-#include "Interface/DoorInterface.h"
+#include "GimmickInterface/DoorInterface.h"
 
 ADoor::ADoor()
 {

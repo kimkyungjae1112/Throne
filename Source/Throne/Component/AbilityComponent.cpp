@@ -11,7 +11,7 @@
 #include "Character/CharacterAimKnifeData.h"
 #include "Engine/OverlapResult.h"
 #include "Engine/DamageEvents.h"
-#include "Animation/CharacterAnimInstance.h"
+#include "AnimationPlayer/CharacterAnimInstance.h"
 #include "Player/ThronePlayerController.h"
 #include "Kismet/GameplayStatics.h"
 

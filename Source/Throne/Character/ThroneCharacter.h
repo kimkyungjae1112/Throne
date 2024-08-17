@@ -6,11 +6,11 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "Interface/HUDWidgetInterface.h"
-#include "Interface/ItemAcquisitionInterface.h"
-#include "Interface/GateLeverDelegateInterface.h"
-#include "Interface/DoorInterface.h"
-#include "Interface/DragonGateInterface.h"
-#include "Interface/LadderInterface.h"
+#include "GimmickInterface/ItemAcquisitionInterface.h"
+#include "GimmickInterface/GateLeverDelegateInterface.h"
+#include "GimmickInterface/DoorInterface.h"
+#include "GimmickInterface/DragonGateInterface.h"
+#include "GimmickInterface/LadderInterface.h"
 #include "ThroneCharacter.generated.h"
 
 UENUM(BlueprintType)

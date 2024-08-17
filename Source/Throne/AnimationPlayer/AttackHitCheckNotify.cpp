@@ -1,21 +1,21 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Animation/JumpAttackDoneNotify.h"
-#include "Component/AbilityComponent.h"
+#include "AnimationPlayer/AttackHitCheckNotify.h"
 #include "Interface/AttackHitCheckInterface.h"
+#include "Component/AbilityComponent.h"
 
-UJumpAttackDoneNotify::UJumpAttackDoneNotify()
+UAttackHitCheckNotify::UAttackHitCheckNotify()
 {
 }
 
-void UJumpAttackDoneNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
+void UAttackHitCheckNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
 	IAttackHitCheckInterface* Interface = Cast<IAttackHitCheckInterface>(MeshComp->GetOwner()->GetComponentByClass<UAbilityComponent>());
 	if (Interface)
 	{
-		Interface->JumpAttackDoneHitCheck();
+		Interface->DefaultAttackHitCheck();
 	}
 }

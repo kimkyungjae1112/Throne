@@ -4,7 +4,7 @@
 #include "Gimmick/DragonGate.h"
 #include "Components/BoxComponent.h"
 #include "Blueprint/UserWidget.h"
-#include "Interface/DragonGateInterface.h"
+#include "GimmickInterface/DragonGateInterface.h"
 #include "Camera/CameraShakeBase.h"
 
 ADragonGate::ADragonGate()

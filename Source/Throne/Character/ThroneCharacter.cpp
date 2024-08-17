@@ -16,7 +16,7 @@
 #include "Engine/DamageEvents.h"
 #include "Player/ThronePlayerController.h"
 #include "Item/ItemData.h"
-#include "Animation/CharacterAnimInstance.h"
+#include "AnimationPlayer/CharacterAnimInstance.h"
 #include "Character/CharacterControlData.h"
 #include "Character/CharacterAimKnifeData.h"
 #include "Item/Knife.h"

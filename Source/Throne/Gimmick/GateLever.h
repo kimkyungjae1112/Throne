@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Interface/GateLeverDelegateInterface.h"
+#include "GimmickInterface/GateLeverDelegateInterface.h"
 #include "GateLever.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnGateLeverOpen)

@@ -4,7 +4,7 @@
 #include "Gimmick/WeaponBox.h"
 #include "Components/BoxComponent.h"
 #include "Item/ItemData.h"
-#include "Interface/ItemAcquisitionInterface.h"
+#include "GimmickInterface/ItemAcquisitionInterface.h"
 
 AWeaponBox::AWeaponBox()
 {
