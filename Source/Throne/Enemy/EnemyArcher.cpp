@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Component/EnemyStatComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Item/Bow.h"
 
 AEnemyArcher::AEnemyArcher()
 {
@@ -19,21 +20,35 @@ AEnemyArcher::AEnemyArcher()
 		GetMesh()->SetSkeletalMesh(BodyMeshRef.Object);
 	}
 
-	Bow = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
-	Bow->SetupAttachment(GetMesh(), TEXT("hand_rSocket"));
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> BowMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/MRPGT/SkeletalMeshes/Bows/SK_Bow_B.SK_Bow_B'"));
-	if (BowMeshRef.Object)
-	{
-		Bow->SetSkeletalMesh(BowMeshRef.Object);
-	}
-	
 	/* Capsule */
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
 
 	/* Component */
 	Stat = CreateDefaultSubobject<UEnemyStatComponent>(TEXT("Stat"));
+	Stat->OnHpZero.AddUObject(this, &AEnemyArcher::SetDead);
 
 	/* Character Movement */
 	GetCharacterMovement()->MaxWalkSpeed = Stat->GetMoveSpeed();
 	
+}
+
+void AEnemyArcher::BeginPlay()
+{
+	Super::BeginPlay();
+
+	Bow = GetWorld()->SpawnActor<ABow>(BowClass);
+	Bow->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("hand_lSocket"));
+	Bow->SetOwner(this);
+}
+
+float AEnemyArcher::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	Stat->ApplyDamage(Damage);
+	
+	return Damage;
+}
+
+void AEnemyArcher::SetDead()
+{
 }

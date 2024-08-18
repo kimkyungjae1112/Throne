@@ -17,12 +17,24 @@ class THRONE_API AEnemyArcher : public AEnemy
 public:
 	AEnemyArcher();
 	
+protected:
+	virtual void BeginPlay() override;
 
+public:
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 private:
+	UPROPERTY(EditDefaultsOnly, Category = "Bow")
+	TSubclassOf<class ABow> BowClass;
+
 	UPROPERTY(VisibleAnywhere, Category = "Bow")
-	TObjectPtr<class USkeletalMeshComponent> Bow;
+	TObjectPtr<class ABow> Bow;
 
 	UPROPERTY(EditAnywhere, Category = "Stat")
 	TObjectPtr<class UEnemyStatComponent> Stat;
+
+/* Animation Function */
+private:
+	void SetDead();
+
 };
