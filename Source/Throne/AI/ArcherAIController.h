@@ -29,6 +29,6 @@ private:
 	TObjectPtr<class UBlackboardData> BBAsset;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Asset", meta = (AllowPrivateAccess))
-	TObjectPtr<class UBehaviorTree> BTAsset
+	TObjectPtr<class UBehaviorTree> BTAsset;
 
 };
