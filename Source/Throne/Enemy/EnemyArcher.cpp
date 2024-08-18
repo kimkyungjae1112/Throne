@@ -6,6 +6,7 @@
 #include "Component/EnemyStatComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Item/Bow.h"
+#include "Item/Arrow.h"
 
 AEnemyArcher::AEnemyArcher()
 {

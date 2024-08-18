@@ -30,6 +30,12 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Bow")
 	TObjectPtr<class ABow> Bow;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Arrow")
+	TSubclassOf<class AArrow> ArrowClass;
+
+	UPROPERTY(VisibleAnywhere, Category = "Arrow")
+	TObjectPtr<class AArrow> Arrow;
+	
 	UPROPERTY(EditAnywhere, Category = "Stat")
 	TObjectPtr<class UEnemyStatComponent> Stat;
 
