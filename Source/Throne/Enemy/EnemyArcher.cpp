@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Item/Bow.h"
 #include "Item/Arrow.h"
+#include "Animation/AnimInstance.h"
 
 AEnemyArcher::AEnemyArcher()
 {
@@ -31,6 +32,13 @@ AEnemyArcher::AEnemyArcher()
 	/* Character Movement */
 	GetCharacterMovement()->MaxWalkSpeed = Stat->GetMoveSpeed();
 	
+	ArrowPos = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ArrowPos"));
+	ArrowPos->SetupAttachment(GetMesh());
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> ArrowMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/SKnight_modular/Skeleton_Knight_07/mesh/weapon/SK_Arrow.SK_Arrow'"));
+	if (ArrowMeshRef.Object)
+	{
+		ArrowMesh = ArrowMeshRef.Object;
+	}
 }
 
 void AEnemyArcher::BeginPlay()
@@ -50,6 +58,54 @@ float AEnemyArcher::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AC
 	return Damage;
 }
 
+void AEnemyArcher::SetAimingDelegate(FOnAimingFinished OnAimingFinished)
+{
+	AimingFinished = OnAimingFinished;
+}
+
+void AEnemyArcher::AimingByArcher()
+{
+	BeginAiming();
+}
+
+void AEnemyArcher::BeginAiming()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->Montage_Play(AimMontage);
+
+		ArrowPos->SetSkeletalMesh(ArrowMesh);
+		ArrowPos->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_rSocket"));
+
+		FOnMontageEnded MontageEnded;
+		MontageEnded.BindUObject(this, &AEnemyArcher::EndAiming);
+		AnimInstance->Montage_SetEndDelegate(MontageEnded, AimMontage);
+	
+	}
+}
+
+void AEnemyArcher::EndAiming(UAnimMontage* Target, bool IsProperlyEnded)
+{
+	AimingFinished.ExecuteIfBound();
+	ArrowPos->SetSkeletalMesh(nullptr);
+	ArrowPos->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+	SpawnArrow();
+	Arrow->ActiveMovement();
+}
+
 void AEnemyArcher::SetDead()
 {
+	UE_LOG(LogTemp, Display, TEXT("궁수 죽음"));
+}
+
+void AEnemyArcher::SpawnArrow()
+{
+	FVector SpawnLocation = GetMesh()->GetSocketLocation(TEXT("hand_rSocket"));
+	FRotator SpawnRotation = GetMesh()->GetSocketRotation(TEXT("hand_rSocket"));
+
+	Arrow = GetWorld()->SpawnActor<AArrow>(ArrowClass, SpawnLocation, SpawnRotation);
+	Arrow->SetOwner(this);
+	Arrow->SetDirection(GetActorForwardVector());
 }

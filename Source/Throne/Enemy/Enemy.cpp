@@ -58,6 +58,14 @@ void AEnemy::AttackByAI(class UAnimMontage* InAnimMontage)
 	BeginDefaultAttack(InAnimMontage);
 }
 
+void AEnemy::SetAimingDelegate(FOnAimingFinished OnAimingFinished)
+{
+}
+
+void AEnemy::AimingByArcher()
+{
+}
+
 void AEnemy::BeginDefaultAttack(UAnimMontage* AnimMontage)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();

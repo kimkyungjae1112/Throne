@@ -30,6 +30,8 @@ public:
 	virtual void SetAIAttackDelegate(FAIMonsterAttackFinished AIMonsterAttackFinished);
 	virtual void AttackByAI(class UAnimMontage* InAnimMontage);
 
+	virtual void SetAimingDelegate(FOnAimingFinished OnAimingFinished) override;
+	virtual void AimingByArcher() override;
 	/* Delegate */
 	FAIMonsterAttackFinished AttackFinishedDeletage;
 

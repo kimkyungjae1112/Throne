@@ -26,19 +26,9 @@ AEnemyKnight::AEnemyKnight()
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(GetMesh(), TEXT("hand_rSocket"));
-	/*static ConstructorHelpers::FObjectFinder<USkeletalMesh> WeaponRef(TEXT("/Script/Engine.SkeletalMesh'/Game/SKnight_modular/Skeleton_Knight_01/mesh/weapon/SK_weapon_01.SK_weapon_01'"));
-	if (WeaponRef.Object)
-	{
-		Weapon->SetSkeletalMesh(WeaponRef.Object);
-	}*/
 
 	Shield = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Shield"));
 	Shield->SetupAttachment(GetMesh(), TEXT("hand_lSocket"));
-	/*static ConstructorHelpers::FObjectFinder<USkeletalMesh> ShieldRef(TEXT("/Script/Engine.SkeletalMesh'/Game/SKnight_modular/Skeleton_Knight_01/mesh/weapon/SK_shield_01.SK_shield_01'"));
-	if (ShieldRef.Object)
-	{
-		Shield->SetSkeletalMesh(ShieldRef.Object);
-	}*/
 
 	/* Capsule */
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));

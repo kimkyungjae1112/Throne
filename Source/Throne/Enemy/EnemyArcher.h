@@ -23,6 +23,12 @@ protected:
 public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+/* AI Interface */
+public:
+	virtual void SetAimingDelegate(FOnAimingFinished OnAimingFinished) override;
+	virtual void AimingByArcher() override;
+
+	FOnAimingFinished AimingFinished;
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Bow")
 	TSubclassOf<class ABow> BowClass;
@@ -33,14 +39,35 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Arrow")
 	TSubclassOf<class AArrow> ArrowClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Arrow")
+	TObjectPtr<class USkeletalMesh> ArrowMesh;
+
 	UPROPERTY(VisibleAnywhere, Category = "Arrow")
 	TObjectPtr<class AArrow> Arrow;
+
+	UPROPERTY(VisibleAnywhere, Category = "Arrow")
+	TObjectPtr<class USkeletalMeshComponent> ArrowPos;
 	
 	UPROPERTY(EditAnywhere, Category = "Stat")
 	TObjectPtr<class UEnemyStatComponent> Stat;
 
+private:
+	UPROPERTY(EditAnywhere, Category = "Montage")
+	TObjectPtr<class UAnimMontage> AimMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Montage")
+	TObjectPtr<class UAnimMontage> FireMontage;
+
+
 /* Animation Function */
 private:
+	
+	void BeginAiming();
+	void EndAiming(class UAnimMontage* Target, bool IsProperlyEnded);
 	void SetDead();
 
+
+/* Utility */
+private:
+	void SpawnArrow();
 };

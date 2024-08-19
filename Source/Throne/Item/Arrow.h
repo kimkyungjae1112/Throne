@@ -12,16 +12,19 @@ class THRONE_API AArrow : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AArrow();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+public:
+	FORCEINLINE float GetDelayedTime() const { return DelayedTime; }
+
+	void SetDirection(const FVector& InDirection);
+	void ActiveMovement();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
@@ -29,4 +32,13 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Collision")
 	TObjectPtr<class UBoxComponent> Box;
+
+	UPROPERTY(VisibleAnywhere, Category = "PMC")
+	TObjectPtr<class UProjectileMovementComponent> PMC;
+
+private:
+	UPROPERTY(EditAnywhere)
+	float DelayedTime;
+
+	FVector Direction;
 };

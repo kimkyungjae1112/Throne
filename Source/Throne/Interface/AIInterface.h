@@ -15,6 +15,7 @@ class UAIInterface : public UInterface
 
 
 DECLARE_DELEGATE(FAIMonsterAttackFinished)
+DECLARE_DELEGATE(FOnAimingFinished)
 /**
  * 
  */
@@ -30,4 +31,7 @@ public:
 
 	virtual void SetAIAttackDelegate(FAIMonsterAttackFinished AIMonsterAttackFinished) = 0;
 	virtual void AttackByAI(class UAnimMontage* InAnimMontage) = 0;
+
+	virtual void SetAimingDelegate(FOnAimingFinished OnAimingFinished) = 0;
+	virtual void AimingByArcher() = 0;
 };
