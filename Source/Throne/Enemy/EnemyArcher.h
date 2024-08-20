@@ -33,6 +33,10 @@ public:
 	virtual void ArrowFire() override;
 
 	FOnAimingFinished AimingFinished;
+
+public:
+	void DetachmentArrow();
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Bow")
 	TSubclassOf<class ABow> BowClass;

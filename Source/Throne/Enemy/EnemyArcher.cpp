@@ -74,9 +74,13 @@ void AEnemyArcher::AimingByArcher()
 void AEnemyArcher::ArrowFire()
 {
 	SpawnArrow();
-	Arrow->ActiveMovement();
 	BeginStringLay();
 
+	DetachmentArrow();
+}
+
+void AEnemyArcher::DetachmentArrow()
+{
 	ArrowPos->SetSkeletalMesh(nullptr);
 	ArrowPos->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 }
@@ -108,7 +112,6 @@ void AEnemyArcher::BeginStringPull()
 	UAnimInstance* AnimInstance = Bow->GetMesh()->GetAnimInstance();
 	if (AnimInstance)
 	{
-		UE_LOG(LogTemp, Display, TEXT("Pull 실행"));
 		AnimInstance->Montage_Play(BowStringPullMontage);
 	}
 }
@@ -137,7 +140,8 @@ void AEnemyArcher::SpawnArrow()
 	FVector SpawnLocation = GetMesh()->GetSocketLocation(TEXT("hand_rSocket"));
 	FRotator SpawnRotation = GetMesh()->GetSocketRotation(TEXT("hand_rSocket"));
 
-	Arrow = GetWorld()->SpawnActor<AArrow>(ArrowClass, SpawnLocation - FVector(0.0f, -40.0f, 0.0f), SpawnRotation);
+	Arrow = GetWorld()->SpawnActor<AArrow>(ArrowClass, SpawnLocation + FVector(3.0f, 0.0f, 3.0f), SpawnRotation);
+	Arrow->ActiveMovement();
 	Arrow->SetOwner(this);
 	Arrow->SetDirection(GetActorForwardVector());
 }
