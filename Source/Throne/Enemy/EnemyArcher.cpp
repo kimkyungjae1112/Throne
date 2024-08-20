@@ -34,6 +34,7 @@ AEnemyArcher::AEnemyArcher()
 	
 	ArrowPos = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ArrowPos"));
 	ArrowPos->SetupAttachment(GetMesh());
+	ArrowPos->SetRelativeScale3D(FVector(1.0f, 3.5f, 1.0f));
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> ArrowMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/SKnight_modular/Skeleton_Knight_07/mesh/weapon/SK_Arrow.SK_Arrow'"));
 	if (ArrowMeshRef.Object)
 	{
@@ -68,6 +69,15 @@ void AEnemyArcher::AimingByArcher()
 	BeginAiming();
 }
 
+//Notify, ArcherInterface 로 연결 
+void AEnemyArcher::ArrowFire()
+{
+	SpawnArrow();
+	Arrow->ActiveMovement();
+	ArrowPos->SetSkeletalMesh(nullptr);
+	ArrowPos->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+}
+
 void AEnemyArcher::BeginAiming()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -88,11 +98,6 @@ void AEnemyArcher::BeginAiming()
 void AEnemyArcher::EndAiming(UAnimMontage* Target, bool IsProperlyEnded)
 {
 	AimingFinished.ExecuteIfBound();
-	ArrowPos->SetSkeletalMesh(nullptr);
-	ArrowPos->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-
-	SpawnArrow();
-	Arrow->ActiveMovement();
 }
 
 void AEnemyArcher::SetDead()

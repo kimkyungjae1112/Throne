@@ -2,6 +2,7 @@
 
 
 #include "AnimationEnemy/ArcherArrowSpawnNotify.h"
+#include "Interface/ArcherInterface.h"
 
 UArcherArrowSpawnNotify::UArcherArrowSpawnNotify()
 {
@@ -11,5 +12,10 @@ void UArcherArrowSpawnNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
+	IArcherInterface* Interface = Cast<IArcherInterface>(MeshComp->GetOwner());
+	if (Interface)
+	{
+		Interface->ArrowFire();
+	}
 
 }

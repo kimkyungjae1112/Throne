@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Enemy/Enemy.h"
+#include "Interface/ArcherInterface.h"
 #include "EnemyArcher.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THRONE_API AEnemyArcher : public AEnemy
+class THRONE_API AEnemyArcher : public AEnemy, public IArcherInterface
 {
 	GENERATED_BODY()
 
@@ -27,6 +28,9 @@ public:
 public:
 	virtual void SetAimingDelegate(FOnAimingFinished OnAimingFinished) override;
 	virtual void AimingByArcher() override;
+
+/* Interface */
+	virtual void ArrowFire() override;
 
 	FOnAimingFinished AimingFinished;
 private:
