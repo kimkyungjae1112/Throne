@@ -26,6 +26,9 @@ public:
 	void SetDirection(const FVector& InDirection);
 	void ActiveMovement();
 
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	TObjectPtr<class USkeletalMeshComponent> Arrow;

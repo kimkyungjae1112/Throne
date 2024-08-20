@@ -4,7 +4,7 @@
 #include "Item/Arrow.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "TimerManager.h"
+#include "Engine/DamageEvents.h"
 
 AArrow::AArrow()
 {
@@ -12,7 +12,8 @@ AArrow::AArrow()
 
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 	RootComponent = Box;
-	
+	Box->OnComponentHit.AddDynamic(this, &AArrow::OnHit);
+
 	Arrow = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Arrow"));
 	Arrow->SetupAttachment(Box);
 	Arrow->SetCollisionProfileName(TEXT("NoCollision"));
@@ -52,6 +53,20 @@ void AArrow::ActiveMovement()
 	PMC->InitialSpeed = 2000.0f;
 	PMC->MaxSpeed = 2000.0f;
 	PMC->Velocity = Direction * PMC->InitialSpeed;
+}
+
+void AArrow::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (OtherActor == this)
+	{
+		Destroy();
+	}
+
+	if (OtherActor && OtherActor != this)
+	{
+		FDamageEvent DamageEvent;
+		OtherActor->TakeDamage(1000.0f, DamageEvent, GetWorld()->GetFirstPlayerController(), this);
+	}
 }
 
 
