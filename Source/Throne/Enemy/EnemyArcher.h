@@ -62,12 +62,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Montage")
 	TObjectPtr<class UAnimMontage> FireMontage;
 
+	UPROPERTY(EditAnywhere, Category = "Montage")
+	TObjectPtr<class UAnimMontage> BowStringPullMontage;
 
 /* Animation Function */
 private:
 	
 	void BeginAiming();
 	void EndAiming(class UAnimMontage* Target, bool IsProperlyEnded);
+	void BeginStringPull();
+	void BeginStringLay();
+
 	void SetDead();
 
 

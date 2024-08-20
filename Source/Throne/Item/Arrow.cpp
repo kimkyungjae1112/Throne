@@ -57,7 +57,7 @@ void AArrow::ActiveMovement()
 
 void AArrow::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor == this)
+	if (OtherComp == Box)
 	{
 		Destroy();
 	}

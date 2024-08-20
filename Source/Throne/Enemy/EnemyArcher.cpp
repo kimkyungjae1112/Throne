@@ -8,6 +8,7 @@
 #include "Item/Bow.h"
 #include "Item/Arrow.h"
 #include "Animation/AnimInstance.h"
+#include "AI/ArcherAIController.h"
 
 AEnemyArcher::AEnemyArcher()
 {
@@ -34,7 +35,7 @@ AEnemyArcher::AEnemyArcher()
 	
 	ArrowPos = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ArrowPos"));
 	ArrowPos->SetupAttachment(GetMesh());
-	ArrowPos->SetRelativeScale3D(FVector(1.0f, 3.5f, 1.0f));
+	ArrowPos->SetRelativeScale3D(FVector(1.0f, 3.0f, 1.0f));
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> ArrowMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/SKnight_modular/Skeleton_Knight_07/mesh/weapon/SK_Arrow.SK_Arrow'"));
 	if (ArrowMeshRef.Object)
 	{
@@ -74,6 +75,8 @@ void AEnemyArcher::ArrowFire()
 {
 	SpawnArrow();
 	Arrow->ActiveMovement();
+	BeginStringLay();
+
 	ArrowPos->SetSkeletalMesh(nullptr);
 	ArrowPos->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 }
@@ -84,6 +87,7 @@ void AEnemyArcher::BeginAiming()
 	if (AnimInstance)
 	{
 		AnimInstance->Montage_Play(AimMontage);
+		BeginStringPull();
 
 		ArrowPos->SetSkeletalMesh(ArrowMesh);
 		ArrowPos->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_rSocket"));
@@ -91,7 +95,6 @@ void AEnemyArcher::BeginAiming()
 		FOnMontageEnded MontageEnded;
 		MontageEnded.BindUObject(this, &AEnemyArcher::EndAiming);
 		AnimInstance->Montage_SetEndDelegate(MontageEnded, AimMontage);
-	
 	}
 }
 
@@ -100,9 +103,33 @@ void AEnemyArcher::EndAiming(UAnimMontage* Target, bool IsProperlyEnded)
 	AimingFinished.ExecuteIfBound();
 }
 
+void AEnemyArcher::BeginStringPull()
+{
+	UAnimInstance* AnimInstance = Bow->GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Pull 실행"));
+		AnimInstance->Montage_Play(BowStringPullMontage);
+	}
+}
+
+void AEnemyArcher::BeginStringLay()
+{
+	UAnimInstance* AnimInstance = Bow->GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->StopAllMontages(1.0f);
+	}
+}
+
 void AEnemyArcher::SetDead()
 {
 	UE_LOG(LogTemp, Display, TEXT("궁수 죽음"));
+	AArcherAIController* AIController = Cast<AArcherAIController>(GetController());
+	if (AIController)
+	{
+		AIController->StopAI();
+	}
 }
 
 void AEnemyArcher::SpawnArrow()
@@ -110,7 +137,7 @@ void AEnemyArcher::SpawnArrow()
 	FVector SpawnLocation = GetMesh()->GetSocketLocation(TEXT("hand_rSocket"));
 	FRotator SpawnRotation = GetMesh()->GetSocketRotation(TEXT("hand_rSocket"));
 
-	Arrow = GetWorld()->SpawnActor<AArrow>(ArrowClass, SpawnLocation, SpawnRotation);
+	Arrow = GetWorld()->SpawnActor<AArrow>(ArrowClass, SpawnLocation - FVector(0.0f, -40.0f, 0.0f), SpawnRotation);
 	Arrow->SetOwner(this);
 	Arrow->SetDirection(GetActorForwardVector());
 }
