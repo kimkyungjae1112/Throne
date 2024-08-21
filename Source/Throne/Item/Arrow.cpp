@@ -35,6 +35,8 @@ AArrow::AArrow()
 void AArrow::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	
 }
 
 void AArrow::Tick(float DeltaTime)
@@ -53,11 +55,12 @@ void AArrow::ActiveMovement()
 	PMC->InitialSpeed = 2500.0f;
 	PMC->MaxSpeed = 2500.0f;
 	PMC->Velocity = Direction * PMC->InitialSpeed;
+	UE_LOG(LogTemp, Display, TEXT("Velocity : %lf"), PMC->Velocity.Size());
 }
 
 void AArrow::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherComp == Box)
+	if (OtherActor == GetOwner())
 	{
 		Destroy();
 	}
@@ -65,7 +68,7 @@ void AArrow::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimi
 	if (OtherActor && OtherActor != this)
 	{
 		FDamageEvent DamageEvent;
-		OtherActor->TakeDamage(1000.0f, DamageEvent, GetWorld()->GetFirstPlayerController(), this);
+		OtherActor->TakeDamage(1000.0f, DamageEvent, GetWorld()->GetFirstPlayerController(), GetOwner());
 	}
 }
 

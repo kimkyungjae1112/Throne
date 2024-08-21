@@ -127,7 +127,6 @@ void AEnemyArcher::BeginStringLay()
 
 void AEnemyArcher::SetDead()
 {
-	UE_LOG(LogTemp, Display, TEXT("궁수 죽음"));
 	AArcherAIController* AIController = Cast<AArcherAIController>(GetController());
 	if (AIController)
 	{
@@ -140,8 +139,8 @@ void AEnemyArcher::SpawnArrow()
 	FVector SpawnLocation = GetMesh()->GetSocketLocation(TEXT("hand_rSocket"));
 	FRotator SpawnRotation = GetMesh()->GetSocketRotation(TEXT("hand_rSocket"));
 
-	Arrow = GetWorld()->SpawnActor<AArrow>(ArrowClass, SpawnLocation + FVector(3.0f, 0.0f, 3.0f), SpawnRotation);
+	Arrow = GetWorld()->SpawnActor<AArrow>(ArrowClass, SpawnLocation, SpawnRotation);
+	Arrow->SetDirection(GetActorForwardVector());
 	Arrow->ActiveMovement();
 	Arrow->SetOwner(this);
-	Arrow->SetDirection(GetActorForwardVector());
 }
