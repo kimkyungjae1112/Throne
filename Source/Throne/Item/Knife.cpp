@@ -24,8 +24,8 @@ AKnife::AKnife()
 
 	PMC = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement Component"));
 	PMC->UpdatedComponent = BoxCollision;
-	PMC->InitialSpeed = 1200.0f;
-	PMC->MaxSpeed = 1200.0f;
+	PMC->InitialSpeed = 2000.0f;
+	PMC->MaxSpeed = 2000.0f;
 	PMC->bRotationFollowsVelocity = true;
 
 }

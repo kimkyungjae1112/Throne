@@ -50,8 +50,8 @@ void AArrow::SetDirection(const FVector& InDirection)
 
 void AArrow::ActiveMovement()
 {
-	PMC->InitialSpeed = 2000.0f;
-	PMC->MaxSpeed = 2000.0f;
+	PMC->InitialSpeed = 2500.0f;
+	PMC->MaxSpeed = 2500.0f;
 	PMC->Velocity = Direction * PMC->InitialSpeed;
 }
 

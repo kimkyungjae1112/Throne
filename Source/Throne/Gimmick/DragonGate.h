@@ -54,16 +54,16 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	TSubclassOf<class UUserWidget> WidgetClass;
 
-	UPROPERTY(EditInstanceOnly, Category = "Instance")
+	UPROPERTY(EditInstanceOnly, Category = "Interact")
 	TObjectPtr<class USkeletalMeshComponent> Mesh;
 
-	UPROPERTY(EditInstanceOnly, Category = "Instance")
+	UPROPERTY(EditInstanceOnly, Category = "Interact")
 	TObjectPtr<class UAnimationAsset> OpenAnimation;
 
 	UPROPERTY(EditAnywhere, Category = "Interact")
 	TObjectPtr<USceneComponent> InteractPos;
 
-	UPROPERTY(EditInstanceOnly, Category = "Instance")
+	UPROPERTY(EditInstanceOnly, Category = "Interact")
 	EGateType CurrentType;
 
 private:
