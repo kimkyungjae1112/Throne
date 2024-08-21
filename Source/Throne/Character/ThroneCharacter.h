@@ -146,6 +146,7 @@ private:
 	ECharacterMode PrevMode;
 	bool bHasWeapon = false;
 	bool bIsAiming = false;
+	bool bCooldownKnife = false;
 
 //Gimmick
 	UPROPERTY(VisibleAnywhere, Category = "Gimmick")

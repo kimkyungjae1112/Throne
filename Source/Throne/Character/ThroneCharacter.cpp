@@ -513,7 +513,10 @@ void AThroneCharacter::AttachWeaponHand()
 
 void AThroneCharacter::BeginAimKnife(const FInputActionValue& Value)
 {
-	bIsAiming = Value.Get<bool>();
+	if (!bCooldownKnife)
+	{
+		bIsAiming = Value.Get<bool>();
+	}
 
 	Ability->BeginAimKnife();
 	CurrentAimKnife = 0;
@@ -546,6 +549,14 @@ void AThroneCharacter::FireKnife()
 		
 		KnifeActor->SetDirection(GetActorForwardVector());
 		KnifeActor->SetOwner(this);
+		bCooldownKnife = true;
+
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle,
+			[&]()
+			{
+				bCooldownKnife = false;
+			}, 3.0f, false);
 	}
 }
 
