@@ -174,6 +174,8 @@ AThroneCharacter::AThroneCharacter()
 	{
 		KnifeClass = KnifeClassRef.Class;
 	}
+
+	PrevMode = ECharacterMode::Default;
 }
 
 void AThroneCharacter::BeginPlay()
@@ -463,6 +465,20 @@ void AThroneCharacter::LadderInteract()
 	}
 
 	Ladder->OnLadderClimb();
+	
+	Ladder->OnBottomEndClimb.BindLambda(
+		[&]()
+		{
+			Ability->BeginLadderBottomEnd();
+			SetStateNotLadder();
+		});
+
+	Ladder->OnTopEndClimb.BindLambda(
+		[&]() 
+		{ 
+			Ability->BeginLadderTopEnd(); 
+			SetStateNotLadder();
+		});
 
 	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance)
@@ -471,16 +487,8 @@ void AThroneCharacter::LadderInteract()
 
 		if (AnimInstance->bCanClimbingLadder)
 		{
-			UE_LOG(LogTemp, Display, TEXT("사다리 타기 시작"));
-			SetCharacterControl(ECharacterMode::Ladder);
-			GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
-			GetCharacterMovement()->MaxFlySpeed = 100.0f;
-			GetCharacterMovement()->BrakingDecelerationFlying = 2048.0f;
-		}
-		else
-		{
-			ChangeCharacterControl();
-			GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+			UE_LOG(LogTemp, Display, TEXT("캐릭터 타입 Ladder 로 변환"));
+			SetStateLadder();
 		}
 	}
 }
@@ -578,6 +586,20 @@ AThronePlayerController* AThroneCharacter::GetPlayerController()
 	return PlayerController;
 }
 
+void AThroneCharacter::SetStateLadder()
+{
+	SetCharacterControl(ECharacterMode::Ladder);
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
+	GetCharacterMovement()->MaxFlySpeed = 100.0f;
+	GetCharacterMovement()->BrakingDecelerationFlying = 2048.0f;
+}
+
+void AThroneCharacter::SetStateNotLadder()
+{
+	UE_LOG(LogTemp, Display, TEXT("SetStateNotLadder"));
+	ChangeCharacterControl();
+}
+
 void AThroneCharacter::SetAimKnifeData(const uint8 Index)
 {
 	if (!AimKnifeDatas.IsValidIndex(Index))
@@ -602,6 +624,3 @@ void AThroneCharacter::SetAimKnifeData(const uint8 Index)
 		GetCharacterMovement()->MaxWalkSpeed = Stat->GetRunMoveSpeed();
 	}
 }
-
-
-

@@ -480,9 +480,6 @@ void UAbilityComponent::BeginDragonGateOpen(EGateType GateType)
 
 }
 
-void UAbilityComponent::EndDragonGateOpen(class UAnimMontage* Target, bool IsProperlyEnded)
-{
-}
 
 void UAbilityComponent::BeginLadderBottomStart()
 {
@@ -492,33 +489,75 @@ void UAbilityComponent::BeginLadderBottomStart()
 	{
 		AnimInstance->Montage_Play(LadderBottomStartMontage);
 	
-		AnimInstance->bCanClimbingLadder = ~AnimInstance->bCanClimbingLadder;
-
-		FOnMontageEnded MontageEnded;
-		MontageEnded.BindUObject(this, &UAbilityComponent::EndLadderBottomStart);
-		AnimInstance->Montage_SetEndDelegate(MontageEnded, LadderBottomStartMontage);
+		AnimInstance->bCanClimbingLadder = true;
 	}
 }
 
-void UAbilityComponent::EndLadderBottomStart(class UAnimMontage* Target, bool IsProperlyEnded)
+void UAbilityComponent::BeginLadderBottomEnd()
 {
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	if (Owner && AnimInstance)
+	{
+		AnimInstance->Montage_Play(LadderBottomEndMontage);
 
+		AnimInstance->bCanClimbingLadder = false;
+
+		FOnMontageEnded MontageEnd;
+		MontageEnd.BindUObject(this, &UAbilityComponent::EndLadderBottomEnd);
+		AnimInstance->Montage_SetEndDelegate(MontageEnd, LadderBottomEndMontage);
+	}
+}
+
+void UAbilityComponent::EndLadderBottomEnd(class UAnimMontage* Target, bool IsProperlyEnded)
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	if (Owner)
+	{
+		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	}
+}
+
+
+void UAbilityComponent::BeginLadderTopStart()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	if (Owner && AnimInstance)
+	{
+		AnimInstance->Montage_Play(LadderTopStartMontage);
+
+		AnimInstance->bCanClimbingLadder = true;
+	}
 }
 
 void UAbilityComponent::BeginLadderTopEnd()
 {
 	ACharacter* Owner = Cast<ACharacter>(GetOwner());
-	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
 	if (Owner && AnimInstance)
 	{
 		AnimInstance->Montage_Play(LadderTopEndMontage);
+
+		AnimInstance->bCanClimbingLadder = false;
+
+		FOnMontageEnded MontageEnd;
+		MontageEnd.BindUObject(this, &UAbilityComponent::EndLadderTopEnd);
+		AnimInstance->Montage_SetEndDelegate(MontageEnd, LadderTopEndMontage);
 	}
 }
 
 void UAbilityComponent::EndLadderTopEnd(class UAnimMontage* Target, bool IsProperlyEnded)
 {
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	if (Owner)
+	{
+		UE_LOG(LogTemp, Display, TEXT("TopEnd End 몽타주"));
 
+		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	}
 }
+
 
 void UAbilityComponent::SetPlayerController(AThronePlayerController* InPlayerController)
 {

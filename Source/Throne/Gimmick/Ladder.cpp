@@ -93,6 +93,7 @@ void ALadder::OnConstruction(const FTransform& Transform)
 
 		// 사다리 프레임을 생성하고 위치와 회전을 설정한다.
 		UStaticMeshComponent* NewFrame = NewObject<UStaticMeshComponent>(this);
+		NewFrame->SetCollisionProfileName(TEXT("NoCollision"));
 		NewFrame->SetStaticMesh(LadderFrame); // 사다리 프레임 메쉬 설정
 		NewFrame->SetWorldLocation(FrameLocation);
 		FRotator AdjustedRotation = FrameRotation + FRotator(0.0f, 180.0f, 0.0f); // 예시로 90도 회전
@@ -141,6 +142,13 @@ void ALadder::OnLadderTopBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 	{
 		Interface->SetLadder(this);
 	}
+
+	if (bIsPlayer)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Top End Broadcast"));
+		OnTopEndClimb.ExecuteIfBound();
+		bIsPlayer = false;
+	}
 }
 
 void ALadder::OnLadderTopEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -170,6 +178,13 @@ void ALadder::OnLadderBottomBeginOverlap(UPrimitiveComponent* OverlappedComponen
 	{
 		Interface->SetLadder(this);
 	}
+
+	if (bIsPlayer)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Bottom End BroadCast"));
+		OnBottomEndClimb.ExecuteIfBound();
+		bIsPlayer = false;
+	}
 }
 
 void ALadder::OnLadderBottomEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -188,6 +203,6 @@ void ALadder::OnLadderBottomEndOverlap(UPrimitiveComponent* OverlappedComponent,
 
 void ALadder::OnLadderClimb()
 {
-	bIsPlayer = !bIsPlayer;
+	bIsPlayer = true;
 }
 

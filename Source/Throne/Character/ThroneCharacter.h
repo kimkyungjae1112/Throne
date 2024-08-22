@@ -191,7 +191,12 @@ private:
 
 /* Utility */
 private:
+	
 	class AThronePlayerController* GetPlayerController();
+	
+	void SetStateLadder();
+	void SetStateNotLadder();
+
 	void SetAimKnifeData(const uint8 Index);
 	uint8 CurrentAimKnife = 1;
 };

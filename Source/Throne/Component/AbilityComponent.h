@@ -84,8 +84,10 @@ public:
 	void EndDragonGateOpen(class UAnimMontage* Target, bool IsProperlyEnded);
 
 	void BeginLadderBottomStart();
-	void EndLadderBottomStart(class UAnimMontage* Target, bool IsProperlyEnded);
+	void BeginLadderBottomEnd();
+	void EndLadderBottomEnd(class UAnimMontage* Target, bool IsProperlyEnded);
 
+	void BeginLadderTopStart();
 	void BeginLadderTopEnd();
 	void EndLadderTopEnd(class UAnimMontage* Target, bool IsProperlyEnded);
 
@@ -150,6 +152,12 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> LadderBottomStartMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> LadderBottomEndMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> LadderTopStartMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Montage", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> LadderTopEndMontage;

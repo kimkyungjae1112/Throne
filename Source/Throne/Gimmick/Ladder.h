@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "Ladder.generated.h"
 
+DECLARE_DELEGATE(FOnTopEndClimb)
+DECLARE_DELEGATE(FOnBottomEndClimb)
+
 UCLASS()
 class THRONE_API ALadder : public AActor
 {
@@ -21,6 +24,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
+
+	FOnTopEndClimb OnTopEndClimb;
+	FOnBottomEndClimb OnBottomEndClimb;
 
 public:
 	UFUNCTION()
