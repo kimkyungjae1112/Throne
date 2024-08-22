@@ -280,6 +280,16 @@ void AThroneCharacter::SetLadder(ALadder* InLadder)
 	Ladder = InLadder;
 }
 
+void AThroneCharacter::LadderTopBox(bool bIsTop)
+{
+	IsTop = bIsTop;
+}
+
+void AThroneCharacter::LadderBottomBox(bool bIsBottom)
+{
+	IsBottom = bIsBottom;
+}
+
 /************* Input *************/
 void AThroneCharacter::ChangeCharacterControl()
 {
@@ -480,17 +490,25 @@ void AThroneCharacter::LadderInteract()
 			SetStateNotLadder();
 		});
 
-	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
-	if (AnimInstance)
+	if (IsTop)
+	{
+		Ability->BeginLadderTopStart();
+
+		float Y = Ladder->GetInteractLocation().Y;
+		SetActorLocation(FVector(GetActorLocation().X, Y, GetActorLocation().Z));
+		SetActorRotation(Ladder->GetTopArrowVector().Rotation());
+		
+	}
+	else if (IsBottom)
 	{
 		Ability->BeginLadderBottomStart();
-
-		if (AnimInstance->bCanClimbingLadder)
-		{
-			UE_LOG(LogTemp, Display, TEXT("캐릭터 타입 Ladder 로 변환"));
-			SetStateLadder();
-		}
+	
+		float X = Ladder->GetInteractLocation().X;
+		float Y = Ladder->GetInteractLocation().Y;
+		SetActorLocation(FVector(X, Y, GetActorLocation().Z));
+		SetActorRotation(Ladder->GetBottomArrowVector().Rotation());
 	}
+	SetStateLadder();
 }
 
 void AThroneCharacter::Sheath()
@@ -592,12 +610,13 @@ void AThroneCharacter::SetStateLadder()
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
 	GetCharacterMovement()->MaxFlySpeed = 100.0f;
 	GetCharacterMovement()->BrakingDecelerationFlying = 2048.0f;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
 }
 
 void AThroneCharacter::SetStateNotLadder()
 {
-	UE_LOG(LogTemp, Display, TEXT("SetStateNotLadder"));
 	ChangeCharacterControl();
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 void AThroneCharacter::SetAimKnifeData(const uint8 Index)

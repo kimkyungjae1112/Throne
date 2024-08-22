@@ -52,6 +52,8 @@ public:
 	virtual void SetDoorPointer(class ADoor* InDoor) override;
 	virtual void SetDragonGate(class ADragonGate* InDragonGate) override;
 	virtual void SetLadder(class ALadder* InLadder) override;
+	virtual void LadderTopBox(bool bIsTop) override;
+	virtual void LadderBottomBox(bool bIsBottom) override;
 
 /* Camera */
 private:
@@ -161,6 +163,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Gimmick")
 	TObjectPtr<class ALadder> Ladder;
 
+	bool IsTop = false;
+	bool IsBottom = false;
+
 /* UI */
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD", meta = (AllowPrivateAccess = "true"))
@@ -191,7 +196,6 @@ private:
 
 /* Utility */
 private:
-	
 	class AThronePlayerController* GetPlayerController();
 	
 	void SetStateLadder();

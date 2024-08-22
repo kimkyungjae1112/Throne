@@ -22,4 +22,6 @@ class THRONE_API ILadderInterface
 
 public:
 	virtual void SetLadder(class ALadder* InLadder) = 0;
+	virtual void LadderTopBox(bool bIsTop) = 0;
+	virtual void LadderBottomBox(bool bIsBottom) = 0;
 };

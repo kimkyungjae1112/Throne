@@ -6,6 +6,7 @@
 #include "Components/SplineComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "GimmickInterface/LadderInterface.h"
+#include "Components/ArrowComponent.h"
 
 ALadder::ALadder()
 {
@@ -13,6 +14,15 @@ ALadder::ALadder()
 
 	SplineComp = CreateDefaultSubobject<USplineComponent>(TEXT("Spline Component"));
 	RootComponent = SplineComp;
+	
+	TopArrowComp = CreateDefaultSubobject<UArrowComponent>(TEXT("Top Arrow Component"));
+	TopArrowComp->SetupAttachment(RootComponent);
+
+	BottomArrowComp = CreateDefaultSubobject<UArrowComponent>(TEXT("Bottom Arrow Component"));
+	BottomArrowComp->SetupAttachment(RootComponent);
+
+	InteractLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Interact Location"));
+	InteractLocation->SetupAttachment(RootComponent);
 
 	TopBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Top Box"));
 	TopBox->SetupAttachment(RootComponent);
@@ -141,6 +151,7 @@ void ALadder::OnLadderTopBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 	if (Interface)
 	{
 		Interface->SetLadder(this);
+		Interface->LadderTopBox(true);
 	}
 
 	if (bIsPlayer)
@@ -162,6 +173,7 @@ void ALadder::OnLadderTopEndOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	if (Interface)
 	{
 		Interface->SetLadder(nullptr);
+		Interface->LadderTopBox(false);
 	}
 }
 
@@ -177,6 +189,7 @@ void ALadder::OnLadderBottomBeginOverlap(UPrimitiveComponent* OverlappedComponen
 	if (Interface)
 	{
 		Interface->SetLadder(this);
+		Interface->LadderBottomBox(true);
 	}
 
 	if (bIsPlayer)
@@ -198,11 +211,22 @@ void ALadder::OnLadderBottomEndOverlap(UPrimitiveComponent* OverlappedComponent,
 	if (Interface)
 	{
 		Interface->SetLadder(nullptr);
+		Interface->LadderBottomBox(false);
 	}
 }
 
 void ALadder::OnLadderClimb()
 {
 	bIsPlayer = true;
+}
+
+const FVector ALadder::GetTopArrowVector() const
+{
+	return TopArrowComp->GetForwardVector();
+}
+
+const FVector ALadder::GetBottomArrowVector() const
+{
+	return BottomArrowComp->GetForwardVector();
 }
 

@@ -525,6 +525,7 @@ void UAbilityComponent::BeginLadderTopStart()
 	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
 	if (Owner && AnimInstance)
 	{
+		UE_LOG(LogTemp, Display, TEXT("LadderTopStart"));
 		AnimInstance->Montage_Play(LadderTopStartMontage);
 
 		AnimInstance->bCanClimbingLadder = true;

@@ -28,6 +28,8 @@ public:
 	FOnTopEndClimb OnTopEndClimb;
 	FOnBottomEndClimb OnBottomEndClimb;
 
+	FORCEINLINE const FVector GetInteractLocation() const { return InteractLocation->GetComponentLocation(); }
+
 public:
 	UFUNCTION()
 	void OnLadderTopBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -42,11 +44,24 @@ public:
 	void OnLadderBottomEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	void OnLadderClimb();
+	const FVector GetTopArrowVector() const;
+	const FVector GetBottomArrowVector() const;
+
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Spline", meta = (AllowPrivateAccess))
 	TObjectPtr<class USplineComponent> SplineComp;
-	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UArrowComponent> TopArrowComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UArrowComponent> BottomArrowComp;
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class USceneComponent> InteractLocation;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
 	TObjectPtr<UStaticMesh> LadderFrame;
 
