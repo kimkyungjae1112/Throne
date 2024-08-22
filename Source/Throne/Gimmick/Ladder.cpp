@@ -85,24 +85,24 @@ void ALadder::OnConstruction(const FTransform& Transform)
 
 	for (float Distance = 0; Distance < SplineLength; Distance += FrameSpacing)
 	{
-		// 각 프레임의 위치를 Spline에서 가져옵니다.
+		// 각 프레임의 위치를 Spline에서 가져오기.
 		FVector FrameLocation = SplineComp->GetLocationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::World);
 
-		// 프레임의 회전을 Spline의 방향에 맞추어 설정합니다.
+		// 프레임의 회전을 Spline의 방향에 맞추어 설정한다.
 		FRotator FrameRotation = SplineComp->GetRotationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::World);
 
-		// 사다리 프레임을 생성하고 위치와 회전을 설정합니다.
+		// 사다리 프레임을 생성하고 위치와 회전을 설정한다.
 		UStaticMeshComponent* NewFrame = NewObject<UStaticMeshComponent>(this);
 		NewFrame->SetStaticMesh(LadderFrame); // 사다리 프레임 메쉬 설정
 		NewFrame->SetWorldLocation(FrameLocation);
 		FRotator AdjustedRotation = FrameRotation + FRotator(0.0f, 180.0f, 0.0f); // 예시로 90도 회전
 		NewFrame->SetWorldRotation(AdjustedRotation);
 
-		// 생성된 프레임을 RootComponent에 부착합니다.
+		// 생성된 프레임을 RootComponent에 부착한다.
 		NewFrame->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
 		NewFrame->RegisterComponent();
 
-		// 리스트에 추가하여 이후 정리할 때 사용합니다.
+		// 리스트에 추가하여 이후 정리할 때 사용한다.
 		LadderFrameComponents.Add(NewFrame);
 	}
 }
