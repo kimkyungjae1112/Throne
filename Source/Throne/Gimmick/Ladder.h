@@ -20,30 +20,38 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void OnConstruction(const FTransform& Transform) override;
+
 public:
 	UFUNCTION()
-	void OnLadderBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnLadderTopBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-	void OnLadderEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void OnLadderTopEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	void OnLadderBottomBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnLadderBottomEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	void OnLadderClimb();
 
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
-	TObjectPtr<USceneComponent> Root;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
-	TObjectPtr<UStaticMeshComponent> LadderBody;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Spline", meta = (AllowPrivateAccess))
+	TObjectPtr<class USplineComponent> SplineComp;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
-	TObjectPtr<UStaticMeshComponent> LadderKnob_A;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
+	TObjectPtr<UStaticMesh> LadderFrame;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
-	TObjectPtr<UStaticMeshComponent> LadderKnob_B;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
+	TObjectPtr<UStaticMesh> LadderStep;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
-	TObjectPtr<UStaticMeshComponent> LadderKnob_C;
+	UPROPERTY()
+	TArray<UStaticMeshComponent*> LadderStepComponents;
+
+	UPROPERTY()
+	TArray<UStaticMeshComponent*> LadderFrameComponents;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trigger", meta = (AllowPrivateAccess))
 	TObjectPtr<class UBoxComponent> TopBox;
@@ -51,10 +59,17 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trigger", meta = (AllowPrivateAccess))
 	TObjectPtr<class UBoxComponent> BottomBox;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Widget", meta = (AllowPrivateAccess))
 	TObjectPtr<class UUserWidget> WidgetPtr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Mesh", meta = (AllowPrivateAccess))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Widget", meta = (AllowPrivateAccess))
 	TSubclassOf<class UUserWidget> WidgetClass;
+
+
+private:
+	bool bIsPlayer;
+
+	void ClearLadderMesh();
 
 };

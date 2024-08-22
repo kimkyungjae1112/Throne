@@ -3,6 +3,7 @@
 
 #include "Gimmick/Ladder.h"
 #include "Components/BoxComponent.h"
+#include "Components/SplineComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "GimmickInterface/LadderInterface.h"
 
@@ -10,45 +11,20 @@ ALadder::ALadder()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	RootComponent = Root;
-
-	LadderBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LadderBody"));
-	LadderBody->SetupAttachment(Root);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> LadderBodyRef(TEXT("/Script/Engine.StaticMesh'/Game/DRAGON_CATACOMB/MESHES/OTHER/LADDER/SM_Ladder_bar_2m.SM_Ladder_bar_2m'"));
-	if (LadderBodyRef.Object)
-	{
-		LadderBody->SetStaticMesh(LadderBodyRef.Object);
-	}
-
-	LadderKnob_A = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LadderKnob A"));
-	LadderKnob_A->SetupAttachment(LadderBody);
-
-	LadderKnob_B = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LadderKnob B"));
-	LadderKnob_B->SetupAttachment(LadderBody);
-
-	LadderKnob_C = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LadderKnob C"));
-	LadderKnob_C->SetupAttachment(LadderBody);
-	
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> LadderKnobRef(TEXT("/Script/Engine.StaticMesh'/Game/DRAGON_CATACOMB/MESHES/OTHER/LADDER/SM_ladder_bar_a.SM_ladder_bar_a'"));
-	if (LadderKnobRef.Object)
-	{
-		LadderKnob_A->SetStaticMesh(LadderKnobRef.Object);
-		LadderKnob_B->SetStaticMesh(LadderKnobRef.Object);
-		LadderKnob_C->SetStaticMesh(LadderKnobRef.Object);
-	}
+	SplineComp = CreateDefaultSubobject<USplineComponent>(TEXT("Spline Component"));
+	RootComponent = SplineComp;
 
 	TopBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Top Box"));
-	TopBox->SetupAttachment(Root);
+	TopBox->SetupAttachment(RootComponent);
 	TopBox->SetCollisionProfileName(TEXT("ThroneTrigger"));
-	TopBox->OnComponentBeginOverlap.AddDynamic(this, &ALadder::OnLadderBeginOverlap);
-	TopBox->OnComponentEndOverlap.AddDynamic(this, &ALadder::OnLadderEndOverlap);
+	TopBox->OnComponentBeginOverlap.AddDynamic(this, &ALadder::OnLadderTopBeginOverlap);
+	TopBox->OnComponentEndOverlap.AddDynamic(this, &ALadder::OnLadderTopEndOverlap);
 
 	BottomBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Bottom Box"));
-	BottomBox->SetupAttachment(Root);
+	BottomBox->SetupAttachment(RootComponent);
 	BottomBox->SetCollisionProfileName(TEXT("ThroneTrigger"));
-	BottomBox->OnComponentBeginOverlap.AddDynamic(this, &ALadder::OnLadderBeginOverlap);
-	BottomBox->OnComponentEndOverlap.AddDynamic(this, &ALadder::OnLadderEndOverlap);
+	BottomBox->OnComponentBeginOverlap.AddDynamic(this, &ALadder::OnLadderBottomBeginOverlap);
+	BottomBox->OnComponentEndOverlap.AddDynamic(this, &ALadder::OnLadderBottomEndOverlap);
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetClassRef(TEXT("/Game/Throne/UI/WBP_Interact.WBP_Interact_C"));
 	if (WidgetClassRef.Class)
@@ -56,6 +32,8 @@ ALadder::ALadder()
 		WidgetClass = WidgetClassRef.Class;
 	}
 
+
+	bIsPlayer = false;
 }
 
 void ALadder::BeginPlay()
@@ -70,10 +48,90 @@ void ALadder::Tick(float DeltaTime)
 
 }
 
-void ALadder::OnLadderBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ALadder::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	ClearLadderMesh();
+
+	// 스플라인 길이 얻기
+	float SplineLength = SplineComp->GetSplineLength();
+
+	// 사다리 발판 배치
+	float StepInterval = 50.0f; // 발판 간격
+	int32 NumSteps = FMath::CeilToInt(SplineLength / StepInterval);
+
+	for (int32 i = 0; i < NumSteps; ++i)
+	{
+		// 스플라인에서 위치 및 회전 얻기
+		FVector Location = SplineComp->GetLocationAtDistanceAlongSpline(i * StepInterval, ESplineCoordinateSpace::World);
+		FRotator Rotation = SplineComp->GetRotationAtDistanceAlongSpline(i * StepInterval, ESplineCoordinateSpace::World);
+
+		// 사다리 발판 메쉬 컴포넌트 생성
+		UStaticMeshComponent* NewStep = NewObject<UStaticMeshComponent>(this, UStaticMeshComponent::StaticClass());
+		NewStep->SetStaticMesh(LadderStep); // 발판 메쉬 설정
+		NewStep->SetWorldLocation(Location);
+		NewStep->SetWorldRotation(Rotation);
+		NewStep->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
+		NewStep->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+
+		// 메쉬 활성화
+		NewStep->RegisterComponent();
+		LadderStepComponents.Add(NewStep);
+	}
+
+	// 사다리 프레임 배치
+	float FrameSpacing = 150.0f;
+
+	for (float Distance = 0; Distance < SplineLength; Distance += FrameSpacing)
+	{
+		// 각 프레임의 위치를 Spline에서 가져옵니다.
+		FVector FrameLocation = SplineComp->GetLocationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::World);
+
+		// 프레임의 회전을 Spline의 방향에 맞추어 설정합니다.
+		FRotator FrameRotation = SplineComp->GetRotationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::World);
+
+		// 사다리 프레임을 생성하고 위치와 회전을 설정합니다.
+		UStaticMeshComponent* NewFrame = NewObject<UStaticMeshComponent>(this);
+		NewFrame->SetStaticMesh(LadderFrame); // 사다리 프레임 메쉬 설정
+		NewFrame->SetWorldLocation(FrameLocation);
+		FRotator AdjustedRotation = FrameRotation + FRotator(0.0f, 180.0f, 0.0f); // 예시로 90도 회전
+		NewFrame->SetWorldRotation(AdjustedRotation);
+
+		// 생성된 프레임을 RootComponent에 부착합니다.
+		NewFrame->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+		NewFrame->RegisterComponent();
+
+		// 리스트에 추가하여 이후 정리할 때 사용합니다.
+		LadderFrameComponents.Add(NewFrame);
+	}
+}
+
+void ALadder::ClearLadderMesh()
+{
+	for (UStaticMeshComponent* Comp : LadderStepComponents)
+	{
+		if (Comp)
+		{
+			Comp->DestroyComponent();
+		}
+	}
+	LadderStepComponents.Empty();
+
+	for (UStaticMeshComponent* Comp : LadderFrameComponents)
+	{
+		if (Comp)
+		{
+			Comp->DestroyComponent();
+		}
+	}
+	LadderFrameComponents.Empty();
+}
+
+void ALadder::OnLadderTopBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	WidgetPtr = CreateWidget<UUserWidget>(GetWorld(), WidgetClass);
-	if (WidgetPtr)
+	if (WidgetPtr && !bIsPlayer)
 	{
 		WidgetPtr->AddToViewport();
 	}
@@ -85,7 +143,36 @@ void ALadder::OnLadderBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	}
 }
 
-void ALadder::OnLadderEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void ALadder::OnLadderTopEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (WidgetPtr->IsInViewport())
+	{
+		WidgetPtr->RemoveFromViewport();
+	}
+
+	ILadderInterface* Interface = Cast<ILadderInterface>(OtherActor);
+	if (Interface)
+	{
+		Interface->SetLadder(nullptr);
+	}
+}
+
+void ALadder::OnLadderBottomBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	WidgetPtr = CreateWidget<UUserWidget>(GetWorld(), WidgetClass);
+	if (WidgetPtr && !bIsPlayer)
+	{
+		WidgetPtr->AddToViewport();
+	}
+
+	ILadderInterface* Interface = Cast<ILadderInterface>(OtherActor);
+	if (Interface)
+	{
+		Interface->SetLadder(this);
+	}
+}
+
+void ALadder::OnLadderBottomEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (WidgetPtr->IsInViewport())
 	{
@@ -101,5 +188,6 @@ void ALadder::OnLadderEndOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 void ALadder::OnLadderClimb()
 {
+	bIsPlayer = !bIsPlayer;
 }
 

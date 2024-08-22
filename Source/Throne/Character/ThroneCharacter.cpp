@@ -412,11 +412,6 @@ void AThroneCharacter::GateLeverInteract()
 
 	GateLever->OnTriggerGateLever();
 
-	float X = GateLever->GetInteractLocation().X;
-	float Y = GateLever->GetInteractLocation().Y;
-	SetActorLocation(FVector(X, Y, GetActorLocation().Z));
-	SetActorRotation(GateLever->GetInteractRotation());
-
 	if (GateLever->GetLeverType() == ELeverType::Open)
 	{
 		Ability->BeginLeverOpen();
@@ -425,6 +420,12 @@ void AThroneCharacter::GateLeverInteract()
 	{
 		Ability->BeginLeverClose();
 	}
+
+	float X = GateLever->GetInteractLocation().X;
+	float Y = GateLever->GetInteractLocation().Y;
+	SetActorLocation(FVector(X, Y, GetActorLocation().Z));
+	SetActorRotation(GateLever->GetInteractRotation());
+
 }
 
 void AThroneCharacter::DoorInteract()
@@ -466,10 +467,11 @@ void AThroneCharacter::LadderInteract()
 	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance)
 	{
-		//Ability->BeginLadderBottomStart();
-		AnimInstance->bCanClimbingLadder = ~AnimInstance->bCanClimbingLadder;
+		Ability->BeginLadderBottomStart();
+
 		if (AnimInstance->bCanClimbingLadder)
 		{
+			UE_LOG(LogTemp, Display, TEXT("사다리 타기 시작"));
 			SetCharacterControl(ECharacterMode::Ladder);
 			GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
 			GetCharacterMovement()->MaxFlySpeed = 100.0f;

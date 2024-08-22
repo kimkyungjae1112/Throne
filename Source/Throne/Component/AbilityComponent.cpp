@@ -484,44 +484,44 @@ void UAbilityComponent::EndDragonGateOpen(class UAnimMontage* Target, bool IsPro
 {
 }
 
-//void UAbilityComponent::BeginLadderBottomStart()
-//{
-//	ACharacter* Owner = Cast<ACharacter>(GetOwner());
-//	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
-//	if (Owner && AnimInstance)
-//	{
-//		AnimInstance->Montage_Play(LadderBottomStartMontage);
-//	
-//		/*FOnMontageEnded MontageEnded;
-//		MontageEnded.BindUObject(this, &UAbilityComponent::EndLadderBottomStart);
-//		AnimInstance->Montage_SetEndDelegate(MontageEnded, LadderBottomStartMontage);*/
-//	}
-//}
-//
-//void UAbilityComponent::EndLadderBottomStart(class UAnimMontage* Target, bool IsProperlyEnded)
-//{
-//	/*ACharacter* Owner = Cast<ACharacter>(GetOwner());
-//	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
-//	if (AnimInstance)
-//	{
-//		AnimInstance->bCanClimbingLadder = true;
-//		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
-//		Owner->GetCharacterMovement()->MaxFlySpeed = 100.0f;
-//		Owner->GetCharacterMovement()->BrakingDecelerationFlying = 2048.0f;
-//	}*/
-//}
-//
-//void UAbilityComponent::BeginLadderTopStart()
-//{
-//	ACharacter* Owner = Cast<ACharacter>(GetOwner());
-//	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
-//	if (Owner && AnimInstance)
-//	{
-//		AnimInstance->Montage_Play(LadderTopStartMontage);
-//	}
-//}
+void UAbilityComponent::BeginLadderBottomStart()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UCharacterAnimInstance* AnimInstance = Cast<UCharacterAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	if (Owner && AnimInstance)
+	{
+		AnimInstance->Montage_Play(LadderBottomStartMontage);
+	
+		AnimInstance->bCanClimbingLadder = ~AnimInstance->bCanClimbingLadder;
+
+		FOnMontageEnded MontageEnded;
+		MontageEnded.BindUObject(this, &UAbilityComponent::EndLadderBottomStart);
+		AnimInstance->Montage_SetEndDelegate(MontageEnded, LadderBottomStartMontage);
+	}
+}
+
+void UAbilityComponent::EndLadderBottomStart(class UAnimMontage* Target, bool IsProperlyEnded)
+{
+
+}
+
+void UAbilityComponent::BeginLadderTopEnd()
+{
+	ACharacter* Owner = Cast<ACharacter>(GetOwner());
+	UAnimInstance* AnimInstance = Cast<UAnimInstance>(Owner->GetMesh()->GetAnimInstance());
+	if (Owner && AnimInstance)
+	{
+		AnimInstance->Montage_Play(LadderTopEndMontage);
+	}
+}
+
+void UAbilityComponent::EndLadderTopEnd(class UAnimMontage* Target, bool IsProperlyEnded)
+{
+
+}
 
 void UAbilityComponent::SetPlayerController(AThronePlayerController* InPlayerController)
 {
 	PlayerController = InPlayerController;
 }
+
