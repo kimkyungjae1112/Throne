@@ -494,8 +494,9 @@ void AThroneCharacter::LadderInteract()
 	{
 		Ability->BeginLadderTopStart();
 
-		float Y = Ladder->GetInteractLocation().Y;
-		SetActorLocation(FVector(GetActorLocation().X, Y, GetActorLocation().Z));
+		float X = Ladder->GetActorLocation().X;
+		float Y = Ladder->GetActorLocation().Y;
+		SetActorLocation(FVector(X, Y, GetActorLocation().Z));
 		SetActorRotation(Ladder->GetTopArrowVector().Rotation());
 		
 	}

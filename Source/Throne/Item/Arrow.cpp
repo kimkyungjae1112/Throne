@@ -68,7 +68,8 @@ void AArrow::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimi
 	if (OtherActor && OtherActor != this)
 	{
 		FDamageEvent DamageEvent;
-		OtherActor->TakeDamage(1000.0f, DamageEvent, GetWorld()->GetFirstPlayerController(), GetOwner());
+		OtherActor->TakeDamage(500.0f, DamageEvent, GetWorld()->GetFirstPlayerController(), GetOwner());
+		Destroy();
 	}
 }
 
