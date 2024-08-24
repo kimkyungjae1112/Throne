@@ -39,10 +39,10 @@ ADoor::ADoor()
 
 	InitialRotation = Mesh->GetRelativeRotation();
 	FrontTargetRotation = InitialRotation;
-	FrontTargetRotation.Yaw -= 100.0f;
+	FrontTargetRotation.Yaw -= 90.0f;
 
 	BackTargetRotation = InitialRotation;
-	BackTargetRotation.Yaw += 100.0f;
+	BackTargetRotation.Yaw += 90.0f;
 
 }
 
