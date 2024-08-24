@@ -44,6 +44,7 @@ ADoor::ADoor()
 	BackTargetRotation = InitialRotation;
 	BackTargetRotation.Yaw += 90.0f;
 
+	DoorTurnRate = 1.0f;
 }
 
 void ADoor::BeginPlay()
@@ -65,7 +66,7 @@ void ADoor::Tick(float DeltaTime)
 		{
 			if (CurrentDoorType == EDoorType::Close)
 			{
-				TargetRotation = FMath::RInterpTo(CurrentRotation, FrontTargetRotation, DeltaTime, 2.0f);
+				TargetRotation = FMath::RInterpTo(CurrentRotation, FrontTargetRotation, DeltaTime, DoorTurnRate);
 				if (FMath::Abs((TargetRotation - FrontTargetRotation).Yaw) < 1.0f)
 				{
 					TargetRotation = FrontTargetRotation;
@@ -75,7 +76,7 @@ void ADoor::Tick(float DeltaTime)
 			}
 			else
 			{
-				TargetRotation = FMath::RInterpTo(CurrentRotation, InitialRotation, DeltaTime, 2.0f);
+				TargetRotation = FMath::RInterpTo(CurrentRotation, InitialRotation, DeltaTime, DoorTurnRate);
 
 				if (FMath::Abs((TargetRotation - InitialRotation).Yaw) < 1.0f)
 				{
@@ -89,7 +90,7 @@ void ADoor::Tick(float DeltaTime)
 		{
 			if (CurrentDoorType == EDoorType::Close)
 			{
-				TargetRotation = FMath::RInterpTo(CurrentRotation, BackTargetRotation, DeltaTime, 2.0f);
+				TargetRotation = FMath::RInterpTo(CurrentRotation, BackTargetRotation, DeltaTime, DoorTurnRate);
 
 				if (FMath::Abs((TargetRotation - BackTargetRotation).Yaw) < 1.0f)
 				{
@@ -100,7 +101,7 @@ void ADoor::Tick(float DeltaTime)
 			}
 			else
 			{
-				TargetRotation = FMath::RInterpTo(CurrentRotation, InitialRotation, DeltaTime, 2.0f);
+				TargetRotation = FMath::RInterpTo(CurrentRotation, InitialRotation, DeltaTime, DoorTurnRate);
 
 				if (FMath::Abs((TargetRotation - InitialRotation).Yaw) < 1.0f)
 				{

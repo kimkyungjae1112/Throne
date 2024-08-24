@@ -62,4 +62,8 @@ private:
 	FRotator BackTargetRotation;
 
 	bool bDoorFlag;
+	
+	UPROPERTY(EditAnywhere)
+	float DoorTurnRate;
+	
 };
