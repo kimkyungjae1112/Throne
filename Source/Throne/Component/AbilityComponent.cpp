@@ -19,6 +19,7 @@ UAbilityComponent::UAbilityComponent()
 {
 	DefaultAttackUseEnergy = 10.0f;
 	JumpAttackUseEnergy = 30.0f;
+	KnifeFireUseEnergy = 20.0f;
 }
 
 
@@ -361,6 +362,8 @@ void UAbilityComponent::BeginKickAttack()
 	{
 		AnimInstance->Montage_Play(KickMontage);
 		Owner->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+		OnDefaultAttackUseEnergy.ExecuteIfBound(DefaultAttackUseEnergy);
 
 		FOnMontageEnded MontageEnded;
 		MontageEnded.BindUObject(this, &UAbilityComponent::EndKickAttack);

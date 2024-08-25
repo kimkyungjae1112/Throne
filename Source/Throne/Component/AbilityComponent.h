@@ -10,6 +10,7 @@
 
 DECLARE_DELEGATE_OneParam(FOnDefaultAttackUseEnergy, float /* Use Energy */)
 DECLARE_DELEGATE_OneParam(FOnJumpAttackUseEnergy, float /* Use Energy */)
+DECLARE_DELEGATE_OneParam(FOnKnifeFireUseEnergy, float /* Use Energy */)
 DECLARE_DELEGATE(FOnInSheath)
 DECLARE_DELEGATE(FOnOutSheath)
 
@@ -27,6 +28,7 @@ protected:
 public:
 	FOnDefaultAttackUseEnergy OnDefaultAttackUseEnergy;
 	FOnJumpAttackUseEnergy OnJumpAttackUseEnergy;
+	FOnKnifeFireUseEnergy OnKnifeFireUseEnergy;
 	FOnInSheath OnInSheath;
 	FOnOutSheath OnOutSheath;
 
@@ -99,6 +101,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float JumpAttackUseEnergy;
+
+	UPROPERTY(EditAnywhere)
+	float KnifeFireUseEnergy;
 
 private:
 	UPROPERTY(VisibleAnywhere)

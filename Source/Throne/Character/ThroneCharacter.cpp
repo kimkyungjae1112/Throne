@@ -192,6 +192,7 @@ void AThroneCharacter::BeginPlay()
 	Ability->OnInSheath.BindUObject(this, &AThroneCharacter::AttachWeaponSheath);
 	Ability->OnDefaultAttackUseEnergy.BindUObject(Stat, &UCharacterStatComponent::SetEnergy);
 	Ability->OnJumpAttackUseEnergy.BindUObject(Stat, &UCharacterStatComponent::SetEnergy);
+	Ability->OnKnifeFireUseEnergy.BindUObject(Stat, &UCharacterStatComponent::SetEnergy);
 }
 
 void AThroneCharacter::Tick(float DeltaTime)
@@ -579,6 +580,8 @@ void AThroneCharacter::FireKnife()
 		KnifeActor->SetDirection(GetActorForwardVector());
 		KnifeActor->SetOwner(this);
 		bCooldownKnife = true;
+
+		Ability->OnKnifeFireUseEnergy.ExecuteIfBound(20.0f);
 
 		FTimerHandle TimerHandle;
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle,
