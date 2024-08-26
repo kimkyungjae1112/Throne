@@ -49,34 +49,34 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Stat Data")
 	TObjectPtr<class UCharacterStatData> StatData;
 
-	UPROPERTY(VisibleAnywhere, Category = "Stat")
+	UPROPERTY(EditAnywhere, Category = "Stat")
 	float AttackDamage;
 
-	UPROPERTY(VisibleAnywhere, Category = "Stat")
+	UPROPERTY(EditAnywhere, Category = "Stat")
 	float AttackRange;
 
-	UPROPERTY(VisibleAnywhere, Category = "Stat")
+	UPROPERTY(EditAnywhere, Category = "Stat")
 	float AttackSpeed;
 
-	UPROPERTY(VisibleAnywhere, Category = "Stat")
+	UPROPERTY(EditAnywhere, Category = "Stat")
 	float AttackRadian;
 
-	UPROPERTY(VisibleAnywhere, Category = "Stat")
+	UPROPERTY(EditAnywhere, Category = "Stat")
 	float WalkMoveSpeed;
 
-	UPROPERTY(VisibleAnywhere, Category = "Stat")
+	UPROPERTY(EditAnywhere, Category = "Stat")
 	float RunMoveSpeed;
 
-	UPROPERTY(VisibleAnywhere, Category = "Stat")
+	UPROPERTY(EditAnywhere, Category = "Stat")
 	float MaxHp;
 
-	UPROPERTY(VisibleAnywhere, Category = "Stat")
+	UPROPERTY(EditAnywhere, Category = "Stat")
 	float CurrentHp;
 
-	UPROPERTY(VisibleAnywhere, Category = "Stat")
+	UPROPERTY(EditAnywhere, Category = "Stat")
 	float MaxEnergy;
 
-	UPROPERTY(VisibleAnywhere, Category = "Stat")
+	UPROPERTY(EditAnywhere, Category = "Stat")
 	float CurrentEnergy;
 
 private:

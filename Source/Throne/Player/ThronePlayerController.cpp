@@ -34,6 +34,14 @@ void AThronePlayerController::BeginPlay()
 	ItemInteractPtr = CreateWidget<UUserWidget>(this, ItemInteractClass);
 }
 
+void AThronePlayerController::GameHasEnded(AActor* EndGameFocus, bool bIsWinner)
+{
+	Super::GameHasEnded(EndGameFocus, bIsWinner);
+
+	FTimerHandle ResponeTimer;
+	GetWorldTimerManager().SetTimer(ResponeTimer, this, &AThronePlayerController::RestartLevel, 5.0f);
+}
+
 void AThronePlayerController::DisplayItemInteract()
 {
 	if (ItemInteractPtr)

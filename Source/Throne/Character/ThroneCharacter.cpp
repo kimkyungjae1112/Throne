@@ -600,6 +600,8 @@ void AThroneCharacter::Death()
 		DisableInput(PlayerController);
 	}
 	Ability->BeginDead();
+
+	PlayerController->GameHasEnded(this, false);
 }
 
 AThronePlayerController* AThroneCharacter::GetPlayerController()
