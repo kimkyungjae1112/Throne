@@ -133,6 +133,21 @@ void AEnemyArcher::SetDead()
 	{
 		AIController->StopAI();
 	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->Montage_Play(DeadMontage);
+		SetActorEnableCollision(false);
+	}
+
+	FTimerHandle DestroyTimer;
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimer,
+		[&]()
+		{
+			Destroy();
+			Bow->Destroy();
+		}, 4.0f, false);
 }
 
 void AEnemyArcher::BeginHitReaction()
