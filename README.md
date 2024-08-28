@@ -19,7 +19,7 @@ Struggle For Throne
 <소스 코드 구조>
 =============
 <details>
-<summary> <h6>AI</h6> </summary>
+<summary> <h1>AI</h1> </summary>
 <div markdown="1">
 
 ## AIController
