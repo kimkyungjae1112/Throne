@@ -83,10 +83,9 @@ AI의 패트롤 기능을 담당하는 클래스입니다.
 </div>
 </details>
 
-
-
-
-# Notify
+<details>
+<summary><h1>Notify</h1></summary>
+<div markdown="1">
 
 ## 피격 판정을 체크하는 클래스
 
@@ -120,7 +119,12 @@ AI의 패트롤 기능을 담당하는 클래스입니다.
 
 해당 클래스는 궁수 몬스터의 활 시위를 당기고 발사하는 몽타주 중간에 화살을 생성하기 위한 클래스입니다. 인터페이스를 통해 궁수 몬스터와 연결되어 있습니다. 구현은 인터페이스를 통해 이루어집니다.
 
-# Animation
+</div>
+</details>
+
+<details>
+<summary><h1>Animation</h1></summary>
+<div markdown="1">
 
 ## CharacterAnimInstance
 
@@ -129,7 +133,14 @@ AI의 패트롤 기능을 담당하는 클래스입니다.
 
 땅 위에서 움직임, 전투 상태, 방패를 든 상태, 사다리를 타고 있는지, 나이프를 조준하고 있는지 등을 NativeUpdateAnimation() 함수를 통해 업데이트 합니다. 
 
-# Character
+</div>
+</details>
+
+
+
+<details>
+<summary><h1>Character</h1></summary>
+<div markdown="1">
 
 ## ThroneCharacter
 
@@ -202,6 +213,25 @@ AI의 패트롤 기능을 담당하는 클래스입니다.
 
 - 체력바
 - 기력바
+
+
+</div>
+</details>
+
+
+
+
+<details>
+<summary><h1>Component</h1></summary>
+<div markdown="1">
+
+...
+
+</div>
+</details>
+
+
+
 
 
 <br>
