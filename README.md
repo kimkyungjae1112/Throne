@@ -22,7 +22,6 @@ Struggle For Throne
 
 ## AIController
 
----
 
 AIController는 NPC 폰에 빙의되어 플레이어가 직접 조종하지 않아도 폰의 동작을 가능하게 합니다. 저는 BehaviorTree를 사용해 NPC의 동작을 결정하기 위해 AIController에 다음과 같은 코드를 작성했습니다.
 
@@ -36,19 +35,16 @@ AIController의 조종을 받는 폰에서 BehaviorTree의 실행을 On/Off 할 
 
 ## BTDecorator_AttackInRange
 
----
 
 UBTDecorator 클래스를 상속받아 제작했으며 AI의 공격범위 안에 Target(플레이어)가 있는지 검사하는 클래스입니다.
 
 ## BTService_Detect
 
----
 
 UBTService 클래스를 상속받아 제작했으며 AI의 탐지범위 안에 Target(플레이어)가 있는지 검사하는 클래스입니다. UWorld 클래스에 있는 OverlapMultiByChannel을 사용해 Player 채널에 있는 폰을 검사하도록 설계했습니다. 해당 채널에 감지되는 폰이 있다면 Blackboard의 Target 변수에 해당 폰을 대입하고 감지 되지 않았다면 nullptr을 대입합니다.
 
 ## BTTask
 
----
 
 UBTTask_Node를 상속받아 만든 클래스들입니다.
 
@@ -86,7 +82,6 @@ AI의 패트롤 기능을 담당하는 클래스입니다.
 
 ## 피격 판정을 체크하는 클래스
 
----
 
 공격 몽타주 중간에 들어가 공격 판정을 하기 위한 클래스들입니다.
 
@@ -114,7 +109,6 @@ AI의 패트롤 기능을 담당하는 클래스입니다.
 
 ## ArcherArrowSpawnNotify
 
----
 
 해당 클래스는 궁수 몬스터의 활 시위를 당기고 발사하는 몽타주 중간에 화살을 생성하기 위한 클래스입니다. 인터페이스를 통해 궁수 몬스터와 연결되어 있습니다. 구현은 인터페이스를 통해 이루어집니다.
 
@@ -122,7 +116,6 @@ AI의 패트롤 기능을 담당하는 클래스입니다.
 
 ## CharacterAnimInstance
 
----
 
 캐릭터의 상태를 관찰하고 Animation_Blueprint에서 상태에 따라 애니메이션을 변경하기 위해 변수들을 저장하는 클래스입니다.
 
@@ -132,7 +125,6 @@ AI의 패트롤 기능을 담당하는 클래스입니다.
 
 ## ThroneCharacter
 
----
 
 캐릭터 클래스는 입력 처리를 담당하고 있으며, 기능들은 최대한 컴포넌트에 구현해 커플링을 지양하고 클래스가 방대해 지는 것을 막고자 하였습니다.
 
