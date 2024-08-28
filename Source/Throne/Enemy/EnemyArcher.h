@@ -69,6 +69,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Montage")
 	TObjectPtr<class UAnimMontage> BowStringPullMontage;
 
+	UPROPERTY(EditAnywhere, Category = "Montage")
+	TObjectPtr<class UAnimMontage> HitReactionMontage;
+
 /* Animation Function */
 private:
 	
@@ -78,7 +81,7 @@ private:
 	void BeginStringLay();
 
 	void SetDead();
-
+	void BeginHitReaction();
 
 /* Utility */
 private:

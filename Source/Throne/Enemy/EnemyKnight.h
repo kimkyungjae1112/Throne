@@ -66,7 +66,6 @@ private:
 
 	//HitReaction
 	void BeginHitReaction();
-	void EndHitReaction(class UAnimMontage* Target, bool IsProperlyEnded);
 
 	
 };

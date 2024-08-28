@@ -103,13 +103,6 @@ void AEnemyKnight::BeginHitReaction()
 	if (AnimInstance)
 	{
 		AnimInstance->Montage_Play(HitReactionMontage);
-
-		FOnMontageEnded MontageEnd;
-		MontageEnd.BindUObject(this, &AEnemyKnight::EndHitReaction);
-		AnimInstance->Montage_SetEndDelegate(MontageEnd, HitReactionMontage);
 	}
 }
 
-void AEnemyKnight::EndHitReaction(UAnimMontage* Target, bool IsProperlyEnded)
-{
-}

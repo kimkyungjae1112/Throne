@@ -55,6 +55,7 @@ void AEnemyArcher::BeginPlay()
 float AEnemyArcher::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	BeginHitReaction();
 	Stat->ApplyDamage(Damage);
 	
 	return Damage;
@@ -131,6 +132,15 @@ void AEnemyArcher::SetDead()
 	if (AIController)
 	{
 		AIController->StopAI();
+	}
+}
+
+void AEnemyArcher::BeginHitReaction()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		AnimInstance->Montage_Play(HitReactionMontage);
 	}
 }
 
