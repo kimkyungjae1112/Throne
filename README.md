@@ -42,32 +42,6 @@ UBTDecorator 클래스를 상속받아 제작했으며 AI의 공격범위 안에
 
 ## BTService_Detect
 
-</div>
-</details>
-
-
-# AI
-
-## AIController
-
-
-AIController는 NPC 폰에 빙의되어 플레이어가 직접 조종하지 않아도 폰의 동작을 가능하게 합니다. 저는 BehaviorTree를 사용해 NPC의 동작을 결정하기 위해 AIController에 다음과 같은 코드를 작성했습니다.
-
-```cpp
-public:
-	void RunAI();
-	void StopAI();
-```
-
-AIController의 조종을 받는 폰에서 BehaviorTree의 실행을 On/Off 할 수 있도록 RunAI()와 StopAI()를 제공합니다. 빙의시 바로 AI가 작동할 수 있도록 OnPossess 가상 함수에서 RunAI를 호출하고 있습니다.
-
-## BTDecorator_AttackInRange
-
-
-UBTDecorator 클래스를 상속받아 제작했으며 AI의 공격범위 안에 Target(플레이어)가 있는지 검사하는 클래스입니다.
-
-## BTService_Detect
-
 
 UBTService 클래스를 상속받아 제작했으며 AI의 탐지범위 안에 Target(플레이어)가 있는지 검사하는 클래스입니다. UWorld 클래스에 있는 OverlapMultiByChannel을 사용해 Player 채널에 있는 폰을 검사하도록 설계했습니다. 해당 채널에 감지되는 폰이 있다면 Blackboard의 Target 변수에 해당 폰을 대입하고 감지 되지 않았다면 nullptr을 대입합니다.
 
@@ -105,6 +79,12 @@ AI의 패트롤 기능을 담당하는 클래스입니다.
 ### BTTask_StopAnimation
 
 궁수 몬스터의 Aiming 클래스가 진행되던 중 Target(플레이어)가 탐지 범위 밖으로 나갔을 시 활 시위를 당기던 몽타주를 끝내기 위한 클래스입니다. Aiming 클래스를 진행하며 손에 화살이 생성되게 되는데 그것 또한 삭제합니다.
+
+</div>
+</details>
+
+
+
 
 # Notify
 
