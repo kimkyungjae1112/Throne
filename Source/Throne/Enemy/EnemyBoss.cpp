@@ -12,6 +12,7 @@
 #include "Engine/DamageEvents.h"
 #include "UI/ThroneWidgetComponent.h"
 #include "UI/BossHpBarWidget.h"
+#include "Gimmick/BossStartTrigger.h"
 
 AEnemyBoss::AEnemyBoss()
 {
@@ -55,8 +56,7 @@ void AEnemyBoss::BeginPlay()
 	Super::BeginPlay();
 
 	Stat->OnHpZero.AddUObject(this, &AEnemyBoss::SetDead);
-
-	SetUI();
+	ABossStartTrigger::InBossRoom.BindUObject(this, &AEnemyBoss::SetUI);
 }
 
 /* AI Interface */
@@ -160,6 +160,8 @@ void AEnemyBoss::SetDead()
 		AnimInstacne->Montage_Play(DeadMontage);
 		SetActorEnableCollision(false);
 	}
+
+	BossHpBarWidgetPtr->RemoveFromViewport();
 }
 
 void AEnemyBoss::SetUI()
