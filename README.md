@@ -35,23 +35,24 @@ public:
 
 AIController의 조종을 받는 폰에서 BehaviorTree의 실행을 On/Off 할 수 있도록 RunAI()와 StopAI()를 제공합니다. 빙의시 바로 AI가 작동할 수 있도록 OnPossess 가상 함수에서 RunAI를 호출하고 있습니다.
 
+<br>
+
 ## BTDecorator_AttackInRange
-
-
 UBTDecorator 클래스를 상속받아 제작했으며 AI의 공격범위 안에 Target(플레이어)가 있는지 검사하는 클래스입니다.
 
+<br>
+
 ## BTService_Detect
-
-
 UBTService 클래스를 상속받아 제작했으며 AI의 탐지범위 안에 Target(플레이어)가 있는지 검사하는 클래스입니다. UWorld 클래스에 있는 OverlapMultiByChannel을 사용해 Player 채널에 있는 폰을 검사하도록 설계했습니다. 해당 채널에 감지되는 폰이 있다면 Blackboard의 Target 변수에 해당 폰을 대입하고 감지 되지 않았다면 nullptr을 대입합니다.
 
+<br>
+
 ## BTTask
-
-
 UBTTask_Node를 상속받아 만든 클래스들입니다.
 
-### BTTask_Attack
+<br>
 
+### BTTask_Attack
 AI의 공격 행동을 지시하는 클래스입니다. AIInterface에 선언된 델리게이트와 함수를 먼저 보면
 
 ```cpp
@@ -61,8 +62,9 @@ virtual void AttackByAI(class UAnimMontage* InAnimMontage) = 0;
 ```
 
 해당 코드들이 Attack 클래스와 함께 호출됩니다. 모든 AI들은 기본 클래스인 Enemy를 상속받게 됩니다. Enemy는 AIInterface를 구현하고 있습니다. 그래서 Enemy를 상속받은 AI들이 AttackByAI() 함수를 재정의하여 Montage 포인터를 넘겨주기만 하면 해당 몽타주를 실행하도록 설계했습니다. 
-
+<br>
 공격 몽타주가 끝나면 FAIMonsterAttackFinished 델리게이트를 실행하여 Attack 클래스가 Succeeded를 리턴하며 끝납니다.
+<br>
 
 ### BTTask_TurnToTarget
 
