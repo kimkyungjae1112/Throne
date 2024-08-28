@@ -22,7 +22,25 @@ Struggle For Throne
 <summary> <h6>AI</h6> </summary>
 <div markdown="1">
 
+## AIController
 
+
+AIController는 NPC 폰에 빙의되어 플레이어가 직접 조종하지 않아도 폰의 동작을 가능하게 합니다. 저는 BehaviorTree를 사용해 NPC의 동작을 결정하기 위해 AIController에 다음과 같은 코드를 작성했습니다.
+
+```cpp
+public:
+	void RunAI();
+	void StopAI();
+```
+
+AIController의 조종을 받는 폰에서 BehaviorTree의 실행을 On/Off 할 수 있도록 RunAI()와 StopAI()를 제공합니다. 빙의시 바로 AI가 작동할 수 있도록 OnPossess 가상 함수에서 RunAI를 호출하고 있습니다.
+
+## BTDecorator_AttackInRange
+
+
+UBTDecorator 클래스를 상속받아 제작했으며 AI의 공격범위 안에 Target(플레이어)가 있는지 검사하는 클래스입니다.
+
+## BTService_Detect
 
 </div>
 </details>
