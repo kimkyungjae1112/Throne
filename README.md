@@ -384,7 +384,7 @@ HpBarWidget과 EnergyBarWidget을 포인터로 받아 게임 화면에 띄워줍
 <br>
 
 
-<소스 코드 구조>
+<플레이 영상>
 =============
 
 
